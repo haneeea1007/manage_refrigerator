@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             case 1: fragmentTransaction.replace(R.id.frameLayout, new Fragment1Activity()); break;
             case 2: fragmentTransaction.replace(R.id.frameLayout, new SearchRecipeFragment()); break;
             case 3: fragmentTransaction.replace(R.id.frameLayout, new Fragment3Activity()); break;
-            case 4: fragmentTransaction.replace(R.id.frameLayout, new Fragment4Activity()); break;
+            case 4: fragmentTransaction.replace(R.id.frameLayout, new CalendarActivity()); break;
             case 5: fragmentTransaction.replace(R.id.frameLayout, new Fragment5Activity()); break;
         }
 

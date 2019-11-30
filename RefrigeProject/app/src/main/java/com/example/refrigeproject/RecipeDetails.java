@@ -38,9 +38,8 @@ public class RecipeDetails extends AppCompatActivity implements View.OnClickList
     private TextView tvTitle, tvExtraInfo, tvIngredient;
     private ImageButton ibtBack;
     private ImageView imageView;
-//    private ListView listView;
-private RecyclerView recyclerView;
-private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
     private TextView tvDescription, tvTip, tvOrder;
 
     @Override
@@ -53,7 +52,6 @@ private RecyclerView.LayoutManager layoutManager;
         tvIngredient = findViewById(R.id.tvIngredient);
         imageView = findViewById(R.id.imageView);
         ibtBack = findViewById(R.id.ibtBack);
-//        listView = findViewById(R.id.listView);
         recyclerView = findViewById(R.id.recyclerView);
 
         getRecipeInfo();
@@ -67,9 +65,6 @@ private RecyclerView.LayoutManager layoutManager;
         DescriptionAdapter adapter = new DescriptionAdapter();
         recyclerView.setAdapter(adapter);
 
-//        DescriptionAdapter adapter = new DescriptionAdapter();
-//        listView.setAdapter(adapter);
-//        setListViewHeightBasedOnChildren(listView);
     }
 
     private void getRecipeInfo() {
@@ -94,29 +89,6 @@ private RecyclerView.LayoutManager layoutManager;
         // 해당 레시피의 정렬된 단계별 레시피 가져오기
         searchRecipeDescription(SearchRecipeFragment.getJsonString("Recipe", this), description, recipe.getRecipeID());
     }
-
-//    출처: https://wkdgusdn3.tistory.com/entry/Android-ScrollView안에-ListVIew-넣을-시-Height-문제 [장삼의 착한코딩]
-//    public static void setListViewHeightBasedOnChildren(ListView listView) {
-//        ListAdapter listAdapter = listView.getAdapter();
-//        if (listAdapter == null) {
-//            // pre-condition
-//            return;
-//        }
-//
-//        int totalHeight = 0;
-//        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
-//
-//        for (int i = 0; i < listAdapter.getCount(); i++) {
-//            View listItem = listAdapter.getView(i, null, listView);
-//            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-//            totalHeight += listItem.getMeasuredHeight();
-//        }
-//
-//        ViewGroup.LayoutParams params = listView.getLayoutParams();
-//        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-//        listView.setLayoutParams(params);
-//        listView.requestLayout();
-//    }
 
     // 특정 레시피 아이디를 가진 레시피 순서를 찾는 메소드
     private void searchRecipeDescription(String json, ArrayList<Recipe> description, String recipeID) {
