@@ -4,12 +4,12 @@
     <item android:id="@+id/action_1"
         android:enabled="true"
         android:icon="@drawable/fridge"
-        android:title="one"/>
+        android:title="달력"/>
 
     <item android:id="@+id/action_2"
         android:enabled="true"
         android:icon="@drawable/fridge"
-        android:title="two"/>
+        android:title="레시피"/>
 
     <item android:id="@+id/action_3"
         android:enabled="true"
@@ -19,11 +19,11 @@
     <item android:id="@+id/action_4"
         android:enabled="true"
         android:icon="@drawable/fridge"
-        android:title="four"/>
+        android:title="장보기"/>
 
     <item android:id="@+id/action_5"
         android:enabled="true"
         android:icon="@drawable/fridge"
-        android:title="five"/>
+        android:title="설정"/>
 
 </menu>

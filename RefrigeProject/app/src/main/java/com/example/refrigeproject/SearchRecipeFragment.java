@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +45,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     private EditText edtWord;
     private Button btnSearch;
     private CheckBox chkRecipe, chkIngredient;
+    private ConstraintLayout empty_text;
 
     // 리사이클러뷰 관련
     private TextView tvTitle, tvSummary;
@@ -68,6 +70,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         chkRecipe = view.findViewById(R.id.chkRecipe);
         chkIngredient = view.findViewById(R.id.chkIngredient);
         btnSearch = view.findViewById(R.id.btnSearch);
+        empty_text = view.findViewById(R.id.empty_text);
 
         btnSearch.setOnClickListener(this);
 
@@ -146,7 +149,15 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         @Override
         public int getItemCount() {
             Log.d("totalCount", recipeList.size()+"");
-            return recipeList.size();
+            int count = recipeList.size();
+
+            if(count == 0){
+                empty_text.setVisibility(View.VISIBLE);
+            }else {
+                empty_text.setVisibility(View.GONE);
+            }
+
+            return count;
         }
     }
 

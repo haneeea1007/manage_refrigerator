@@ -2,14 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <Button
         android:id="@+id/btnFood"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_margin="5dp"
         android:background="@drawable/rounded_button"
-        android:textColor="#ffffff"
+        android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:gravity="center"
-        android:layout_margin="5dp"/>
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="@color/colorAccent"
+        android:textColorLink="@color/colorAccent" />
 </LinearLayout>

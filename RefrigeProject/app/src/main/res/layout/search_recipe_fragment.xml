@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/llCheckBox"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView">
+        app:layout_constraintStart_toStartOf="parent">
+
         <EditText
             android:id="@+id/edtWord"
             android:layout_width="wrap_content"
@@ -21,11 +21,12 @@
             android:layout_weight="1"
             android:gravity="center"
             android:hint="어떤 요리를 찾으시나요?" />
+
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="검색"/>
+            android:text="검색" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/llCheckBox"
@@ -57,5 +58,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/llCheckBox"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/empty_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llCheckBox">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="검색어를 입력해주세요"
+            android:gravity="center" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="70dp"
+            android:src="@drawable/warning"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
