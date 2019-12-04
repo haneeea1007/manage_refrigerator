@@ -57,8 +57,17 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     private ArrayList<RecipeIngredient> ingredients = new ArrayList<RecipeIngredient>();
     private HashMap<String, BasicRecipe> recipes = new HashMap<String, BasicRecipe>();
     ArrayList<BasicRecipe> recipeList = new ArrayList<BasicRecipe>();
+    String keyword = null;
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 다른 프래그먼트가 켜질 때
+        // 현재 검색어 저장
+        keyword = edtWord.getText().toString();
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,10 +81,14 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         btnSearch = view.findViewById(R.id.btnSearch);
         empty_text = view.findViewById(R.id.empty_text);
 
-        btnSearch.setOnClickListener(this);
-
         chkRecipe.setChecked(true);
         chkIngredient.setChecked(true);
+        if(keyword != null) {
+            edtWord.setText(keyword);
+            btnSearch.callOnClick();
+        }
+
+        btnSearch.setOnClickListener(this);
         chkRecipe.setOnCheckedChangeListener(this);
         chkIngredient.setOnCheckedChangeListener(this);
 
