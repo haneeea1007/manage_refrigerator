@@ -20,7 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class CalendarActivity extends Fragment {
+public class CalendarFragment extends Fragment {
     View view;
     Context context;
 

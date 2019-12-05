@@ -57,15 +57,23 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     private ArrayList<RecipeIngredient> ingredients = new ArrayList<RecipeIngredient>();
     private HashMap<String, BasicRecipe> recipes = new HashMap<String, BasicRecipe>();
     ArrayList<BasicRecipe> recipeList = new ArrayList<BasicRecipe>();
-    String keyword = null;
+    static String keyword = null;
+    boolean recipeChecked = false;
+    boolean inredientChecked = false;
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onStop() {
+        super.onStop();
+        Log.d("tetest", "onStop");
+        Log.d("tetest", "onStop" + edtWord.getText().toString());
         // 다른 프래그먼트가 켜질 때
         // 현재 검색어 저장
         keyword = edtWord.getText().toString();
+        // 요리명/재료명 체크박스 저장
+        if(chkRecipe.isChecked()) recipeChecked = true;
+        if(chkIngredient.isChecked()) inredientChecked = true;
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     @Nullable
@@ -83,10 +91,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         chkRecipe.setChecked(true);
         chkIngredient.setChecked(true);
-        if(keyword != null) {
-            edtWord.setText(keyword);
-            btnSearch.callOnClick();
-        }
+
+        Log.d("tetest", "onCreateView" + keyword);
 
         btnSearch.setOnClickListener(this);
         chkRecipe.setOnCheckedChangeListener(this);
@@ -96,6 +102,15 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(adapter);
+
+        if(keyword != null) {
+            Log.d("tetest", "onCreateView - keyword not null");
+            edtWord.setText(keyword);
+            if(recipeChecked) chkRecipe.setChecked(true);
+            if(inredientChecked) chkIngredient.setChecked(true);
+
+            btnSearch.callOnClick();
+        }
 
         return view;
     }
@@ -206,9 +221,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
             is.close();
 
             json = new String(buffer, "UTF-8");
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             // JSON파일을 여는 데 실패했을 경우
             ex.printStackTrace();
         }

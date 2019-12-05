@@ -73,7 +73,13 @@
                 android:background="#00000000"
                 android:src="@drawable/add" />
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <CheckBox
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"/>
 
 
     <View
