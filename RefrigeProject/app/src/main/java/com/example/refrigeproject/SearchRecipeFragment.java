@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,6 +29,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +44,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     private Context context;
 
     private RecyclerView recyclerView;
-    private EditText edtWord;
+//    private EditText edtWord;
+    private AutoCompleteTextView autoCompleteTextView;
     private Button btnSearch;
     private CheckBox chkRecipe, chkIngredient;
     private ConstraintLayout empty_text;
@@ -65,10 +68,12 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     public void onStop() {
         super.onStop();
         Log.d("tetest", "onStop");
-        Log.d("tetest", "onStop" + edtWord.getText().toString());
+        Log.d("tetest", "onStop" + autoCompleteTextView.getText().toString());
         // 다른 프래그먼트가 켜질 때
         // 현재 검색어 저장
-        keyword = edtWord.getText().toString();
+//        keyword = edtWord.getText().toString();
+        keyword = autoCompleteTextView.getText().toString();
+
         // 요리명/재료명 체크박스 저장
         if(chkRecipe.isChecked()) recipeChecked = true;
         if(chkIngredient.isChecked()) inredientChecked = true;
@@ -83,7 +88,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         this.context = container.getContext();
 
         recyclerView = view.findViewById(R.id.recyclerView);
-        edtWord = view.findViewById(R.id.edtWord);
+//        edtWord = view.findViewById(R.id.edtWord);
+        autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
         chkRecipe = view.findViewById(R.id.chkRecipe);
         chkIngredient = view.findViewById(R.id.chkIngredient);
         btnSearch = view.findViewById(R.id.btnSearch);
@@ -98,6 +104,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         chkRecipe.setOnCheckedChangeListener(this);
         chkIngredient.setOnCheckedChangeListener(this);
 
+        setAutoCompleteFunction();
+
         layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerViewAdapter();
@@ -105,7 +113,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         if(keyword != null) {
             Log.d("tetest", "onCreateView - keyword not null");
-            edtWord.setText(keyword);
+            autoCompleteTextView.setText(keyword);
             if(recipeChecked) chkRecipe.setChecked(true);
             if(inredientChecked) chkIngredient.setChecked(true);
 
@@ -115,6 +123,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         return view;
     }
 
+
+
     @Override
     public void onClick(View v) {
         recipes.clear();
@@ -122,7 +132,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         recipeList.clear();
         recyclerView.removeAllViews();
 
-        String keyword = edtWord.getText().toString().trim();
+        String keyword = autoCompleteTextView.getText().toString().trim();
 
         searchRecipe(keyword);
         Log.d(TAG, "size after added " + recipes.size());
@@ -135,7 +145,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
             searchRecipeName(getJsonString("BasicRecipe", context), recipes, keyword);
         }
         if(chkIngredient.isChecked()){
-            searchIngredient(getJsonString("RecipeIngredient", context), ingredients, keyword);
+            searchRecipeByIngredient(getJsonString("RecipeIngredient", context), ingredients, keyword);
             searchRecipeByID(getJsonString("BasicRecipe", context), recipes, ingredients);
         }
 
@@ -316,7 +326,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     }
 
     // 검색어가 재료명에 포함되었을 경우를 찾는 메소드
-    private void searchIngredient(String json, ArrayList<RecipeIngredient> arrayList, String keyword) {
+    private void searchRecipeByIngredient(String json, ArrayList<RecipeIngredient> arrayList, String keyword) {
         try{
             JSONObject jsonObject = new JSONObject(json);
             JSONArray ingredientArray = jsonObject.getJSONArray("data");
@@ -341,4 +351,41 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
     }
+
+    private void setAutoCompleteFunction() {
+        ArrayList<String> data = new ArrayList<String>();
+        String recipeJson = getJsonString("BasicRecipe", context);
+        String ingredientJson = getJsonString("RecipeIngredient", context);
+        getRecipeAndIngredientName(recipeJson, ingredientJson, data);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, data);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
+    public void getRecipeAndIngredientName(String json1, String json2, ArrayList<String> data) {
+        try{
+            JSONObject jsonObject = new JSONObject(json1);
+            JSONArray recipeArray = jsonObject.getJSONArray("data");
+
+            for(int i = 0 ; i < recipeArray.length() ; i++) {
+                JSONObject recipeObject = recipeArray.getJSONObject(i);
+                data.add(recipeObject.getString("RECIPE_NM_KO"));
+            }
+
+            jsonObject = new JSONObject(json2);
+            recipeArray = jsonObject.getJSONArray("data");
+
+            // 중복 제거 해야
+            for(int i = 0 ; i < recipeArray.length() ; i++) {
+                JSONObject recipeObject = recipeArray.getJSONObject(i);
+                String name = recipeObject.getString("IRDNT_NM");
+                if(!data.contains(name)) {
+                    data.add(name);
+                }
+            }
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

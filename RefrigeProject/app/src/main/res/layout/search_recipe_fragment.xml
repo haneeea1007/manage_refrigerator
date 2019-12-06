@@ -14,13 +14,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/edtWord"
-            android:layout_width="wrap_content"
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="2"
             android:layout_weight="1"
-            android:gravity="center"
-            android:hint="어떤 요리를 찾으시나요?" />
+            android:hint="다양한 레시피를 찾아보세요 :)" />
 
         <Button
             android:id="@+id/btnSearch"
