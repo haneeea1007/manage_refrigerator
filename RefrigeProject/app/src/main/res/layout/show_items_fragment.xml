@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
 
         <LinearLayout
             android:id="@+id/llRefrigerator"
-            android:background="@drawable/rounded_border"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
                 <TextView
@@ -16,20 +18,18 @@
                     android:background="#00000000"
                     android:gravity="center"
                     android:textSize="20sp"
-                    android:padding="7dp"
+                    android:padding="10dp"
+                    android:layout_margin="3dp"
                     android:text="냉장고"/>
-<!--                <ImageView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:background="#00000000"-->
-<!--                    android:src="@drawable/arrow_drop_down"/>-->
-
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_drop_down"/>
         </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#22ff0000">
+            android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="냉장"
-                            android:textSize="24sp"/>
+                            android:textSize="20sp"/>
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvFridge"
                             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="냉동"
-                            android:textSize="24sp"/>
+                            android:textSize="20sp"/>
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvFreezer"
                             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="실온"
-                            android:textSize="24sp"/>
+                            android:textSize="20sp"/>
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvPantry"
                             android:layout_width="match_parent"

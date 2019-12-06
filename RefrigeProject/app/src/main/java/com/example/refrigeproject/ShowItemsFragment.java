@@ -1,5 +1,6 @@
 package com.example.refrigeproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
@@ -18,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -27,6 +29,9 @@ import androidx.appcompat.widget.ListPopupWindow;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.aviran.cookiebar2.CookieBar;
+import org.aviran.cookiebar2.OnActionClickListener;
 
 import java.util.ArrayList;
 
@@ -39,8 +44,9 @@ public class ShowItemsFragment extends Fragment implements View.OnClickListener 
     RecyclerView.Adapter<FoodItemViewHolder> adapterC1, adapterC2, adapterC3;
 
     Context context;
-    PopupMenu popupMenu = null;
-    ListPopupWindow listPopupWindow;
+    Activity activity;
+
+    TextView tvName;
 
     static ArrayList<String> foodList1 = new ArrayList<String>();
     static ArrayList<String> foodList2 = new ArrayList<String>();
@@ -50,6 +56,14 @@ public class ShowItemsFragment extends Fragment implements View.OnClickListener 
 
     //for listpopupwindow
     Button btnfood;
+
+    // for remove mode
+    boolean removeMode;
+
+    public ShowItemsFragment(Activity activity) {
+        this.activity = activity;
+
+    }
 
     @Nullable
     @Override
@@ -82,14 +96,6 @@ public class ShowItemsFragment extends Fragment implements View.OnClickListener 
         rvPantry.setAdapter(adapterC3);
 
         setFoodItems();
-        
-//        setUpListpopupWindow();
-//        llRefrigerator.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                listPopupWindow.show();
-//            }
-//        });
 
         llRefrigerator.setOnClickListener(this);
 
@@ -98,25 +104,18 @@ public class ShowItemsFragment extends Fragment implements View.OnClickListener 
         return view;
     }
 
-    private void setUpListpopupWindow() {
-            listPopupWindow = new ListPopupWindow(context);
-            listPopupWindow.setAnchorView(llRefrigerator);
-            DisplayMetrics metrics = new DisplayMetrics();
-            listPopupWindow.setWidth(ListPopupWindow.MATCH_PARENT); //sets width as per the screen.
-            listPopupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
-            listPopupWindow.setModal(true);
-            View filterLayout = getLayoutInflater().inflate(R.layout.seasonal_food_item, null);
-            btnfood  = view.findViewById(R.id.btnFood);
-        listPopupWindow.setPromptView(filterLayout);
-    }
-
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.manage_food_menu, menu);
-        menu.getItem(0).setIcon(R.drawable.add);
-        menu.getItem(1).setIcon(R.drawable.remove);
-        menu.getItem(2).setIcon(R.drawable.search);
+
+        if(removeMode){
+            inflater.inflate(R.menu.remove_mode_menu, menu);
+        }else{
+            inflater.inflate(R.menu.manage_food_menu, menu);
+            menu.getItem(0).setIcon(R.drawable.add);
+            menu.getItem(1).setIcon(R.drawable.remove);
+            menu.getItem(2).setIcon(R.drawable.search);
+        }
     }
 
     @Override
@@ -124,19 +123,34 @@ public class ShowItemsFragment extends Fragment implements View.OnClickListener 
         switch (item.getItemId()){
             case R.id.action_add:
                 // 아이템 추가 인텐트
-                Intent intent = new Intent();
+                Log.d("메뉴클릭", "action_add");
                 break;
 
             case R.id.action_remove:
-                // 삭제 모드
+                // 삭제 모드로 전환
                 // - 달린 아이템들
+                Log.d("메뉴클릭", "action_remove");
+                removeMode = true;
+                getActivity().invalidateOptionsMenu();
                 break;
 
             case R.id.action_search:
                 // 해당 냉장고속 재료 검색
+                Log.d("메뉴클릭", "action_search");
+                break;
+
+            case R.id.action_done:
+                // 삭제 모드 해제
+                Log.d("메뉴클릭","action_back");
+                removeMode = false;
+                getActivity().invalidateOptionsMenu();
+                break;
+
+            case R.id.action_delete:
+                // 선택한 목록 삭제
+                Log.d("메뉴클릭","action_delete");
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -169,83 +183,30 @@ public class ShowItemsFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            popupMenu = new PopupMenu(context, v, Gravity.CENTER, R.style.PopupMenu, R.style.PopupMenu);
-        }
-        int i = 1;
-        for(String str : refrigeratorList){
-            popupMenu.getMenu().add(0, i++, 0, str);
-        }
+        CookieBar.build(activity)
+                .setCustomView(R.layout.select_refrigerator)
+                .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
+                    @Override
+                    public void initView(View view) {
+                        tvName = view.findViewById(R.id.tvName);
 
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case 1:
-                        Log.d("onClick", "메인냉장고");
-                        // setFoodItems()로 대체하기
-                        // 비우기
-                        foodList1.clear();
-                        foodList2.clear();
-                        foodList3.clear();
-                        rvFridge.removeAllViews();
-                        rvFreezer.removeAllViews();
-                        rvPantry.removeAllViews();
-
-                        // 새로운 값 받아오기
-                        // switch문 통합해서 DB에서 받으려면 id로 쿼리문실행해서 리스트에 add
-                        foodList1.add("메인 냉장실 aaa");
-                        foodList1.add("메인 냉장실 bbb");
-                        foodList1.add("메인 냉장실 ccc");
-                        foodList2.add("메인 냉동 1aaa");
-                        foodList2.add("메인 냉동 1bbb");
-                        foodList2.add("메인 냉동 1ccc");
-                        foodList3.add("메인 실온 참치");
-                        Log.d("메인냉장고 실온", foodList3.get(0));
-                        Log.d("메인냉장고 냉장실", foodList1.get(2));
-
-                        // notify
-                        adapterC1.notifyDataSetChanged();
-                        adapterC2.notifyDataSetChanged();
-                        adapterC3.notifyDataSetChanged();
-                        Log.d("메인냉장고 실온 notify", foodList3.get(0));
-                        Log.d("메인냉장고 냉장실 notify", foodList1.get(2));
-                        tvRefrigerator.setText(item.getTitle().toString());
-
-                        break;
-
-                    case 2:
-                        Log.d("onClick", "김치냉장고");
-                        // setFoodItems()로 대체하기
-                        foodList1.clear();
-                        foodList2.clear();
-                        foodList3.clear();
-                        rvFridge.removeAllViews();
-                        rvFreezer.removeAllViews();
-                        rvPantry.removeAllViews();
-
-
-                        foodList1.add("김치 냉장 123");
-                        foodList1.add("김치 냉장 456");
-                        foodList2.add("김치 냉동 2");
-                        foodList2.add("김치 냉동 2df");
-                        foodList3.add("김치 실온 김치 된장");
-                        foodList3.add("김치 실온 김치 고추장");
-
-                        adapterC1.notifyDataSetChanged();
-                        adapterC2.notifyDataSetChanged();
-                        adapterC3.notifyDataSetChanged();
-                        tvRefrigerator.setText(item.getTitle().toString());
-                        break;
-                }
-                return false;
-            }
-        });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            popupMenu.setGravity(Gravity.CENTER);
-
-        }
-        popupMenu.show();
+                        ListView listView = view.findViewById(R.id.listView);
+                        ListViewAdapter listViewAdapter = new ListViewAdapter();
+                        listView.setAdapter(listViewAdapter);
+                    }
+                })
+                .setDuration(10000)
+                .setAction("Close", new OnActionClickListener() {
+                    @Override
+                    public void onClick() {
+                        CookieBar.dismiss(activity);
+                    }
+                })
+                .setTitle("test")
+                .setSwipeToDismiss(true)
+                .setEnableAutoDismiss(true)
+                .setCookiePosition(CookieBar.BOTTOM)
+                .show();
     }
 
     class FoodItemAdapter extends RecyclerView.Adapter<FoodItemViewHolder>{
@@ -278,6 +239,99 @@ public class ShowItemsFragment extends Fragment implements View.OnClickListener 
     class FoodItemViewHolder extends RecyclerView.ViewHolder{
         public FoodItemViewHolder(@NonNull View itemView) {
             super(itemView);
+        }
+    }
+
+    class ListViewAdapter extends BaseAdapter{
+
+        @Override
+        public int getCount() {
+            return refrigeratorList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return refrigeratorList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.refrigerator_item, null);
+
+            tvName = convertView.findViewById(R.id.tvName);
+            tvName.setText(refrigeratorList.get(position));
+
+            tvName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (position){
+                        case 0:
+                            Log.d("onClick", "메인냉장고");
+
+                            // 비우기
+                            foodList1.clear();
+                            foodList2.clear();
+                            foodList3.clear();
+                            rvFridge.removeAllViews();
+                            rvFreezer.removeAllViews();
+                            rvPantry.removeAllViews();
+
+                            // 새로운 값 받아오기
+                            // switch문 통합해서 DB에서 받으려면 id로 쿼리문실행해서 리스트에 add
+                            foodList1.add("메인 냉장실 aaa");
+                            foodList1.add("메인 냉장실 bbb");
+                            foodList1.add("메인 냉장실 ccc");
+                            foodList2.add("메인 냉동 1aaa");
+                            foodList2.add("메인 냉동 1bbb");
+                            foodList2.add("메인 냉동 1ccc");
+                            foodList3.add("메인 실온 참치");
+                            Log.d("메인냉장고 실온", foodList3.get(0));
+                            Log.d("메인냉장고 냉장실", foodList1.get(2));
+
+                            // notify
+                            adapterC1.notifyDataSetChanged();
+                            adapterC2.notifyDataSetChanged();
+                            adapterC3.notifyDataSetChanged();
+                            Log.d("메인냉장고 실온 notify", foodList3.get(0));
+                            Log.d("메인냉장고 냉장실 notify", foodList1.get(2));
+
+
+                            break;
+
+                        case 1:
+                            Log.d("onClick", "김치냉장고");
+                            foodList1.clear();
+                            foodList2.clear();
+                            foodList3.clear();
+                            rvFridge.removeAllViews();
+                            rvFreezer.removeAllViews();
+                            rvPantry.removeAllViews();
+
+
+                            foodList1.add("김치 냉장 123");
+                            foodList1.add("김치 냉장 456");
+                            foodList2.add("김치 냉동 2");
+                            foodList2.add("김치 냉동 2df");
+                            foodList3.add("김치 실온 김치 된장");
+                            foodList3.add("김치 실온 김치 고추장");
+
+                            adapterC1.notifyDataSetChanged();
+                            adapterC2.notifyDataSetChanged();
+                            adapterC3.notifyDataSetChanged();
+                            break;
+
+                    }
+                    tvRefrigerator.setText(refrigeratorList.get(position));
+                    CookieBar.dismiss(activity);
+                }
+            });
+
+            return convertView;
         }
     }
 }

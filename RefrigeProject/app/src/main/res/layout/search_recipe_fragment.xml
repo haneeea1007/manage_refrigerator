@@ -18,7 +18,7 @@
             android:id="@+id/autoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="2"
+            android:completionThreshold="1"
             android:layout_weight="1"
             android:hint="다양한 레시피를 찾아보세요 :)" />
 

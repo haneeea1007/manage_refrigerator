@@ -352,6 +352,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    // 자동완성기능
     private void setAutoCompleteFunction() {
         ArrayList<String> data = new ArrayList<String>();
         String recipeJson = getJsonString("BasicRecipe", context);
@@ -361,6 +362,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         autoCompleteTextView.setAdapter(adapter);
     }
 
+    // 등록된 모든 레시피와 재료의 이름만을 찾는 메소드
     public void getRecipeAndIngredientName(String json1, String json2, ArrayList<String> data) {
         try{
             JSONObject jsonObject = new JSONObject(json1);

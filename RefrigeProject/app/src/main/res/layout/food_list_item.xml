@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:background="@drawable/rounded_button"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -27,8 +27,8 @@
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:progressDrawable="@drawable/progressbar"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -56,10 +56,10 @@
                 android:text="이름" />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
                 android:background="#00000000"
-                android:src="@drawable/remove" />
+                android:src="@drawable/remove_gray" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -68,10 +68,10 @@
                 android:text="수량" />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
                 android:background="#00000000"
-                android:src="@drawable/add" />
+                android:src="@drawable/add_gray"/>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -79,6 +79,7 @@
     <CheckBox
         android:layout_width="45dp"
         android:layout_height="45dp"
+        android:visibility="invisible"
         android:layout_alignParentRight="true"/>
 
 
