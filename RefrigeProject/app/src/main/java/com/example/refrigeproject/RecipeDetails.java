@@ -1,20 +1,14 @@
 package com.example.refrigeproject;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.r0adkll.slidr.Slidr;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class RecipeDetails extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "RecipeDetails";
     ArrayList<RecipeIngredient> ingredients = new ArrayList<RecipeIngredient>();
     ArrayList<Recipe> description = new ArrayList<Recipe>();
     BasicRecipe recipe;
@@ -45,7 +41,7 @@ public class RecipeDetails extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recipe_details);
+        setContentView(R.layout.activity_recipe_details);
 
         tvTitle = findViewById(R.id.tvTitle);
         tvExtraInfo = findViewById(R.id.tvExtraInfo);
@@ -59,11 +55,12 @@ public class RecipeDetails extends AppCompatActivity implements View.OnClickList
 
         ibtBack.setOnClickListener(this);
 
-
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         DescriptionAdapter adapter = new DescriptionAdapter();
         recyclerView.setAdapter(adapter);
+
+        Slidr.attach(this);
 
     }
 
@@ -83,7 +80,7 @@ public class RecipeDetails extends AppCompatActivity implements View.OnClickList
         searchIngredient(SearchRecipeFragment.getJsonString("RecipeIngredient", this), ingredients, recipe.getRecipeID());
         for(RecipeIngredient ingredient : ingredients){
             Log.d("setRecipeInfo", ingredient.getRecipeID());
-            tvIngredient.setText(tvIngredient.getText() + ingredient.getName() + " " + ingredient.getCapacity() + " " + ingredient.getTypeName() + "\n");
+            tvIngredient.setText(tvIngredient.getText() + ingredient.getTypeName() + " " + ingredient.getName() + " " + ingredient.getCapacity() + "\n");
         }
 
         // 해당 레시피의 정렬된 단계별 레시피 가져오기

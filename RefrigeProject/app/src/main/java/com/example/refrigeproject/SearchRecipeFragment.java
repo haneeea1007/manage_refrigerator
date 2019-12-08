@@ -13,7 +13,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,10 +28,8 @@ import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +46,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     private Button btnSearch;
     private CheckBox chkRecipe, chkIngredient;
     private ConstraintLayout empty_text;
+    ConstraintLayout constraintLayout;
 
     // 리사이클러뷰 관련
     private TextView tvTitle, tvSummary;
@@ -64,31 +62,14 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     boolean recipeChecked = false;
     boolean inredientChecked = false;
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("tetest", "onStop");
-        Log.d("tetest", "onStop" + autoCompleteTextView.getText().toString());
-        // 다른 프래그먼트가 켜질 때
-        // 현재 검색어 저장
-//        keyword = edtWord.getText().toString();
-        keyword = autoCompleteTextView.getText().toString();
-
-        // 요리명/재료명 체크박스 저장
-        if(chkRecipe.isChecked()) recipeChecked = true;
-        if(chkIngredient.isChecked()) inredientChecked = true;
-    }
-
-
     @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.search_recipe_fragment, null, false);
+        view = inflater.inflate(R.layout.fragment_search_recipe, null, false);
         this.context = container.getContext();
 
         recyclerView = view.findViewById(R.id.recyclerView);
-//        edtWord = view.findViewById(R.id.edtWord);
         autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
         chkRecipe = view.findViewById(R.id.chkRecipe);
         chkIngredient = view.findViewById(R.id.chkIngredient);
@@ -123,10 +104,28 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         return view;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("tetest", "onStop");
+        Log.d("tetest", "onStop" + autoCompleteTextView.getText().toString());
+        // 다른 프래그먼트가 켜질 때
+        // 현재 검색어 저장
+//        keyword = edtWord.getText().toString();
+        keyword = autoCompleteTextView.getText().toString();
+
+        // 요리명/재료명 체크박스 저장
+        if(chkRecipe.isChecked()) recipeChecked = true;
+        if(chkIngredient.isChecked()) inredientChecked = true;
+    }
 
 
     @Override
     public void onClick(View v) {
+        if(autoCompleteTextView.getText().toString().equals("")){
+            // 빈칸일 경우
+            return;
+        }
         recipes.clear();
         ingredients.clear();
         recipeList.clear();

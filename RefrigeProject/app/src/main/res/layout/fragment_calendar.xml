@@ -7,26 +7,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="15dp">
+        android:padding="10dp">
         <ImageButton
             android:id="@+id/ibtPrev"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="#00000000"
             android:src="@drawable/left"/>
 
         <TextView
+            android:id="@+id/tvYearMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:text="0000년 00월"/>
 
         <ImageButton
             android:id="@+id/ibtNext"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="#00000000"
             android:src="@drawable/right"/>
 
@@ -36,9 +37,42 @@
         android:id="@+id/rvSeasonalFood"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            style="@style/DayOfWeek"
+            android:text="SUN"/>
+        <TextView
+            style="@style/DayOfWeek"
+            android:text="MON"/>
+        <TextView
+            style="@style/DayOfWeek"
+            android:text="TUE"/>
+        <TextView
+            style="@style/DayOfWeek"
+            android:text="WED"/>
+        <TextView
+            style="@style/DayOfWeek"
+            android:text="THU"/>
+        <TextView
+            style="@style/DayOfWeek"
+            android:text="FRI"/>
+        <TextView
+            style="@style/DayOfWeek"
+            android:text="SAT"/>
+    </LinearLayout>
+
 
     <GridView
+        android:id="@+id/gvCalendar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:horizontalSpacing="1dp"
+        android:numColumns="7"
+        android:padding="5dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"/>
 
 </LinearLayout>

@@ -1,25 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.daimajia.swipe.SwipeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:tag="Bottom2"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp">
+        <ImageView
+            android:id="@+id/delete"
+            android:src="@android:drawable/ic_menu_search"
+            android:layout_width="70dp"
+            android:background="#f7e79c"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/open"
+            android:src="@android:drawable/ic_dialog_alert"
+            android:layout_width="70dp"
+            android:background="#4cd964"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/trash"
+            android:src="@android:drawable/ic_delete"
+            android:layout_width="70dp"
+            android:background="#ff9999"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_border"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:layout_margin="5dp">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageView"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:background="@drawable/rounded_button"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +55,6 @@
             android:id="@+id/progressBar"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:progressDrawable="@drawable/progressbar"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,50 +67,36 @@
             android:layout_height="0dp"
             android:orientation="horizontal"
             android:gravity="center"
-            android:padding="5dp"
+            android:padding="10dp"
+            android:layout_marginRight="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/progressBar"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:text="이름" />
 
-            <ImageButton
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:background="#00000000"
-                android:src="@drawable/remove_gray" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="수량" />
-
-            <ImageButton
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:background="#00000000"
-                android:src="@drawable/add_gray"/>
         </LinearLayout>
 
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <CheckBox
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:visibility="invisible"
-        android:layout_alignParentRight="true"/>
-
-
-    <View
-        style="@style/Divider"
-        android:layout_marginTop="6dp"
-        android:layout_below="@id/constraintLayout" />
-
-</RelativeLayout>
+    <!--    <View-->
+    <!--        style="@style/Divider"-->
+    <!--        android:layout_marginTop="6dp"-->
+    <!--        android:layout_below="@id/constraintLayout" />-->
+</com.daimajia.swipe.SwipeLayout >

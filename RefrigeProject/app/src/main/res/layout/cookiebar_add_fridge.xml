@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="#673AB7"
+    android:id="@+id/cookie">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="냉장고 추가하기"/>
+
+    <TextView
+        android:id="@+id/tvNew"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:background="#60ffffff"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:text="새로운 냉장고 추가하기"/>
+
+    <TextView
+        android:id="@+id/tvExisting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:background="#60ffffff"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:text="기존 냉장고 불러오기"/>
+
+</LinearLayout>
