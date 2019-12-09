@@ -2,11 +2,12 @@
 <com.daimajia.swipe.SwipeLayout
     android:id="@+id/llFridgeItem"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="150dp">
 
     <ImageView
+        android:tag="bottom_tag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="#CC2C2C"/>
@@ -45,6 +46,26 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="수정하기"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="삭제하기"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="공유하기"/>
+        </LinearLayout>
 
     </LinearLayout>
 </com.daimajia.swipe.SwipeLayout>

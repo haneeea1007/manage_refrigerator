@@ -202,7 +202,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 })
                 .setSwipeToDismiss(true)
                 .setEnableAutoDismiss(true)
-                .setDuration(10000)
+                .setDuration(5000)
                 .setCookiePosition(CookieBar.BOTTOM)
                 .show();
     }
