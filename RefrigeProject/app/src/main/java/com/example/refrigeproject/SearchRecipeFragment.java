@@ -41,12 +41,10 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     private Context context;
 
     private RecyclerView recyclerView;
-//    private EditText edtWord;
     private AutoCompleteTextView autoCompleteTextView;
     private Button btnSearch;
     private CheckBox chkRecipe, chkIngredient;
     private ConstraintLayout empty_text;
-    ConstraintLayout constraintLayout;
 
     // 리사이클러뷰 관련
     private TextView tvTitle, tvSummary;
@@ -79,7 +77,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         chkRecipe.setChecked(true);
         chkIngredient.setChecked(true);
 
-        Log.d("tetest", "onCreateView" + keyword);
+
+        Log.d(TAG, "onCreateView " + keyword);
 
         btnSearch.setOnClickListener(this);
         chkRecipe.setOnCheckedChangeListener(this);
@@ -101,17 +100,22 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
             btnSearch.callOnClick();
         }
 
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            String name = bundle.getString("name");
+            autoCompleteTextView.setText(name);
+            btnSearch.callOnClick();
+        }
+
         return view;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Log.d("tetest", "onStop");
-        Log.d("tetest", "onStop" + autoCompleteTextView.getText().toString());
+        Log.d(TAG, "onStop" + autoCompleteTextView.getText().toString());
         // 다른 프래그먼트가 켜질 때
         // 현재 검색어 저장
-//        keyword = edtWord.getText().toString();
         keyword = autoCompleteTextView.getText().toString();
 
         // 요리명/재료명 체크박스 저장
@@ -150,7 +154,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         // HashMap을 ArrayList로 변환
         recipeList.addAll(recipes.values());
-        Log.d("totalCount", recipeList.size()+"");
+        Log.d(TAG, recipeList.size()+"");
 
     }
 
@@ -174,7 +178,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         @Override
         public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
             BasicRecipe recipe = recipeList.get(position);
-            Log.d("onBindViewHolder", recipe.getName());
+            Log.d(TAG, "onBindViewHolder"+recipe.getName());
             tvTitle.setText(recipe.getName());
             tvSummary.setText(recipe.getSummary());
             String imageUrl = recipe.getImageUrl();
@@ -185,7 +189,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         @Override
         public int getItemCount() {
-            Log.d("totalCount", recipeList.size()+"");
+            Log.d(TAG, recipeList.size()+"");
             int count = recipeList.size();
 
             if(count == 0){
@@ -238,6 +242,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         return json;
     }
 
+    // 이름을 통해 레시피를 찾는 메소드
     public static void searchRecipeName(String json, HashMap<String, BasicRecipe> recipes, String keyword) {
         Log.d(TAG, "initial size " + recipes.size());
         try{
@@ -274,6 +279,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    // 아이디를 통해 레시피를 찾는 메소드
     public void searchRecipeByID(String json, HashMap<String, BasicRecipe> recipes, ArrayList<RecipeIngredient> ingredients)
     {
         Log.d(TAG, "ByID initial size " + recipes.size());
@@ -351,7 +357,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    // 자동완성기능
+    // 자동 완성 기능
     private void setAutoCompleteFunction() {
         ArrayList<String> data = new ArrayList<String>();
         String recipeJson = getJsonString("BasicRecipe", context);

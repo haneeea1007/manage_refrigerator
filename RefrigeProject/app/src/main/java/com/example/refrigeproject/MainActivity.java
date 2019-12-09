@@ -2,6 +2,7 @@ package com.example.refrigeproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -11,11 +12,13 @@ import android.widget.FrameLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ShowFoodsFragment.OnFragmentInteractionListener{
     private BottomNavigationView bottomMenu;
     private FrameLayout frameLayout;
+    private Fragment calendar, searchRecipe, showFoods, checkList, setting;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +31,10 @@ public class MainActivity extends AppCompatActivity {
         bottomMenu.setSelectedItemId(R.id.action_3);
         changeFragment(3);
 
-
         // bottomMenu를 변경을 때 Fragment
         bottomMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
                 switch (menuItem.getItemId()){
                     case R.id.action_1: changeFragment(1); break;
                     case R.id.action_2: changeFragment(2); break;
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        calendar = new CalendarFragment();
+        searchRecipe = new SearchRecipeFragment();
+        showFoods = new ShowFoodsFragment();
+        checkList = new CheckListFragment();
+        setting = new SettingFragment();
+
     }
 
     private void changeFragment(int position) {
@@ -52,13 +59,26 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = fragmentManager.beginTransaction();
 
         switch (position){
-            case 1: fragmentTransaction.replace(R.id.frameLayout, new CalendarFragment()); break;
-            case 2: fragmentTransaction.replace(R.id.frameLayout, new SearchRecipeFragment()); break;
-            case 3: fragmentTransaction.replace(R.id.frameLayout, new ShowFoodsFragment(this)); break;
-            case 4: fragmentTransaction.replace(R.id.frameLayout, new CheckListFragment()); break;
-            case 5: fragmentTransaction.replace(R.id.frameLayout, new SettingFragment()); break;
+            case 1:
+                fragmentTransaction.replace(R.id.frameLayout, calendar); break;
+            case 2:
+                fragmentTransaction.replace(R.id.frameLayout, searchRecipe);
+                searchRecipe.setArguments(bundle);
+                break;
+            case 3:
+                fragmentTransaction.replace(R.id.frameLayout, new ShowFoodsFragment()); break;
+            case 4:
+                fragmentTransaction.replace(R.id.frameLayout, checkList); break;
+            case 5:
+                fragmentTransaction.replace(R.id.frameLayout, setting); break;
         }
 
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Bundle bundle) {
+        this.bundle = bundle;
+        bottomMenu.setSelectedItemId(R.id.action_2);
     }
 }
