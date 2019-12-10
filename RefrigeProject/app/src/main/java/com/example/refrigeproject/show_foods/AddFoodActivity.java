@@ -49,7 +49,7 @@ public class AddFoodActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 10;
         }
 
         @Nullable
@@ -62,6 +62,22 @@ public class AddFoodActivity extends AppCompatActivity {
                     return "과일";
                 case 2:
                     return "육류";
+                case 3:
+                    return "해산물";
+                case 4:
+                    return "유제품";
+                case 5:
+                    return "반찬";
+                case 6:
+                    return "인스턴트";
+                case 7:
+                    return "음료";
+                case 8:
+                    return "양념";
+                case 9:
+                    return "조미료";
+
+
                 default:
                     return null;
             }

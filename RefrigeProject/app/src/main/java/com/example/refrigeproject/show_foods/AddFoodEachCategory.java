@@ -101,7 +101,7 @@ public class AddFoodEachCategory extends Fragment {
 
             final AddFoodGridViewData addFoodGridViewData = list.get(position);
             foodImageView.setImageResource(addFoodGridViewData.getImageID());
-tvFoodName.setText(addFoodGridViewData.getFoodName());
+            tvFoodName.setText(addFoodGridViewData.getFoodName());
             return view;
         }
     }
