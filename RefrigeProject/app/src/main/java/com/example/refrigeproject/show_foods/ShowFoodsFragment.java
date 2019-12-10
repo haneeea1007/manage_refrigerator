@@ -370,7 +370,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
 
         void bindData(final int position) {
-            tvFoodName.setText(freezerItems.get(position).getName());
+//            tvFoodName.setText(fridgeItems.get(position).getName());
 
             // 아이템 삭제
             delete.setOnClickListener(new View.OnClickListener() {
