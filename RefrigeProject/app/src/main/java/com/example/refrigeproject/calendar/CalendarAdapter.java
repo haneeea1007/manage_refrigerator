@@ -13,7 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.refrigeproject.DBHelper;
+import com.example.refrigeproject.FoodDBHelper;
 import com.example.refrigeproject.R;
 
 import java.util.Calendar;
@@ -35,8 +35,8 @@ public class CalendarAdapter extends BaseAdapter {
 
     public int selectedPosition = -1; // ????????????
 
-    DBHelper dbHelper;
-    SQLiteDatabase sqLiteDatabase;
+//    FoodDBHelper dbHelper;
+//    SQLiteDatabase sqLiteDatabase;
 
     LayoutInflater layoutInflater;
     View view;
@@ -98,26 +98,26 @@ public class CalendarAdapter extends BaseAdapter {
 
 //            tvEvent.setText(items[position].getEvent());
         // DB에서 가져오기 /////////////////////////////////////////////////////
-        dbHelper = new DBHelper(context);
-        sqLiteDatabase = dbHelper.getReadableDatabase();
-        Cursor cursor; // record set
-        cursor = sqLiteDatabase.rawQuery("SELECT event FROM calendarTBL WHERE year = " + currentYear +
-                " AND month = " + (currentMonth + 1) +
-                " AND day = " + day +
-                ";", null);
-
-
-        Log.d("selectAllItems", "1");
-
-        while (cursor.getCount() != 0 && cursor.moveToNext()) {
-            event = cursor.getString(0);
-            ivMark.setImageResource(R.drawable.circle);
-            tvEvent.setText(event);
-            //tvEvent.append(event);
-        }
-
-        cursor.close();
-        sqLiteDatabase.close();
+//        dbHelper = new FoodDBHelper(context);
+//        sqLiteDatabase = dbHelper.getReadableDatabase();
+//        Cursor cursor; // record set
+//        cursor = sqLiteDatabase.rawQuery("SELECT event FROM calendarTBL WHERE year = " + currentYear +
+//                " AND month = " + (currentMonth + 1) +
+//                " AND day = " + day +
+//                ";", null);
+//
+//
+//        Log.d("selectAllItems", "1");
+//
+//        while (cursor.getCount() != 0 && cursor.moveToNext()) {
+//            event = cursor.getString(0);
+//            ivMark.setImageResource(R.drawable.circle);
+//            tvEvent.setText(event);
+//            //tvEvent.append(event);
+//        }
+//
+//        cursor.close();
+//        sqLiteDatabase.close();
 
         ////////////////////////////////////////////////////////////////////////////
 
