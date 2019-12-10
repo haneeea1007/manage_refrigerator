@@ -17,6 +17,7 @@ import com.example.refrigeproject.checklist.CheckListFragment;
 import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
 import com.example.refrigeproject.setting.SettingFragment;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
+import com.facebook.stetho.Stetho;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements ShowFoodsFragment.OnFragmentInteractionListener{
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Stetho.initializeWithDefaults(this);
+
+
 
         bottomMenu = findViewById(R.id.bottomMenu);
         frameLayout = findViewById(R.id.frameLayout);

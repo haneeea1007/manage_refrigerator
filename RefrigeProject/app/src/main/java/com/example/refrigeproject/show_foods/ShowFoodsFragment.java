@@ -3,6 +3,7 @@ package com.example.refrigeproject.show_foods;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +41,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ShowFoodsFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "ShowFoodsFragment";
     private View view;
 
     // for test
@@ -51,13 +52,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     List<FoodData> freezerItems = new ArrayList<>(); // header별 구분용
     List<FoodData> pantryItems = new ArrayList<>(); // header별 구분용
     List<FoodData> foodList = new ArrayList<>(); // 전체 foodlist
-
-
-    // 냉장고, 음식 데이터
-    RecyclerAdapter adapter;
-    static ArrayList<String> foodList1 = new ArrayList<String>();
-    static ArrayList<String> foodList2 = new ArrayList<String>();
-    static ArrayList<String> foodList3 = new ArrayList<String>();
     public static ArrayList<String> refrigeratorList = new ArrayList<String>(Arrays.asList("메인 냉장고", "김치 냉장고", "sdf", "23", "142"));
 
     // Widget in ViewHolder
@@ -75,6 +69,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     private LinearLayout llRefrigerator;
 
     private OnFragmentInteractionListener mListener;// 객체참조변수
+    RecyclerAdapter adapter;
 
 
     @Nullable
@@ -89,25 +84,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         // 냉장고 선택하기
         llRefrigerator.setOnClickListener(this);
 
-//        // 냉장실 음식
-//        linearLayoutManager = new LinearLayoutManager(container.getContext());
-//        rvFridge.setLayoutManager(linearLayoutManager);
-//        fridgeAdapter = new MainAdapter(foodList1);
-//        rvFridge.setAdapter(fridgeAdapter);
-//
-//        // 냉동실 음식
-//        linearLayoutManager = new LinearLayoutManager(container.getContext());
-//        rvFreezer.setLayoutManager(linearLayoutManager);
-//        freezerAdapter = new MainAdapter(foodList2);
-//        rvFreezer.setAdapter(freezerAdapter);
-//
-//        // 실온 음식
-//        linearLayoutManager = new LinearLayoutManager(container.getContext());
-//        rvPantry.setLayoutManager(linearLayoutManager);
-//        pantryAdapter = new MainAdapter(foodList3);
-//        rvPantry.setAdapter(pantryAdapter);
-
-
         adapter = new RecyclerAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
@@ -116,36 +92,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         rvFoods.setAdapter(adapter);
         rvFoods.setLayoutManager(layoutManager);
         rvFoods.addItemDecoration(new StickHeaderItemDecoration(adapter));
-//        setFoodItems();
 
         setHasOptionsMenu(true);
         return view;
-    }
-
-    private void setFoodItems() {
-        // 비우기
-        foodList1.clear();
-        foodList2.clear();
-        foodList3.clear();
-
-//        rvFridge.removeAllViews();
-//        rvFreezer.removeAllViews();
-//        rvPantry.removeAllViews();
-
-        // 새로운 값 받아오기
-        // switch문 통합해서 DB에서 받으려면 id로 쿼리문실행해서 리스트에 add
-        foodList1.add("메인 냉장실 aaa");
-        foodList1.add("메인 냉장실 bbb");
-        foodList1.add("메인 냉장실 ccc");
-        foodList2.add("메인 냉동 1aaa");
-        foodList2.add("메인 냉동 1bbb");
-        foodList2.add("메인 냉동 1ccc");
-        foodList3.add("참치");
-
-        // notify
-        notifyToAdapter();
-
-        tvFridgeName.setText(refrigeratorList.get(0));
     }
 
     @Override
@@ -161,7 +110,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.action_add:
                 // 아이템 추가 인텐트
@@ -231,12 +179,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         return super.onOptionsItemSelected(item);
     }
 
-    private void notifyToAdapter() {
-//        fridgeAdapter.notifyDataSetChanged();
-//        freezerAdapter.notifyDataSetChanged();
-//        pantryAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onClick(View v) {
         CookieBar.build(getActivity())
@@ -264,8 +206,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     }
 
     private void setData(RecyclerAdapter adapter) {
-
-
+        //DB에서 값 가져오기
         fridgeItems.add(new FoodData("토마토"));
         fridgeItems.add(new FoodData("된장찌개"));
         fridgeItems.add(new FoodData("마늘쫑"));
@@ -292,9 +233,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         pantryItems.add(new FoodData("귤"));
         pantryItems.add(new FoodData("고구마"));
         pantryItems.add(new FoodData("참치"));
-        pantryItems.add(new FoodData("스프"));
-        pantryItems.add(new FoodData("라면"));
-        pantryItems.add(new FoodData("과자"));
+//        pantryItems.add(new FoodData("스프"));
+//        pantryItems.add(new FoodData("라면"));
+//        pantryItems.add(new FoodData("과자"));
         size_pantry = pantryItems.size();
         adapter.setHeaderAndData(pantryItems, headerData);
 
@@ -302,11 +243,14 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             Log.d(TAG, food.getName());
         }
 
+        Log.d(TAG, "냉장고 : " + size_fridge);
+        Log.d(TAG, "냉장고 : " + size_freezer);
+        Log.d(TAG, "냉장고 : " + size_pantry);
+
     }
 
     // 음식 데이터 관리 - sticky ver
     public class RecyclerAdapter extends StickHeaderRecyclerView<FoodData, HeaderDataInfo> {
-//        String headerName;
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -320,6 +264,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            // header인지 구분하여 홀더와 바인드
             if (holder instanceof ViewHolder) {
                 ((ViewHolder) holder).bindData(position);
             } else if (holder instanceof HeaderViewHolder){
@@ -329,18 +274,13 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
         @Override
         public void bindHeaderData(View header, int headerPosition) {
-            // 들러 붙었을 때
+            // 헤더가 상단에 닿았을 때
             TextView tv = header.findViewById(R.id.tvHeader);
-
-            if (headerPosition <= size_fridge){
-                tv.setText("냉장");
-            } else if (headerPosition > size_fridge && headerPosition < (size_fridge + size_freezer + 1)){
-                tv.setText("냉동");
-            } else {
-                tv.setText("실온");
-            }
+            setHeaderTitle(tv, headerPosition, fridgeItems.size(), freezerItems.size());
         }
 
+
+        // 헤더
         class HeaderViewHolder extends RecyclerView.ViewHolder {
 
             HeaderViewHolder(View itemView) {
@@ -349,157 +289,41 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             }
 
             void bindData(int position) {
-                if (position > size_fridge && position < (size_fridge + size_freezer + 1)){
-                    tvHeader.setText("냉동");
-                } else {
-                    tvHeader.setText("실온");
-                }
+                Log.d(TAG, "header bind " + position);
+                setHeaderTitle(tvHeader, position, fridgeItems.size(), freezerItems.size());
             }
         }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvFoodName = itemView.findViewById(R.id.tvFoodName);
-            delete = itemView.findViewById(R.id.delete);
-            open = itemView.findViewById(R.id.open);
-            checkBox = itemView.findViewById(R.id.checkBox);
-        }
-
-
-        void bindData(final int position) {
-            if (position <= size_fridge){
-                tvFoodName.setText("냉장 " + position);
-            } else if (position > size_fridge && position < (size_fridge + size_freezer + 1)){
-                tvFoodName.setText("냉동 " + position);
-            } else {
-                tvFoodName.setText("실온 " + position);
+        // 내용
+        class ViewHolder extends RecyclerView.ViewHolder{
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tvFoodName = itemView.findViewById(R.id.tvFoodName);
+                delete = itemView.findViewById(R.id.delete);
+                open = itemView.findViewById(R.id.open);
+                checkBox = itemView.findViewById(R.id.checkBox);
             }
 
-            tvFoodName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getContext(), tvFoodName.getText().toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
-//            if(position < size_fridge + 1){
-//                tvFoodName.setText(position+"냉장");
-//            } else if (position < size_fridge + size_freezer + 2){
-//                tvFoodName.setText(position+"냉동");
-//            } else {
-//                tvFoodName.setText(position+"실온");
-//            }
-//
-//
-//            // 아이템 삭제
-//            delete.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    // 어느 장소의 음식인지 확인
-//                    if(position <= size_fridge){
-//                        fridgeItems.remove(position-1);
-//                        adapter.setHeaderAndData(fridgeItems, headerData);
-//                        rvFoods.removeAllViews();
-//                        notifyItemRemoved(position);
-////                            adapter.notifyDataSetChanged();
-//                    }
-//
-//                    for(FoodData food : fridgeItems){
-//                        Log.d(TAG,food.getName());
-//                    }
-//
-//                    String currentName = tvFoodName.getText().toString().trim();
-//                    Toast.makeText(v.getContext(), currentName + " 삭제 완료", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//
-//            // 활용 레시피 열기
-//            open.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    String currentName = tvFoodName.getText().toString().trim();
-//
-//                    Bundle bundle = new Bundle(1);
-//                    bundle.putString("name", currentName);
-//                    mListener.onFragmentInteraction(bundle);
-//
-//
-//                    Toast.makeText(v.getContext(), currentName, Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//
-//            // 체크박스 리스트에 담아놓기 - Visibility 관리용
-//            checkBoxes.add(checkBox);
-////                Log.d("checkBoxes에 add중", foodList.get(position)+"번 만들어짐 " + position);
-//
-//            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                    if(isChecked){
-//                        Log.d("onCheckedChanged", position+"번 체크 설정");
-//                        removed.add(fridgeItems.get(position));
-//                    } else {
-//                        Log.d("onCheckedChanged", position+"번 체크 해제");
-//                        removed.remove(fridgeItems.get(position));
-//                    }
-//                }
-//            });
+            void bindData(final int position) {
+                Log.d(TAG, "content bind " + position);
+
+            }
         }
 
-
+        private void setHeaderTitle(TextView tv, int headerPosition, int size_fridge, int size_freezer) {
+            if(headerPosition <= size_fridge){
+//                Log.d(TAG,"0번, 냉장입니다 ");
+                tv.setText("냉장");
+            }else if(headerPosition > size_fridge && headerPosition < size_fridge + size_freezer + 2) {
+//                Log.d(TAG,(size_fridge+1)+"번, 냉동입니다 setheader");
+//                Log.d(TAG,(headerPosition)+"번 header");
+                tv.setText("냉동");
+            }else if(headerPosition >= size_fridge + size_freezer +2 ){
+//                Log.d(TAG,(size_fridge + size_freezer + 2)+"번, 실온입니다 ");
+                tv.setText("실온");
+            }
         }
     }
-
-    // 음식 데이터를 관리하기 위한 어댑터
-//    public class MainAdapter extends RecyclerView.Adapter<MainAdapter.CustomViewHolder> {
-//
-//        private ArrayList<String> list = new ArrayList<String>();
-//
-//        public MainAdapter(ArrayList<String> list) {
-//            this.list = list;
-//        }
-//
-//        @NonNull
-//        @Override
-//        public MainAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-//            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.food_list_item, viewGroup, false);
-//            CustomViewHolder viewHolder = new CustomViewHolder(view);
-//            return viewHolder;
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(@NonNull final MainAdapter.CustomViewHolder customViewHolder, final int position) {
-//            tvFoodName.setText(list.get(position));
-//            customViewHolder.itemView.setTag(position);
-//
-//            customViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Toast.makeText(v.getContext(), list.get(position) + " 선택", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//
-//
-//        @Override
-//        public int getItemCount() {
-//            return (list != null) ? (list.size()) : (0);
-//        }
-//
-//        public class CustomViewHolder extends RecyclerView.ViewHolder {
-//
-//            public CustomViewHolder(@NonNull View itemView) {
-//                super(itemView);
-//                imgProfile = itemView.findViewById(R.id.imageView);
-//                tvFoodName = itemView.findViewById(R.id.tvFoodName);
-//                delete = itemView.findViewById(R.id.delete);
-//                open = itemView.findViewById(R.id.open);
-//                checkBox = itemView.findViewById(R.id.checkBox);
-//            }
-//
-//        }
-//    }
 
     // 냉장고 선택하기 쿠키바에 나올 냉장고 리스트
     class ListViewAdapter extends BaseAdapter {
@@ -532,26 +356,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 @Override
                 public void onClick(View v) {
 
-                    // 비우기
-                    foodList1.clear();
-                    foodList2.clear();
-                    foodList3.clear();
-//                    rvFridge.removeAllViews();
-//                    rvFreezer.removeAllViews();
-//                    rvPantry.removeAllViews();
-
-                    // 새로운 값 받아오기
-                    // switch문 통합해서 DB에서 받으려면 id로 쿼리문실행해서 리스트에 add
-                    foodList1.add("메인 냉장실 aaa");
-                    foodList1.add("메인 냉장실 bbb");
-                    foodList1.add("메인 냉장실 ccc");
-                    foodList2.add("메인 냉동 1aaa");
-                    foodList2.add("메인 냉동 1bbb");
-                    foodList2.add("메인 냉동 1ccc");
-                    foodList3.add("참치");
-
-                    // notify
-                    notifyToAdapter();
+                    setData(adapter);
 
                     tvFridgeName.setText(refrigeratorList.get(position));
                     Log.d("log", refrigeratorList.get(position));
