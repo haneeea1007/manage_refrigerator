@@ -1,6 +1,8 @@
 package com.example.refrigeproject;
 
-public class FoodData {
+import com.saber.stickyheader.stickyData.StickyMainData;
+
+public class FoodData implements StickyMainData {
     String category;
     String group;
     String name;
@@ -15,6 +17,10 @@ public class FoodData {
         this.memo = memo;
         this.datePurchased = datePurchased;
         this.expirationDate = expirationDate;
+    }
+
+    public FoodData(String name) {
+        this.name = name;
     }
 
     public String getCategory() {
