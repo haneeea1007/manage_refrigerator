@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.search_recipe;
 
 public class RecipeIngredient {
 //       {"IRDNT_CPCTY":"2T",

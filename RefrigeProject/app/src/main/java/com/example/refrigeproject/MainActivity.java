@@ -10,6 +10,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.example.refrigeproject.calendar.CalendarFragment;
+import com.example.refrigeproject.checklist.CheckListFragment;
+import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
+import com.example.refrigeproject.setting.SettingFragment;
+import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements ShowFoodsFragment.OnFragmentInteractionListener{

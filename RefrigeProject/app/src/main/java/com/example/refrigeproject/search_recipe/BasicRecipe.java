@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.search_recipe;
 
 import android.os.Parcel;
 import android.os.Parcelable;

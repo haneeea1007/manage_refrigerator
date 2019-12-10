@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.calendar;
 
 public class DayItem {
     private int dayValue;

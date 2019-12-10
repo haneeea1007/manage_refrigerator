@@ -1,8 +1,7 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.setting;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.ConditionVariable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.refrigeproject.R;
 
 public class SettingFragment extends Fragment implements View.OnClickListener {
     View view;

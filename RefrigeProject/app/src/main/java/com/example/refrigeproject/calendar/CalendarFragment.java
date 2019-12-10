@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.calendar;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +19,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.refrigeproject.DBHelper;
+import com.example.refrigeproject.R;
+import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;

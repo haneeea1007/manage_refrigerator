@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.show_foods;
 
 import com.saber.stickyheader.stickyData.StickyMainData;
 

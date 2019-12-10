@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.show_foods;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.refrigeproject.R;
 
 public class FoodDetailsActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageButton ibtBack;

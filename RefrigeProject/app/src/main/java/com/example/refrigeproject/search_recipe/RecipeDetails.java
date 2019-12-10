@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.search_recipe;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.refrigeproject.R;
 import com.r0adkll.slidr.Slidr;
 
 import org.json.JSONArray;

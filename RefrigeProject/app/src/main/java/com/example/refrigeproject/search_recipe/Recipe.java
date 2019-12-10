@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.search_recipe;
 
 public class Recipe {
 //    "STRE_STEP_IMAGE_URL":"http://file.okdab.com/UserFiles/searching/recipe/000200_p01.jpg",

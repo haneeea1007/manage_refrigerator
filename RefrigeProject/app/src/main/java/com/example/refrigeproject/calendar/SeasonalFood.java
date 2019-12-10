@@ -1,6 +1,6 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.calendar;
 
-class SeasonalFood {
+public class SeasonalFood {
 //    {"IDNTFC_NO":"식품번호"},
 //    {"PRDLST_NM":"품목명"},
 //    {"M_DISTCTNS":"월별"},

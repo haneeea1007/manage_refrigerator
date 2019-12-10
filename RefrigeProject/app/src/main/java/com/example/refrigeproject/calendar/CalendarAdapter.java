@@ -1,4 +1,4 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.calendar;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.refrigeproject.DBHelper;
+import com.example.refrigeproject.R;
 
 import java.util.Calendar;
 

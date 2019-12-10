@@ -1,19 +1,13 @@
-package com.example.refrigeproject;
+package com.example.refrigeproject.setting;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,10 +18,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.daimajia.swipe.SwipeLayout;
+import com.example.refrigeproject.R;
+import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.r0adkll.slidr.Slidr;
 
 import org.aviran.cookiebar2.CookieBar;
-import org.aviran.cookiebar2.OnActionClickListener;
 
 public class ManageFridgeActivity extends AppCompatActivity implements View.OnClickListener {
     ListView lvFridgeList;
