@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -236,10 +237,96 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+<<<<<<< Updated upstream
     class FoodItemViewHolder extends RecyclerView.ViewHolder{
         public FoodItemViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvName);
+=======
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            TextView tvFoodName;
+            ConstraintLayout constraintLayout;
+
+            ViewHolder(View itemView) {
+                super(itemView);
+                constraintLayout = itemView.findViewById(R.id.constraintLayout);
+                tvFoodName = itemView.findViewById(R.id.tvFoodName);
+                delete = itemView.findViewById(R.id.delete);
+                open = itemView.findViewById(R.id.open);
+                checkBox = itemView.findViewById(R.id.checkBox);
+            }
+
+            void bindData(final int position) {
+                String name = getDataInPosition(position).getName();
+                tvFoodName.setText(name);
+                ((ViewGroup) tvFoodName.getParent()).setBackgroundColor(Color.parseColor("#ffffff"));
+
+                constraintLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), FoodDetailsActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                // 아이템 삭제
+                delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        // 어느 장소의 음식인지 확인
+                        if(position <= size_fridge){
+                            fridgeItems.remove(position-1);
+                            adapter.setHeaderAndData(fridgeItems, headerData);
+                            rvFoods.removeAllViews();
+                            notifyItemRemoved(position);
+//                            adapter.notifyDataSetChanged();
+                        }
+
+                        for(FoodData food : fridgeItems){
+                            Log.d(TAG,food.getName());
+                        }
+
+                        String currentName = tvFoodName.getText().toString().trim();
+                        Toast.makeText(v.getContext(), currentName + " 삭제 완료", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // 활용 레시피 열기
+                open.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String currentName = tvFoodName.getText().toString().trim();
+
+                        Bundle bundle = new Bundle(1);
+                        bundle.putString("name", currentName);
+                        mListener.onFragmentInteraction(bundle);
+
+
+                        Toast.makeText(v.getContext(), currentName, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // 체크박스 리스트에 담아놓기 - Visibility 관리용
+                checkBoxes.add(checkBox);
+//                Log.d("checkBoxes에 add중", foodList.get(position)+"번 만들어짐 " + position);
+
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if(isChecked){
+                            Log.d("onCheckedChanged", position+"번 체크 설정");
+                            removed.add(fridgeItems.get(position));
+                        } else {
+                            Log.d("onCheckedChanged", position+"번 체크 해제");
+                            removed.remove(fridgeItems.get(position));
+                        }
+                    }
+                });
+            }
+>>>>>>> Stashed changes
         }
     }
 

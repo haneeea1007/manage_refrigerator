@@ -40,6 +40,10 @@
         <activity android:name=".ManageFridgeActivity">
 
         </activity>
+        <activity android:name=".FoodDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
