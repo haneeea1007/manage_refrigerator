@@ -51,7 +51,7 @@ public class CheckListFragment extends Fragment {
         checkListDBHelper = new CheckListDBHelper(getContext());
 
         recyclerView = view.findViewById(R.id.recyclerView);
-        btnAdd = view.findViewById(R.id.btnAdd);
+        btnAdd = view.findViewById(R.id.btnRefAdd);
         edtText = view.findViewById(R.id.edtText);
 
         linearLayoutManager = new LinearLayoutManager(getContext());
