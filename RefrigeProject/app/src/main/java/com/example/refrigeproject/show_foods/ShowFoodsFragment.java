@@ -84,10 +84,8 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
 
-        // 테이블 생성
-        Log.d(TAG,"oncreateView");
-
-        // 냉장고 선택하기
+        // 테이블 생성 및 냉장고 세팅
+        foodDBHelper = new DBHelper(getContext());
         setRefirigeratorData();
         llRefrigerator.setOnClickListener(this);
 
@@ -261,9 +259,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         pantryItems.add(new FoodData("귤"));
         pantryItems.add(new FoodData("고구마"));
         pantryItems.add(new FoodData("참치"));
-//        pantryItems.add(new FoodData("스프"));
-//        pantryItems.add(new FoodData("라면"));
-//        pantryItems.add(new FoodData("과자"));
+        pantryItems.add(new FoodData("스프"));
+        pantryItems.add(new FoodData("라면"));
+        pantryItems.add(new FoodData("과자"));
         size_pantry = pantryItems.size();
         adapter.setHeaderAndData(pantryItems, headerData);
 
