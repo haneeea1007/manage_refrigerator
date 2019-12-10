@@ -69,7 +69,7 @@ public class CheckListFragment extends Fragment {
 
                 // DB 추가
                 sqLiteDatabase = checkListDBHelper.getWritableDatabase();      // 데이터 쓰기 기능 받기
-                String str = "INSERT INTO CheckListTBL values('" +          // sql 만들기
+                String str = "INSERT INTO checkListTBL values('" +          // sql 만들기
                         edtText.getText().toString().trim() + "', " +
                         "'false'" + ");";
 
@@ -98,7 +98,7 @@ public class CheckListFragment extends Fragment {
         sqLiteDatabase = checkListDBHelper.getReadableDatabase();
 
         Cursor cursor;
-        cursor = sqLiteDatabase.rawQuery("SELECT * FROM CheckListTBL;", null);
+        cursor = sqLiteDatabase.rawQuery("SELECT * FROM checkListTBL;", null);
 
         while (cursor.moveToNext()) {
             checkListData = new CheckListData(cursor.getString(0), cursor.getString(1));
@@ -179,7 +179,7 @@ public class CheckListFragment extends Fragment {
                     checkListDBHelper = new CheckListDBHelper(context);
                     sqLiteDatabase = checkListDBHelper.getWritableDatabase();      // 데이터 쓰기 기능 받기
 
-                    String str = "UPDATE CheckListTBL SET checked ='"
+                    String str = "UPDATE checkListTBL SET checked ='"
                             + isChecked + "' WHERE text ='"
                             + list.get(position).getCheckItem() + "';";
 
@@ -204,7 +204,7 @@ public class CheckListFragment extends Fragment {
 
                             checkListDBHelper = new CheckListDBHelper(context);
                             sqLiteDatabase = checkListDBHelper.getWritableDatabase();      // 데이터 쓰기 기능 받기
-                            sqLiteDatabase.execSQL("DELETE FROM CheckListTBL WHERE text = '"
+                            sqLiteDatabase.execSQL("DELETE FROM checkListTBL WHERE text = '"
                                     + selectedItem.getCheckItem() + "';");
 
                             list.remove(selectedItem);

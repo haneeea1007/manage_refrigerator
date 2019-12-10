@@ -2,8 +2,8 @@ package com.example.refrigeproject.show_foods;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,12 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.R;
 import com.saber.stickyheader.stickyView.StickHeaderItemDecoration;
 import com.saber.stickyheader.stickyView.StickHeaderRecyclerView;
@@ -35,7 +34,6 @@ import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +50,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     List<FoodData> freezerItems = new ArrayList<>(); // header별 구분용
     List<FoodData> pantryItems = new ArrayList<>(); // header별 구분용
     List<FoodData> foodList = new ArrayList<>(); // 전체 foodlist
-    public static ArrayList<String> refrigeratorList = new ArrayList<String>(Arrays.asList("메인 냉장고", "김치 냉장고", "sdf", "23", "142"));
+
+    // 냉장고 리스트
+    public static ArrayList<RefrigeratorData> refrigeratorList = new ArrayList<RefrigeratorData>();
 
     // Widget in ViewHolder
     public TextView tvFoodName, tvFridgeName, tvHeader, tvName;
@@ -71,6 +71,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     private OnFragmentInteractionListener mListener;// 객체참조변수
     RecyclerAdapter adapter;
 
+    // DB
+    private DBHelper foodDBHelper;
+    private SQLiteDatabase sqLite;
 
     @Nullable
     @Override
@@ -81,7 +84,11 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
 
+        // 테이블 생성
+        Log.d(TAG,"oncreateView");
+
         // 냉장고 선택하기
+        setRefirigeratorData();
         llRefrigerator.setOnClickListener(this);
 
         adapter = new RecyclerAdapter();
@@ -95,6 +102,27 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
         setHasOptionsMenu(true);
         return view;
+    }
+
+    private void setRefirigeratorData() {
+        getRefrigeratorData();
+    }
+
+    // 냉장고 정보 가져오기
+    private void getRefrigeratorData() {
+        Log.d(TAG, "getRefrigeratorData");
+        sqLite = foodDBHelper.getReadableDatabase();
+
+        String sql = "SELECT * FROM refrigeratorTBL;";
+        Cursor cursor = sqLite.rawQuery(sql,null);
+
+        RefrigeratorData data = null;
+        while (cursor.moveToNext()) {
+            data = new RefrigeratorData(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
+            refrigeratorList.add(data);
+        }
+        cursor.close();
+        sqLite.close();
     }
 
     @Override
@@ -350,7 +378,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             }
 
             tvName = convertView.findViewById(R.id.tvName);
-            tvName.setText(refrigeratorList.get(position));
+            tvName.setText(refrigeratorList.get(position).getName());
 
             tvName.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -358,8 +386,8 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
                     setData(adapter);
 
-                    tvFridgeName.setText(refrigeratorList.get(position));
-                    Log.d("log", refrigeratorList.get(position));
+                    tvFridgeName.setText(refrigeratorList.get(position).getName());
+                    Log.d("log", refrigeratorList.get(position).getName());
 
                     CookieBar.dismiss(getActivity());
                 }

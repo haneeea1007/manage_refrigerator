@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.example.refrigeproject.FridgeDBHelper;
+import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.checklist.CheckListData;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
@@ -75,7 +75,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
         Button btnRefAdd;
         String refName;
 
-        FridgeDBHelper fridgeDBHelper;
+        DBHelper fridgeDBHelper;
         SQLiteDatabase sqLiteDatabase;
 
         @Override
@@ -132,7 +132,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                                     @Override
                                     public void onClick(View v) {
 
-                                        fridgeDBHelper = new FridgeDBHelper(v.getContext());
+                                        fridgeDBHelper = new DBHelper(v.getContext());
 
                                         // 초기화 할때
                                         sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
@@ -291,7 +291,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
             } else {
                 llFridgeItem.addDrag(SwipeLayout.DragEdge.Bottom, llFridgeItem.findViewWithTag("bottom_tag"));
 
-                final String str = ShowFoodsFragment.refrigeratorList.get(position);
+                final String str = ShowFoodsFragment.refrigeratorList.get(position).getName();
                 ivFridge.setImageResource(R.drawable.fridge);
                 tvName.setText(str);
                 tvCode.setVisibility(View.VISIBLE);
