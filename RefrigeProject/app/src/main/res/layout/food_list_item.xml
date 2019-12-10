@@ -4,18 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="80dp"
+    android:padding="10dp">
 
     <LinearLayout
         android:tag="Bottom2"
 <<<<<<< Updated upstream
         android:layout_width="wrap_content"
         android:layout_height="60dp">
-=======
-        android:layout_width="100dp"
-        android:layout_height="80dp">
-
->>>>>>> Stashed changes
         <ImageView
             android:id="@+id/delete"
             android:src="@android:drawable/ic_menu_search"
@@ -26,26 +22,28 @@
             android:layout_height="match_parent" />
         <ImageView
             android:id="@+id/open"
-            android:src="@android:drawable/ic_dialog_alert"
-            android:layout_width="70dp"
-            android:background="#4cd964"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_search"
+            android:background="#68856B"
             android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:layout_height="match_parent" />
+            android:paddingRight="25dp" />
+
         <ImageView
-            android:id="@+id/trash"
+            android:id="@+id/delete"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:src="@android:drawable/ic_delete"
-            android:layout_width="70dp"
-            android:background="#ff9999"
+            android:background="#C93814"
             android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            android:layout_height="match_parent" />
+            android:paddingRight="25dp" />
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_margin="5dp">
 
         <ImageView
@@ -70,7 +68,7 @@
         <LinearLayout
             android:id="@+id/llFoodInfo"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center"
             android:padding="10dp"
@@ -81,12 +79,26 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tvName"
+                android:id="@+id/tvFoodName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:text="이름" />
+
+            <ImageButton
+                android:id="@+id/addQuantity"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/remove_gray"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="수량"/>
+            <ImageButton
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/add_gray"/>
 
         </LinearLayout>
 

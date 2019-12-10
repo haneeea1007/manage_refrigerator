@@ -93,7 +93,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
             tvCode = convertView.findViewById(R.id.tvCode);
 
             if(ShowFoodsFragment.refrigeratorList.size() == position){
-                Log.d("log", position+" / "+ShowFoodsFragment.refrigeratorList.size());
+                Log.d("log", position+" / "+ ShowFoodsFragment.refrigeratorList.size());
                 ivFridge.setImageResource(R.drawable.add_box);
                 tvName.setText("냉장고 추가하기");
                 tvCode.setVisibility(View.GONE);
@@ -146,6 +146,8 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                 });
                 Log.d("log", tvName.getText().toString());
             } else {
+                llFridgeItem.addDrag(SwipeLayout.DragEdge.Bottom, llFridgeItem.findViewWithTag("bottom_tag"));
+
                 final String str = ShowFoodsFragment.refrigeratorList.get(position);
                 ivFridge.setImageResource(R.drawable.fridge);
                 tvName.setText(str);
@@ -175,21 +177,22 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                 llFridgeItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        llFridgeItem.open();
                         CookieBar.dismiss(activity);
-                        View dialogView = View.inflate(v.getContext(), R.layout.edit_fridge_info, null);
-                        EditText edtName = dialogView.findViewById(R.id.edtName);
-                        TextView dTextCode = dialogView.findViewById(R.id.tvCode);
-
-                        edtName.setText(str);
-                        dTextCode.setText("aBcDeFg12345678");
-
-                        dialog = new Dialog(ManageFridgeActivity.this);
-                        dialog.setContentView(R.layout.edit_fridge_info);
-                        dialog.show();
+//                        View dialogView = View.inflate(v.getContext(), R.layout.edit_fridge_info, null);
+//                        EditText edtName = dialogView.findViewById(R.id.edtName);
+//                        TextView dTextCode = dialogView.findViewById(R.id.tvCode);
+//
+//                        edtName.setText(str);
+//                        dTextCode.setText("aBcDeFg12345678");
+//
+//                        dialog = new Dialog(ManageFridgeActivity.this);
+//                        dialog.setContentView(R.layout.edit_fridge_info);
+//                        dialog.show();
                     }
                 });
 
-                llFridgeItem.addDrag(SwipeLayout.DragEdge.Bottom, llFridgeItem.findViewWithTag("bottom_tag"));
+
 
                 llFridgeItem.addSwipeListener(new SwipeLayout.SwipeListener() {
                     @Override
@@ -199,29 +202,29 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                     public void onOpen(final SwipeLayout layout) {
                         // onOpen이 여러 번 호출되는 문제
                         dialog.dismiss();
-
-                        Log.d("log", "open");
-
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(ManageFridgeActivity.this);
-                        dialog.setTitle("냉장고 삭제")
-                                .setMessage("냉장고를 삭제하시겠습니까?")
-                                .setCancelable(false)
-                                .setNeutralButton("yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // 삭제
-                                        layout.close();
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .setNegativeButton("no", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        layout.close();
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .show();
+//
+//                        Log.d("log", "open");
+//
+//                        AlertDialog.Builder dialog = new AlertDialog.Builder(ManageFridgeActivity.this);
+//                        dialog.setTitle("냉장고 삭제")
+//                                .setMessage("냉장고를 삭제하시겠습니까?")
+//                                .setCancelable(false)
+//                                .setNeutralButton("yes", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        // 삭제
+//                                        layout.close();
+//                                        dialog.dismiss();
+//                                    }
+//                                })
+//                                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        layout.close();
+//                                        dialog.dismiss();
+//                                    }
+//                                })
+//                                .show();
 
                         Toast.makeText(ManageFridgeActivity.this, "open", Toast.LENGTH_SHORT).show();
                     }
@@ -240,7 +243,6 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                 });
 
             }
-
 
             return convertView;
         }

@@ -2,10 +2,12 @@ package com.example.refrigeproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ConditionVariable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,12 +44,19 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
 
                 break;
+
             case R.id.llShare:
+
                 break;
-            case R.id.llAlarm:
-                break;
+
             case R.id.llReport:
+                Toast.makeText(getContext(), "문의 하지마", Toast.LENGTH_SHORT).show();
                 break;
+
+            default:
+                break;
+
+                // 관리하기에 더 넣을 만한 것들 ?
         }
     }
 }

@@ -6,7 +6,6 @@
     android:background="#673AB7"
     android:id="@+id/cookie">
     <TextView
-        android:id="@+id/tvName"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:textSize="20sp"
