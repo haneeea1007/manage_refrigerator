@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.refrigeproject.R;
@@ -43,6 +44,7 @@ public class AddFoodActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
+            AddFoodEachCategory.position = position;
             return AddFoodEachCategory.newInstance();
         }
 
