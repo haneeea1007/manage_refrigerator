@@ -1,6 +1,8 @@
 package com.example.refrigeproject.calendar;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -186,6 +188,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
 //        Log.d(TAG, currentDate);
     }
 
+    // 제철음식 리사이클러뷰
     private class RecyclerViewAdapter extends RecyclerView.Adapter<CustomViewHolder>{
 
         @NonNull
@@ -197,9 +200,18 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         }
 
         @Override
-        public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-            btnFood.setText(seasonalFoods.get(position).getFoodName());
-
+        public void onBindViewHolder(@NonNull CustomViewHolder holder, final int position) {
+            final SeasonalFood food = seasonalFoods.get(position);
+            btnFood.setText(food.getFoodName());
+            btnFood.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // 클릭 시 인텐트
+                    Intent intent = new Intent(getActivity(), SeasonFoodDetails.class);
+                    intent.putExtra("food", food);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override

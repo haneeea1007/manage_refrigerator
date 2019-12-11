@@ -1,6 +1,11 @@
 package com.example.refrigeproject.calendar;
 
-public class SeasonalFood {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.example.refrigeproject.search_recipe.BasicRecipe;
+
+public class SeasonalFood implements Parcelable {
 //    {"IDNTFC_NO":"식품번호"},
 //    {"PRDLST_NM":"품목명"},
 //    {"M_DISTCTNS":"월별"},
@@ -24,7 +29,7 @@ public class SeasonalFood {
     private String classification; // 품목 분류
     private String productionRegion; // 주요 산지
     private String productionEra; // 생산 시기
-    private String spcies; // 주요 품종
+    private String species; // 주요 품종
     private String effect; // 효능
     private String purchaseTips; // 구입 요령
     private String cookTips; // 조리법
@@ -32,6 +37,10 @@ public class SeasonalFood {
     private String detailsUrl; // 상세 페이지 URL
     private String imageUrl; // 이미지Url
     private String registDate; //등록일
+
+
+    public SeasonalFood() {
+    }
 
     public String getFoodID() {
         return foodID;
@@ -90,11 +99,11 @@ public class SeasonalFood {
     }
 
     public String getSpcies() {
-        return spcies;
+        return species;
     }
 
-    public void setSpcies(String spcies) {
-        this.spcies = spcies;
+    public void setSpcies(String species) {
+        this.species = species;
     }
 
     public String getEffect() {
@@ -152,4 +161,59 @@ public class SeasonalFood {
     public void setRegistDate(String registDate) {
         this.registDate = registDate;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public SeasonalFood(Parcel in) {
+        this.foodID = in.readString();
+        this.foodName = in.readString();
+        this.month = in.readString();
+        this.season = in.readString();
+        this.classification = in.readString();
+        this.productionRegion = in.readString();
+        this.productionEra = in.readString();
+        this.species = in.readString();
+        this.effect = in.readString();
+        this.purchaseTips = in.readString();
+        this.cookTips = in.readString();
+        this.trimmingTips = in.readString();
+        this.detailsUrl = in.readString();
+        this.imageUrl = in.readString();
+        this.registDate = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.foodID);
+        dest.writeString(this.foodName);
+        dest.writeString(this.month);
+        dest.writeString(this.season);
+        dest.writeString(this.classification);
+        dest.writeString(this.productionRegion);
+        dest.writeString(this.productionEra);
+        dest.writeString(this.species);
+        dest.writeString(this.effect);
+        dest.writeString(this.purchaseTips);
+        dest.writeString(this.cookTips);
+        dest.writeString(this.trimmingTips);
+        dest.writeString(this.detailsUrl);
+        dest.writeString(this.imageUrl);
+        dest.writeString(this.registDate);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+
+        @Override
+        public SeasonalFood createFromParcel(Parcel source) {
+            return new SeasonalFood(source);
+        }
+
+        @Override
+        public SeasonalFood[] newArray(int size) {
+            return new SeasonalFood[size];
+        }
+    };
 }

@@ -5,27 +5,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:padding="10dp">
+    android:padding="5dp">
 
     <LinearLayout
         android:tag="Bottom2"
         android:layout_width="wrap_content"
-        android:layout_height="60dp">
+        android:layout_height="70dp">
         <ImageView
             android:id="@+id/open"
-            android:layout_width="50dp"
+            android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_menu_search"
+            android:src="@drawable/search"
             android:background="#68856B"
+            android:scaleType="centerInside"
             android:paddingLeft="25dp"
             android:paddingRight="25dp" />
 
         <ImageView
             android:id="@+id/delete"
-            android:layout_width="50dp"
+            android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:src="@android:drawable/ic_delete"
+            android:src="@drawable/remove"
             android:background="#C93814"
+            android:scaleType="centerInside"
             android:paddingLeft="25dp"
             android:paddingRight="25dp" />
 
@@ -34,13 +36,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:layout_margin="5dp">
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/vege_carrot"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,8 +52,8 @@
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -85,23 +89,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:text="수량"/>
             <ImageButton
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:src="@drawable/add_gray"/>
 
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            android:background="#ffffff"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!--    <View-->

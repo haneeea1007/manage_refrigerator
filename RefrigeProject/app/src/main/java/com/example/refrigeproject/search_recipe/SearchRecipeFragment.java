@@ -179,13 +179,16 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         @Override
         public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
             BasicRecipe recipe = recipeList.get(position);
-            Log.d(TAG, "onBindViewHolder"+recipe.getName());
-            tvTitle.setText(recipe.getName());
-            tvSummary.setText(recipe.getSummary());
-            String imageUrl = recipe.getImageUrl();
-            if(imageUrl!=null){
-                Glide.with(context).load(imageUrl).into(ivRecipe);
-            }
+            do{
+                Log.d(TAG, "onBindViewHolder"+recipe.getName());
+                tvTitle.setText(recipe.getName());
+                tvSummary.setText(recipe.getSummary());
+                String imageUrl = recipe.getImageUrl();
+                if(imageUrl!=null){
+                    Glide.with(context).load(imageUrl).into(ivRecipe);
+                }
+            }while (!tvTitle.getText().toString().equals(recipe.getName()));
+            Log.d(TAG, "onBindViewHolder"+tvTitle.getText().toString());
         }
 
         @Override

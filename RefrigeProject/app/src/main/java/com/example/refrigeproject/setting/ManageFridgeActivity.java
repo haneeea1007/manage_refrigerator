@@ -1,7 +1,9 @@
 package com.example.refrigeproject.setting;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,74 +11,51 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.R;
-import com.example.refrigeproject.checklist.CheckListData;
+import com.example.refrigeproject.show_foods.RefrigeratorData;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.r0adkll.slidr.Slidr;
 
 import org.aviran.cookiebar2.CookieBar;
+import org.aviran.cookiebar2.OnActionClickListener;
 
-import java.util.Random;
+public class ManageFridgeActivity extends AppCompatActivity {
+    private static final String TAG = "ManageFridgeActivity";
+    private ListView lvFridgeList;
+    private ListViewAdapter adapter;
 
-public class ManageFridgeActivity extends AppCompatActivity implements View.OnClickListener {
-    ListView lvFridgeList;
-    LinearLayout llAddFridge;
-    Activity activity;
-
-    Dialog dialog = null;
+    private DBHelper fridgeDBHelper;
+    private SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_fridge);
         Slidr.attach(this);
-        activity = this;
 
-//        llAddFridge = findViewById(R.id.llAddFridge);
+        fridgeDBHelper = new DBHelper(this);
+
         lvFridgeList = findViewById(R.id.lvFridgeList);
-        ListViewAdapter adapter = new ListViewAdapter();
+        adapter = new ListViewAdapter();
         lvFridgeList.setAdapter(adapter);
-
-//        llAddFridge.setOnClickListener(this);
-
-        dialog = new Dialog(ManageFridgeActivity.this);
-
-    }
-
-    @Override
-    public void onClick(View v) {
 
     }
 
     private class ListViewAdapter extends BaseAdapter{
-        SwipeLayout llFridgeItem;
+        LinearLayout llFridgeItem;
         ImageView ivFridge;
         TextView tvName, tvCode;
-
-        // 냉장고 추가하기 다이얼로그 창
-        RadioGroup radioGroup;
-        RadioButton rbRef1, rbRef2, rbRef3;
-        EditText edtTxt;
-        Button btnRefAdd;
-        String refName;
-
-        DBHelper fridgeDBHelper;
-        SQLiteDatabase sqLiteDatabase;
 
         @Override
         public int getCount() {
@@ -108,17 +87,17 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
             tvCode = convertView.findViewById(R.id.tvCode);
 
             if(ShowFoodsFragment.refrigeratorList.size() == position){
+                // 리스트뷰의 마지막 아이템일 경우
+                // 냉장고 추가 기능
                 Log.d("log", position+" / "+ ShowFoodsFragment.refrigeratorList.size());
                 ivFridge.setImageResource(R.drawable.add_box);
                 tvName.setText("냉장고 추가하기");
                 tvCode.setVisibility(View.GONE);
 
-                llFridgeItem.setSwipeEnabled(false);
-
                 llFridgeItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final CookieBar.Builder build = CookieBar.build(activity);
+                        final CookieBar.Builder build = CookieBar.build(ManageFridgeActivity.this);
                         build.setCustomView(R.layout.cookiebar_add_fridge);
                         build.setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
                             @Override
@@ -126,137 +105,15 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                                 TextView tvNew = view.findViewById(R.id.tvNew);
                                 TextView tvExisting = view.findViewById(R.id.tvExisting);
 
-                                //====================================================================================//
-                                // 냉장고 추가하기 버튼을 눌렀을 때 이벤트
+                                // 새로운 냉장고 추가하기
                                 tvNew.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-
-                                        fridgeDBHelper = new DBHelper(v.getContext());
-
-                                        // 초기화 할때
-                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-                                        fridgeDBHelper.onUpgrade(sqLiteDatabase,1,2);
-                                        sqLiteDatabase.close();
-
-                                        final View dialogView = View.inflate(v.getContext(), R.layout.add_new_fridge, null);
-
-                                        Dialog dialog = new Dialog(ManageFridgeActivity.this);
-
-                                        // 이걸로하면 화면이 작아짐
-                                        dialog.setContentView(dialogView);
-
-                                        // 이걸로하면 화면은 정상
-//                                        dialog.setContentView(R.layout.add_new_fridge);
-
-                                        radioGroup = dialogView.findViewById(R.id.radioGroup);
-                                        rbRef1 = dialogView.findViewById(R.id.rbRef1);
-                                        rbRef2 = dialogView.findViewById(R.id.rbRef2);
-                                        rbRef3 = dialogView.findViewById(R.id.rbRef3);
-                                        btnRefAdd = dialogView.findViewById(R.id.btnRefAdd);
-                                        edtTxt = dialogView.findViewById(R.id.edtTxt);
-
-                                        Log.d("ID", "아이디찾기");
-
-                                        // dialog.setContentView(R.layout.add_new_fridge); 일때 여기까지 실행됨
-                                        //================================================================//
+                                        Intent intent = new Intent(ManageFridgeActivity.this, AddFridgeActivity.class);
+                                        startActivity(intent);
+                                        CookieBar.dismiss(ManageFridgeActivity.this);
 
 
-                                        btnRefAdd.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-
-                                                Log.d("BUTTON", "click");
-
-                                                // 이름 입력 안했을 때 저장X (정상작동)
-                                                if ((edtTxt.getText().toString()).equals("")) {
-                                                    Toast.makeText(getApplicationContext(), "이름을 입력해 주세요.", Toast.LENGTH_LONG).show();
-
-                                                } else if (radioGroup.getCheckedRadioButtonId() != R.id.rbRef1 &&
-                                                        radioGroup.getCheckedRadioButtonId() != R.id.rbRef2 &&
-                                                        radioGroup.getCheckedRadioButtonId() != R.id.rbRef3) {
-                                                    Toast.makeText(getApplicationContext(), "냉장고 유형을 선택해 주세요.", Toast.LENGTH_LONG).show();
-
-                                                } else {
-
-                                                    // 랜덤코드 만들기 (정상작동)
-                                                    Random random = new Random();
-                                                    StringBuffer bufCode = new StringBuffer();
-                                                    String randomCode;
-
-                                                    for (int i = 0; i < 20; i++) {
-                                                        if (random.nextBoolean()) {
-                                                            bufCode.append((char) ((int) (random.nextInt(26)) + 97));
-                                                        } else {
-                                                            bufCode.append((random.nextInt(10)));
-                                                        }
-                                                    }
-
-                                                    randomCode = bufCode.toString().trim();
-                                                    Log.d("CODE", randomCode);
-
-                                                    // 냉장고 이름 가져오기
-                                                    refName = edtTxt.getText().toString().trim();
-                                                    Log.d("NAME", refName);
-
-                                                    // 선택한 라디오버튼 이미지 아이디를 구별해서 DB에 저장(로그보면 정상)
-                                                    switch (radioGroup.getCheckedRadioButtonId()) {
-
-                                                        case R.id.rbRef1:
-                                                            Log.d("IMAGE", String.valueOf(R.drawable.fridge1));
-
-                                                            sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-
-                                                            String str = "INSERT INTO refrigeratorTBL values('" +
-                                                                    randomCode + "', '" +
-                                                                    refName + "', " +
-                                                                    R.drawable.fridge1 + ");";
-
-                                                            sqLiteDatabase.execSQL(str);
-                                                            sqLiteDatabase.close();
-                                                            break;
-
-                                                        case R.id.rbRef2:
-                                                            Log.d("IMAGE", String.valueOf(R.drawable.fridge2));
-
-                                                            sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-
-                                                            String str2 = "INSERT INTO refrigeratorTBL values('" +
-                                                                    randomCode + "', '" +
-                                                                    refName + "', '" +
-                                                                    R.drawable.fridge2 + "');";
-
-                                                            sqLiteDatabase.execSQL(str2);
-                                                            sqLiteDatabase.close();
-                                                            break;
-
-                                                        case R.id.rbRef3:
-                                                            Log.d("IMAGE", String.valueOf(R.drawable.fridge3));
-
-                                                            sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-
-                                                            String str3 = "INSERT INTO refrigeratorTBL values('" +
-                                                                    randomCode + "', '" +
-                                                                    refName + "', '" +
-                                                                    R.drawable.fridge3 + "');";
-
-                                                            sqLiteDatabase.execSQL(str3);
-                                                            sqLiteDatabase.close();
-
-                                                            break;
-                                                    }
-
-                                                    Toast.makeText(getApplicationContext(), refName + " 추가되었습니다.", Toast.LENGTH_LONG).show();
-                                                    edtTxt.setText("");
-                                                }
-                                            }
-                                        });
-
-                                        dialog.show();
-                                        CookieBar.dismiss(activity);
-
-                                        // dialog.setContentView(dialogView); 일때 여기까지 잘 실행됨
-                                        //==========================================================================//
                                     }
                                 });
 
@@ -265,15 +122,33 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                                     @Override
                                     public void onClick(View v) {
                                         View dialogView = View.inflate(v.getContext(), R.layout.add_existing_fridge, null);
+                                        final EditText edtCode = dialogView.findViewById(R.id.edtCode);
 
-                                        Dialog dialog = new Dialog(ManageFridgeActivity.this);
-                                        dialog.setContentView(R.layout.add_existing_fridge);
+                                        AlertDialog.Builder dialog = new AlertDialog.Builder(ManageFridgeActivity.this);
+                                        dialog.setView(dialogView)
+                                                .setNeutralButton("등록", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+//                                                        // 코드로 냉장고 등록
+//                                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
+//                                                        String sql = "SELECT * FROM refrigeratorTBL WHERE code = '" +
+//                                                                edtCode.getText().toString().trim() + "';";
+//                                                        sqLiteDatabase.execSQL(sql);
+//                                                        sqLiteDatabase.close();
 
+                                                        // 잘못된 코드일 경우
 
+                                                        // 수정 확인
+                                                        simpleCookieBar("냉장고를 성공적으로 불러왔습니다.");
 
+                                                        // 데이터 변경 알림
+//                                                        ShowFoodsFragment.refrigeratorList.add(?);
+//                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                });
 
                                         dialog.show();
-                                        CookieBar.dismiss(activity);
+                                        CookieBar.dismiss(ManageFridgeActivity.this);
                                     }
                                 });
                             }
@@ -290,105 +165,105 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
                 });
                 Log.d("log", tvName.getText().toString());
             } else {
-                llFridgeItem.addDrag(SwipeLayout.DragEdge.Bottom, llFridgeItem.findViewWithTag("bottom_tag"));
+                // 해당 냉장고 아이템
+                final RefrigeratorData ref = ShowFoodsFragment.refrigeratorList.get(position);
 
-                final String str = ShowFoodsFragment.refrigeratorList.get(position).getName();
-                ivFridge.setImageResource(R.drawable.fridge);
-                tvName.setText(str);
+                ivFridge.setImageResource(ref.getImgResource());
+                tvName.setText(ref.getName());
                 tvCode.setVisibility(View.VISIBLE);
-                tvCode.setText("aBcDeFg12345678"); // ArrayList 타입 다시 정의하기!
-                llFridgeItem.setSwipeEnabled(true);
+                tvCode.setText(ref.getCode()); // ArrayList 타입 다시 정의하기!
 
                 llFridgeItem.setOnClickListener(null);
-//                llFridgeItem.setOnLongClickListener(new View.OnLongClickListener() {
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        CookieBar.dismiss(activity);
-//                        View dialogView = View.inflate(v.getContext(), R.layout.edit_fridge_info, null);
-//                        EditText edtName = dialogView.findViewById(R.id.edtName);
-//                        TextView dTextCode = dialogView.findViewById(R.id.tvCode);
-//
-//                        edtName.setText(str);
-//                        dTextCode.setText("aBcDeFg12345678");
-//
-//                        Dialog dialog = new Dialog(ManageFridgeActivity.this);
-//                        dialog.setContentView(R.layout.edit_fridge_info);
-//                        dialog.show();
-//                        return false;
-//                    }
-//                });
-
-                llFridgeItem.setOnClickListener(new View.OnClickListener() {
+                llFridgeItem.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        llFridgeItem.open();
-                        CookieBar.dismiss(activity);
-//                        View dialogView = View.inflate(v.getContext(), R.layout.edit_fridge_info, null);
-//                        EditText edtName = dialogView.findViewById(R.id.edtName);
-//                        TextView dTextCode = dialogView.findViewById(R.id.tvCode);
-//
-//                        edtName.setText(str);
-//                        dTextCode.setText("aBcDeFg12345678");
-//
-//                        dialog = new Dialog(ManageFridgeActivity.this);
-//                        dialog.setContentView(R.layout.edit_fridge_info);
-//                        dialog.show();
+                    public boolean onLongClick(View v) {
+                        CookieBar.dismiss(ManageFridgeActivity.this);
+                        Log.d(TAG, ref.getName());
+
+                        View dialogView = View.inflate(v.getContext(), R.layout.edit_fridge_info, null);
+                        final EditText edtName = dialogView.findViewById(R.id.edtName);
+                        TextView dTextCode = dialogView.findViewById(R.id.tvCode);
+
+                        edtName.setText(ref.getName());
+                        dTextCode.setText(ref.getCode());
+
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(ManageFridgeActivity.this);
+                        dialog.setView(dialogView)
+                                .setTitle("냉장고 정보")
+                                .setNeutralButton("수정", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // DB 수정
+                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
+                                        String sql = "UPDATE refrigeratorTBL SET name = '" +
+                                                edtName.getText().toString().trim() +
+                                                "' WHERE code = '" +
+                                                ref.getCode() + "';";
+                                        sqLiteDatabase.execSQL(sql);
+                                        sqLiteDatabase.close();
+
+                                        // 수정 확인
+                                        simpleCookieBar(edtName.getText().toString().trim() + "(으)로 변경되었습니다.");
+                                    }
+                                })
+                                .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // 확인 받기
+                                        AlertDialog.Builder delete = new AlertDialog.Builder(ManageFridgeActivity.this);
+                                        delete.setCancelable(false)
+                                                .setTitle(ref.getName() + "(을)를 정말로 삭제하시겠어요?")
+                                                .setMessage("냉장고에 포함된 음식도 삭제됩니다")
+                                                .setNeutralButton("삭제하기", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // DB 삭제
+                                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
+                                                        String sql = "DELETE FROM refrigeratorTBL WHERE code = '" +
+                                                                ref.getCode() + "';";
+                                                        sqLiteDatabase.execSQL(sql);
+                                                        sqLiteDatabase.close();
+
+                                                        // 삭제 확인
+                                                        simpleCookieBar(ref.getName() + "(이)가 삭제되었습니다.");
+
+                                                        // 데이터 변경 알림
+                                                        ShowFoodsFragment.refrigeratorList.remove(ref);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                })
+                                                .setNegativeButton("취소", null)
+                                                .show();
+                                    }
+                                })
+                                .show();
+                        return false;
                     }
-                });
-
-
-
-                llFridgeItem.addSwipeListener(new SwipeLayout.SwipeListener() {
-                    @Override
-                    public void onStartOpen(SwipeLayout layout) { }
-
-                    @Override
-                    public void onOpen(final SwipeLayout layout) {
-                        // onOpen이 여러 번 호출되는 문제
-                        dialog.dismiss();
-//
-//                        Log.d("log", "open");
-//
-//                        AlertDialog.Builder dialog = new AlertDialog.Builder(ManageFridgeActivity.this);
-//                        dialog.setTitle("냉장고 삭제")
-//                                .setMessage("냉장고를 삭제하시겠습니까?")
-//                                .setCancelable(false)
-//                                .setNeutralButton("yes", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        // 삭제
-//                                        layout.close();
-//                                        dialog.dismiss();
-//                                    }
-//                                })
-//                                .setNegativeButton("no", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        layout.close();
-//                                        dialog.dismiss();
-//                                    }
-//                                })
-//                                .show();
-
-                        Toast.makeText(ManageFridgeActivity.this, "open", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onStartClose(SwipeLayout layout) { }
-
-                    @Override
-                    public void onClose(SwipeLayout layout) { }
-
-                    @Override
-                    public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) { }
-
-                    @Override
-                    public void onHandRelease(SwipeLayout layout, float xvel, float yvel) { }
                 });
 
             }
 
             return convertView;
         }
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "sdf");
+        // 추가가 되었으면
+        adapter.notifyDataSetChanged();
+        simpleCookieBar("냉장고가 추가되었습니다");
+    }
+
+    public void simpleCookieBar(String message){
+        CookieBar.build(ManageFridgeActivity.this)
+                .setTitle(message)
+                .setSwipeToDismiss(true)
+                .setEnableAutoDismiss(true)
+                .setDuration(2000)
+                .setCookiePosition(CookieBar.BOTTOM)
+                .show();
     }
 }
