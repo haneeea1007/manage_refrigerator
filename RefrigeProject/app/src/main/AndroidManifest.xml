@@ -40,9 +40,9 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".show_foods.AddFoodActivity"
             android:theme="@style/Theme.AppCompat.Light"/>
-        <activity android:name=".setting.ManageFridgeActivity">
+        <activity android:name=".setting.ManageFridgeActivity"/>
+        <activity android:name=".setting.AddFridgeActivity"/>
 
-        </activity>
         <activity android:name=".show_foods.FoodDetailsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 

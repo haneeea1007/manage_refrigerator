@@ -19,7 +19,10 @@ import static android.app.Notification.VISIBILITY_PUBLIC;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private Boolean switchOnOff;
+    private Boolean switchSetting;
+    private String notiContent;
+    private String foodName;
+    private int alarmID;
 
     //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("InvalidWakeLockTag")
@@ -31,9 +34,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        Intent intentActivity = new Intent(context, FoodAndDateActivity.class);
 //        PendingIntent activityPending = PendingIntent.getActivity(context, 0, intentActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        switchOnOff = intent.getBooleanExtra("switch", false);
+        notiContent = intent.getStringExtra("content");
+        foodName = intent.getStringExtra("foodName");
+        alarmID = intent.getIntExtra("id", 0);
+        switchSetting = intent.getBooleanExtra("switch", false);
 
-        if (switchOnOff == true) {
+        if (switchSetting == true) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(rIntent);
                 String text = intent.getStringExtra("text");
