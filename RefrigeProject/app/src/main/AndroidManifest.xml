@@ -45,8 +45,10 @@
 
         <activity android:name=".show_foods.FoodDetailsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
         </activity>
+        <activity android:name=".calendar.SeasonFoodDetails"/>
+        <activity android:name=".calendar.DetailsURLActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

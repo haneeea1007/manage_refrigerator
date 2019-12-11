@@ -7,18 +7,38 @@
     <ImageView
         android:layout_width="match_parent"
         android:scaleType="fitCenter"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
+        android:padding="10dp"
         android:src="@drawable/vege_radish"/>
 
     <TextView
         android:id="@+id/tvFoodName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:gravity="center"
         android:textStyle="bold"
         android:text="음식 이름"
         android:textSize="20sp"/>
+
+    <LinearLayout
+        android:id="@+id/url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:padding="5dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:text="더 상세한 정보 보기 "/>
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/launch"/>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -29,9 +49,11 @@
             android:layout_height="match_parent"
             android:padding="5dp"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="품목분류"/>
             <TextView
                 android:id="@+id/tvCategory"
@@ -42,6 +64,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="주요 산지"/>
             <TextView
                 android:id="@+id/tvRegion"
@@ -52,17 +75,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="생산 시기"/>
-            <TextView
-                android:id="@+id/tvEra"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="효능"/>
+
             <TextView
                 android:id="@+id/tvEffect"
                 android:layout_width="match_parent"
@@ -72,9 +87,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="손질 요령"/>
+                android:textStyle="bold"
+                android:text="구입요령"/>
             <TextView
-                android:id="@+id/tvTip"
+                android:id="@+id/tvPurchaseTip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"/>
@@ -82,19 +98,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="상세 페이지"/>
-            <TextView
-                android:id="@+id/tvURL"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="손질 요령"/>
             <TextView
-                android:id="@+id/tvTrimming"
+                android:id="@+id/tvTrimmingTip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

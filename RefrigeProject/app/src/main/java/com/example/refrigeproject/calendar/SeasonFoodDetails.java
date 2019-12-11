@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -13,8 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.refrigeproject.R;
 import com.r0adkll.slidr.Slidr;
 
-public class SeasonFoodDetails extends AppCompatActivity {
-    TextView tvFoodName, tvCategory, tvRegion, tvEra, tvEffect, tvTip, tvURL, tvTrimming;
+public class SeasonFoodDetails extends AppCompatActivity implements View.OnClickListener {
+    LinearLayout url;
+    TextView tvFoodName, tvCategory, tvRegion, tvEffect, tvPurchaseTip, tvTrimmingTip;
     SeasonalFood food;
 
     @Override
@@ -27,26 +29,42 @@ public class SeasonFoodDetails extends AppCompatActivity {
         tvFoodName = findViewById(R.id.tvFoodName);
         tvCategory = findViewById(R.id.tvCategory);
         tvRegion = findViewById(R.id.tvRegion);
-        tvEra = findViewById(R.id.tvEra);
         tvEffect = findViewById(R.id.tvEffect);
-        tvTip = findViewById(R.id.tvTip);
-        tvURL = findViewById(R.id.tvURL);
-        tvTrimming = findViewById(R.id.tvTrimming);
+        tvPurchaseTip = findViewById(R.id.tvPurchaseTip);
+        tvTrimmingTip = findViewById(R.id.tvTrimmingTip);
+        url = findViewById(R.id.url);
 
+        setTitle(food.getFoodName());
         setData();
+
+        url.setOnClickListener(this);
 
         Slidr.attach(this);
 
     }
     public void setData(){
+        String effect;
+        String purchaseTip, trimmingTip;
+        effect = food.getEffect().replace("-", "\n").replace("?", "");
+        purchaseTip = food.getPurchaseTips().replace("?", " ");
+        trimmingTip = food.getTrimmingTips().replace("?", " ");
+        Log.d("purchaseTip",purchaseTip);
+        Log.d("trimmingTip",trimmingTip);
+        Log.d("trimmingTip",trimmingTip.contains("?")+"");
+
+
         tvFoodName.setText(food.getFoodName());
         tvCategory.setText(food.getClassification());
         tvRegion.setText(food.getProductionRegion());
-        tvEra.setText(food.getProductionEra());
-        tvEffect.setText(food.getEffect());
-        tvTip.setText(food.getCookTips());
-        tvURL.setText(food.getDetailsUrl());
-        tvTrimming.setText(food.getTrimmingTips());
+        tvEffect.setText(effect);
+        tvPurchaseTip.setText(purchaseTip);
+        tvTrimmingTip.setText(trimmingTip);
+    }
 
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(SeasonFoodDetails.this, DetailsURLActivity.class);
+        intent.putExtra("url", food.getDetailsUrl());
+        startActivity(intent);
     }
 }

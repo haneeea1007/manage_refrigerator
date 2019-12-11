@@ -39,10 +39,11 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
     private ImageButton ibtPrev;
     private ImageButton ibtNext;
 
-    // 리사이블러뷰
+    // 제철음식
     private Button btnFood;
     private LinearLayoutManager layoutManager;
     private ArrayList<SeasonalFood> seasonalFoods = new ArrayList<SeasonalFood>();
+    private RecyclerViewAdapter recyclerAdapter;
 
     //달력
     private final static String TAG = "MainActivity";
@@ -66,33 +67,31 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         ibtPrev = view.findViewById(R.id.ibtPrev);
         ibtNext = view.findViewById(R.id.ibtNext);
 
-        setSeasonalFoodInfo();
-
         layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvSeasonalFood.setLayoutManager(layoutManager);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter();
-        rvSeasonalFood.setAdapter(recyclerViewAdapter);
-
+        recyclerAdapter = new RecyclerViewAdapter();
+        rvSeasonalFood.setAdapter(recyclerAdapter);
 
         calendarAdapter = new CalendarAdapter(context);
         gvCalendar.setAdapter(calendarAdapter);
         tvYearMonth = view.findViewById(R.id.tvYearMonth);
 
-
-        setYearMonth();
+        setSeasonalFoodInfo();
 
         ibtPrev.setOnClickListener(this);
         ibtNext.setOnClickListener(this);
         gvCalendar.setOnItemClickListener(this);
 
-
         return view;
     }
 
     private void setSeasonalFoodInfo() {
-        searchSeasonalFood(SearchRecipeFragment.getJsonString("SeasonalFood", context), seasonalFoods, "11월");
-
+        setYearMonth();
+        if(seasonalFoods!=null) seasonalFoods.clear();
+        searchSeasonalFood(SearchRecipeFragment.getJsonString("SeasonalFood", context), seasonalFoods, (calendarAdapter.currentMonth+1)+"월");
+        rvSeasonalFood.removeAllViews();
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     private void searchSeasonalFood(String json, ArrayList<SeasonalFood> seasonalFoods, String month) {
@@ -133,15 +132,13 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         switch (v.getId()){
             case R.id.ibtPrev:
                 calendarAdapter.setPreviousMonth();
-                calendarAdapter.notifyDataSetChanged();
-                setYearMonth();
                 break;
             case R.id.ibtNext:
-                calendarAdapter.setNextMonth();;
-                calendarAdapter.notifyDataSetChanged();
-                setYearMonth();
+                calendarAdapter.setNextMonth();
                 break;
         }
+        calendarAdapter.notifyDataSetChanged();
+        setSeasonalFoodInfo();
     }
 
     private void setYearMonth() {
@@ -155,37 +152,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         final int day = item.getDayValue();
         if(day == 0) return;
         final String currentDate = calendarAdapter.currentYear+"년 " + (calendarAdapter.currentMonth+1) + "월 " + day + "일";
-
-//        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_event_dialog, null);
-//        final EditText edtEvent = view.findViewById(R.id.edtEvent);
-//        TextView tvDateSelected = view.findViewById(R.id.tvDateSelected);
-//        tvDateSelected.setText(currentDate);
-//
-//
-//        final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-//        dialog.setTitle("생일 추가하기");
-//        dialog.setView(view);
-//
-//        dialog.setPositiveButton("등록", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                // DB에 저장하기 /////////////////////////////////////////////////
-//                sqLiteDatabase = dbHelper.getWritableDatabase();
-//                String str = "INSERT INTO calendarTBL values(" +
-//                        calendarAdapter.currentYear + ", " +
-//                        (calendarAdapter.currentMonth + 1) + ", " + day + ", '" + edtEvent.getText().toString() +"');";
-//                sqLiteDatabase.execSQL(str);
-//                sqLiteDatabase.close();
-//                Log.d("MainActivity", currentDate+"정보 입력완료 ");
-//                /////////////////////////////////////////////////////////////////
-//
-//                calendarAdapter.notifyDataSetChanged();
-//            }
-//        });
-//        dialog.setNegativeButton("취소", null);
-//        dialog.show();
-//
-//        Log.d(TAG, currentDate);
     }
 
     // 제철음식 리사이클러뷰
