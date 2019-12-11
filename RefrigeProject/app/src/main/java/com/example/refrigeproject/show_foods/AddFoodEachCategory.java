@@ -1,6 +1,7 @@
 package com.example.refrigeproject.show_foods;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.refrigeproject.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class AddFoodEachCategory extends Fragment {
@@ -27,6 +29,7 @@ public class AddFoodEachCategory extends Fragment {
     private GridView gridView;
     private ArrayList<AddFoodGridViewData> list = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
+    public static int position;
 
 
     public static AddFoodEachCategory newInstance() {
@@ -49,6 +52,8 @@ public class AddFoodEachCategory extends Fragment {
     }
 
     private void listInsertFoodData() {
+switch(position){
+    case 0 :
 
         Integer[] imageID = {R.drawable.vege_cucumber, R.drawable.vege_broccoli, R.drawable.vege_carrot, R.drawable.vege_chili, R.drawable.vege_corn,
                 R.drawable.vege_eggplant, R.drawable.vege_garlic, R.drawable.vege_radish, R.drawable.vege_onion};
@@ -58,13 +63,16 @@ public class AddFoodEachCategory extends Fragment {
         for (int i = 0; i < 8; i++) {
             list.add(new AddFoodGridViewData(imageID[i], foodName[i]));
         }
+        break;
+    case 1 : break;
     }
 
-    public class GridViewAdapter extends BaseAdapter {
+    public class GridViewAdapter extends BaseAdapter implements View.OnClickListener {
         private Context context;
         private int layout;
         private ArrayList<AddFoodGridViewData> list;
         private LayoutInflater layoutInflater;
+        private TextView tvFoodName;
 
         public GridViewAdapter(Context context, int layout, ArrayList<AddFoodGridViewData> list) {
             this.context = context;
@@ -97,12 +105,37 @@ public class AddFoodEachCategory extends Fragment {
             }
 
             ImageView foodImageView = view.findViewById(R.id.foodImageView);
-            TextView tvFoodName = view.findViewById(R.id.tvFoodName);
+            tvFoodName = view.findViewById(R.id.tvFoodName);
 
             final AddFoodGridViewData addFoodGridViewData = list.get(position);
             foodImageView.setImageResource(addFoodGridViewData.getImageID());
             tvFoodName.setText(addFoodGridViewData.getFoodName());
+
+
+            foodImageView.setOnClickListener(this);
             return view;
+        }
+
+        @Override
+        public void onClick(View view) {
+
+
+
+            Intent intent = new Intent(getContext(), FoodDetailsActivity.class);
+
+            intent.putExtra("FoodName", tvFoodName.getText().toString().trim());
+
+            startActivityForResult(intent, 1000);
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000 && resultCode==1001){
+
+
         }
     }
 }
