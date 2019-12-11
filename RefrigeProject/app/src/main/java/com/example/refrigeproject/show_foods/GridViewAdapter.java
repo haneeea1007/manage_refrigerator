@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.refrigeproject.R;
 
@@ -59,13 +60,24 @@ public class GridViewAdapter extends BaseAdapter implements View.OnClickListener
         tvFoodName.setText(addFoodGridViewData.getFoodName());
 
 
-        foodImageView.setOnClickListener(this);
+        foodImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, AddFoodActivity.category+"", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, FoodDetailsActivity.class);
+                intent.putExtra("category",  AddFoodActivity.category);
+                intent.putExtra("section", addFoodGridViewData.getFoodName());
+                intent.putExtra("image", addFoodGridViewData.getImageID());
+                intent.putExtra("from",  "GridViewAdapter");
+                context.startActivity(intent);
+            }
+        });
         return view;
     }
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(context, FoodDetailsActivity.class);
+
 
 
     }
