@@ -254,6 +254,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements View.OnCl
 
                                         dialog.show();
                                         CookieBar.dismiss(activity);
+
                                         // dialog.setContentView(dialogView); 일때 여기까지 잘 실행됨
                                         //==========================================================================//
                                     }
