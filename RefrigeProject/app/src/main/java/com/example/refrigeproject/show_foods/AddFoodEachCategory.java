@@ -29,6 +29,7 @@ public class AddFoodEachCategory extends Fragment {
     private GridView gridView;
     private ArrayList<AddFoodGridViewData> list = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
+    public static int position;
 
 
     public static AddFoodEachCategory newInstance() {
@@ -51,6 +52,8 @@ public class AddFoodEachCategory extends Fragment {
     }
 
     private void listInsertFoodData() {
+switch(position){
+    case 0 :
 
         Integer[] imageID = {R.drawable.vege_cucumber, R.drawable.vege_broccoli, R.drawable.vege_carrot, R.drawable.vege_chili, R.drawable.vege_corn,
                 R.drawable.vege_eggplant, R.drawable.vege_garlic, R.drawable.vege_radish, R.drawable.vege_onion};
@@ -60,6 +63,8 @@ public class AddFoodEachCategory extends Fragment {
         for (int i = 0; i < 8; i++) {
             list.add(new AddFoodGridViewData(imageID[i], foodName[i]));
         }
+        break;
+    case 1 : break;
     }
 
     public class GridViewAdapter extends BaseAdapter implements View.OnClickListener {
