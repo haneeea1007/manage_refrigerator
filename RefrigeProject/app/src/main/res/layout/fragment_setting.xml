@@ -61,34 +61,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="on"/>
+
         <Switch
+            android:id="@+id/switchAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="5dp"
+            android:checked="true" />
     </LinearLayout>
 
 
     <RadioGroup
+        android:id="@+id/rdoGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:checkedButton="@id/rdo1Day"
         android:gravity="center"
-        android:checkedButton="@id/btn1">
+        android:orientation="horizontal">
+
         <RadioButton
-            android:id="@+id/btn1"
+            android:id="@+id/rdo1Day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1일 전"/>
+            android:text="1일 전" />
+
         <RadioButton
+            android:id="@+id/rdo3Day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3일 전"/>
+            android:text="3일 전" />
+
         <RadioButton
+            android:id="@+id/rdo7Day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="7일 전"/>
+            android:text="7일 전" />
     </RadioGroup>
 
     <View style="@style/Divider"/>

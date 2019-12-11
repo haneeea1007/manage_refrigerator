@@ -3,6 +3,9 @@
     package="com.example.refrigeproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -45,11 +48,27 @@
 
         </activity>
 
-        <activity android:name=".setting.AddFridgeActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.refrigeproject.foodimage.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
 
-        <activity android:name=".calendar.SeasonFoodDetails"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/food_image_file_path" />
+        </provider>
+
+        <receiver
+            android:name=".show_foods.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false"
+            />
+        <service
+            android:name=".show_foods.AlarmService"
+            android:enabled="true"
+            />
+
     </application>
 
 </manifest>

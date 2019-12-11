@@ -47,7 +47,7 @@ public class RecipeDetails extends AppCompatActivity implements View.OnClickList
         tvTitle = findViewById(R.id.tvTitle);
         tvExtraInfo = findViewById(R.id.tvExtraInfo);
         tvIngredient = findViewById(R.id.tvIngredient);
-        imageView = findViewById(R.id.imageView);
+        imageView = findViewById(R.id.foodImage);
         ibtBack = findViewById(R.id.ibtBack);
         recyclerView = findViewById(R.id.recyclerView);
 
