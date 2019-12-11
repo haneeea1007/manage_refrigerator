@@ -1,6 +1,7 @@
 package com.example.refrigeproject.show_foods;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.refrigeproject.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class AddFoodEachCategory extends Fragment {
@@ -60,11 +62,12 @@ public class AddFoodEachCategory extends Fragment {
         }
     }
 
-    public class GridViewAdapter extends BaseAdapter {
+    public class GridViewAdapter extends BaseAdapter implements View.OnClickListener {
         private Context context;
         private int layout;
         private ArrayList<AddFoodGridViewData> list;
         private LayoutInflater layoutInflater;
+        private TextView tvFoodName;
 
         public GridViewAdapter(Context context, int layout, ArrayList<AddFoodGridViewData> list) {
             this.context = context;
@@ -97,12 +100,37 @@ public class AddFoodEachCategory extends Fragment {
             }
 
             ImageView foodImageView = view.findViewById(R.id.foodImageView);
-            TextView tvFoodName = view.findViewById(R.id.tvFoodName);
+            tvFoodName = view.findViewById(R.id.tvFoodName);
 
             final AddFoodGridViewData addFoodGridViewData = list.get(position);
             foodImageView.setImageResource(addFoodGridViewData.getImageID());
             tvFoodName.setText(addFoodGridViewData.getFoodName());
+
+
+            foodImageView.setOnClickListener(this);
             return view;
+        }
+
+        @Override
+        public void onClick(View view) {
+
+
+
+            Intent intent = new Intent(getContext(), FoodDetailsActivity.class);
+
+            intent.putExtra("FoodName", tvFoodName.getText().toString().trim());
+
+            startActivityForResult(intent, 1000);
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000 && resultCode==1001){
+
+
         }
     }
 }

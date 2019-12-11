@@ -9,6 +9,14 @@ public class AddFoodGridViewData {
         this.foodName = foodName;
     }
 
+    public AddFoodGridViewData(Integer imageID) {
+        this.imageID = imageID;
+    }
+
+    public AddFoodGridViewData(String foodName) {
+        this.foodName = foodName;
+    }
+
     public Integer getImageID() {
         return imageID;
     }
