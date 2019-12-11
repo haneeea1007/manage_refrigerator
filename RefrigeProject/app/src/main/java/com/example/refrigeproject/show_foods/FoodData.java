@@ -1,8 +1,9 @@
 package com.example.refrigeproject.show_foods;
 
-import com.saber.stickyheader.stickyData.StickyMainData;
+public class FoodData implements Section {
 
-public class FoodData implements StickyMainData {
+    int postion;
+
     int id;
     String category;
     String section;
@@ -15,11 +16,13 @@ public class FoodData implements StickyMainData {
     String place;
 
     // to test
-    public FoodData(String name) {
+    public FoodData(int postiion, String name) {
+        this.postion = postiion;
         this.name = name;
     }
 
-    public FoodData(int id, String category, String section, String name, String memo, String purchaseData, String expirationDate, String imagePath, String code, String place) {
+    public FoodData(int postion, int id, String category, String section, String name, String memo, String purchaseData, String expirationDate, String imagePath, String code, String place) {
+        this.postion = postion;
         this.id = id;
         this.category = category;
         this.section = section;
@@ -70,5 +73,15 @@ public class FoodData implements StickyMainData {
 
     public String getPlace() {
         return place;
+    }
+
+    @Override
+    public int type() {
+        return ITEM;
+    }
+
+    @Override
+    public int sectionPosition() {
+        return postion;
     }
 }

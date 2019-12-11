@@ -44,6 +44,12 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
+
+        <activity android:name=".setting.AddFridgeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity android:name=".calendar.SeasonFoodDetails"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

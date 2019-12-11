@@ -10,13 +10,8 @@
         android:gravity="center"
         android:text="냉장고 코드 입력"/>
     <EditText
+        android:id="@+id/edtCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/rounded_border"
-        android:text="등록하기"/>
 
 </LinearLayout>

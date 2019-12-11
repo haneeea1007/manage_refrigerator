@@ -1,5 +1,7 @@
 package com.example.refrigeproject.show_foods;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,11 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -27,8 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.R;
-import com.saber.stickyheader.stickyView.StickHeaderItemDecoration;
-import com.saber.stickyheader.stickyView.StickHeaderRecyclerView;
+import com.shuhart.stickyheader.StickyAdapter;
+import com.shuhart.stickyheader.StickyHeaderItemDecorator;
 
 import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
@@ -42,22 +44,19 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     private static final String TAG = "ShowFoodsFragment";
     private View view;
 
-    // for test
-    int size_fridge, size_freezer, size_pantry;
-    HeaderDataInfo headerData = new HeaderDataInfo(HeaderDataInfo.HEADER_TYPE, R.layout.header_item_recycler);
+//    List<FoodData> fridgeItems = new ArrayList<>(); // header별 구분용
+//    List<FoodData> freezerItems = new ArrayList<>(); // header별 구분용
+//    List<FoodData> pantryItems = new ArrayList<>(); // header별 구분용
+//    List<FoodData> foodList = new ArrayList<>(); // 전체 foodlist
 
-    List<FoodData> fridgeItems = new ArrayList<>(); // header별 구분용
-    List<FoodData> freezerItems = new ArrayList<>(); // header별 구분용
-    List<FoodData> pantryItems = new ArrayList<>(); // header별 구분용
-    List<FoodData> foodList = new ArrayList<>(); // 전체 foodlist
+    ArrayList<Section> items = new ArrayList<>();
+    SectionAdapter adapter;
 
     // 냉장고 리스트
     public static ArrayList<RefrigeratorData> refrigeratorList = new ArrayList<RefrigeratorData>();
 
     // Widget in ViewHolder
-    public TextView tvFoodName, tvFridgeName, tvHeader, tvName;
-    public ImageView delete, open;
-    public CheckBox checkBox;
+    public TextView tvFridgeName, tvName;
 
     // 체크박스 값 저장
     public boolean removeMode;
@@ -69,7 +68,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     private LinearLayout llRefrigerator;
 
     private OnFragmentInteractionListener mListener;// 객체참조변수
-    RecyclerAdapter adapter;
 
     // DB
     private DBHelper foodDBHelper;
@@ -84,30 +82,53 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
 
+
         // 테이블 생성 및 냉장고 세팅
         foodDBHelper = new DBHelper(getContext());
-        setRefirigeratorData();
+        getRefrigeratorData();
         llRefrigerator.setOnClickListener(this);
 
-        adapter = new RecyclerAdapter();
+        // 어댑터 설정
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-
-        setData(adapter);
-
-        rvFoods.setAdapter(adapter);
         rvFoods.setLayoutManager(layoutManager);
-        rvFoods.addItemDecoration(new StickHeaderItemDecoration(adapter));
+        adapter = new SectionAdapter();
+        rvFoods.setAdapter(adapter);
+        StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(adapter);
+        decorator.attachToRecyclerView(rvFoods);
+        setFoodsData(adapter);
 
         setHasOptionsMenu(true);
         return view;
     }
 
-    private void setRefirigeratorData() {
-        getRefrigeratorData();
+    private void setFoodsData(SectionAdapter adapter) {
+        items.add(new SectionHeader(1));
+        items.add(new FoodData(1, "냉장템1 "));
+        items.add(new FoodData(1, "냉장템2 "));
+        items.add(new FoodData(1, "냉장템3 "));
+        items.add(new FoodData(1, "냉장템4 "));
+
+        items.add(new SectionHeader(2));
+        items.add(new FoodData(2, "냉동템1 "));
+        items.add(new FoodData(2, "냉동템2 "));
+        items.add(new FoodData(2, "냉동템3 "));
+        items.add(new FoodData(2, "냉동템4 "));
+
+        items.add(new SectionHeader(3));
+        items.add(new FoodData(3, "실온템1 "));
+        items.add(new FoodData(3, "실온템2 "));
+        items.add(new FoodData(3, "실온템3 "));
+        items.add(new FoodData(3, "실온템4 "));
+        items.add(new FoodData(3, "실온템5 "));
+        items.add(new FoodData(3, "실온템6 "));
+
+        adapter.items = items;
+        adapter.notifyDataSetChanged();
     }
 
     // 냉장고 정보 가져오기
     private void getRefrigeratorData() {
+        refrigeratorList.clear();
         Log.d(TAG, "getRefrigeratorData");
         sqLite = foodDBHelper.getReadableDatabase();
 
@@ -139,7 +160,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         switch (item.getItemId()) {
             case R.id.action_add:
                 // 아이템 추가 인텐트
-                Log.d("메뉴클릭", "action_add");
+                Log.d(TAG, "action_add");
                 Intent intent = new Intent(getContext(), AddFoodActivity.class);
                 intent.putExtra("refrigerator", tvFridgeName.getText().toString()); // 냉장고 정보 전달
                 startActivity(intent);
@@ -148,33 +169,33 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
             case R.id.action_remove:
                 // 삭제 모드로 전환
-                Log.d("메뉴클릭", "action_remove");
+                Log.d(TAG, "action_remove");
                 removeMode = true;
                 getActivity().invalidateOptionsMenu();
 
-                for(CheckBox checkBox : checkBoxes){
-                    checkBox.setVisibility(View.VISIBLE);
-                }
+                adapter.notifyDataSetChanged();
+
+//                for(CheckBox checkBox : checkBoxes){
+//                    checkBox.setVisibility(View.VISIBLE);
+//                }
 
                 break;
 
             case R.id.action_search:
                 // 해당 냉장고속 재료 검색
-                Log.d("메뉴클릭", "action_search");
+                Log.d(TAG, "action_search");
 
                 break;
 
             case R.id.action_delete:
                 // 선택한 목록 삭제
-                Log.d("메뉴클릭", "action_delete");
+                Log.d(TAG, "action_delete");
 
                 // 삭제 모드 중에 냉장고 바꿀 수 없음
                 llRefrigerator.setEnabled(false);
 
                 // 데이터 제거
-                fridgeItems.removeAll(removed);
-                freezerItems.removeAll(removed);
-                pantryItems.removeAll(removed);
+                items.removeAll(removed);
 
                 removed.clear();
                 checkBoxes.clear();
@@ -188,17 +209,17 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
             case R.id.action_done:
                 // 삭제 모드 해제
-                Log.d("메뉴클릭", "action_done");
+                Log.d(TAG, "action_done");
 
                 llRefrigerator.setEnabled(true);
 
                 removeMode = false;
                 getActivity().invalidateOptionsMenu();
 
-                for(CheckBox checkBox : checkBoxes){
-                    checkBox.setVisibility(View.INVISIBLE);
-                    checkBox.setChecked(false);
-                }
+                adapter.notifyDataSetChanged(); // 체크박스 재설정을 위함
+//                for(CheckBox checkBox : checkBoxes){
+//                    checkBox.setChecked(false);
+//                }
 
                 break;
         }
@@ -214,7 +235,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                     public void initView(View view) {
 
                         ListView listView = view.findViewById(R.id.listView);
-                        ListViewAdapter listViewAdapter = new ListViewAdapter();
+                        ListViewAdapter listViewAdapter = new ListViewAdapter(getActivity(), tvFridgeName);
                         listView.setAdapter(listViewAdapter);
                     }
                 })
@@ -231,170 +252,162 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 .show();
     }
 
-    private void setData(RecyclerAdapter adapter) {
-        //DB에서 값 가져오기
-        fridgeItems.add(new FoodData("토마토"));
-        fridgeItems.add(new FoodData("된장찌개"));
-        fridgeItems.add(new FoodData("마늘쫑"));
-        fridgeItems.add(new FoodData("국밥"));
-        fridgeItems.add(new FoodData("카레"));
-        fridgeItems.add(new FoodData("치킨"));
-        fridgeItems.add(new FoodData("무말랭이"));
-        size_fridge = fridgeItems.size();
-        adapter.setHeaderAndData(fridgeItems, headerData);
 
-        freezerItems.add(new FoodData("감자"));
-        freezerItems.add(new FoodData("아이스크림"));
-        freezerItems.add(new FoodData("비비고왕교자"));
-        freezerItems.add(new FoodData("토마토"));
-        freezerItems.add(new FoodData("다진마늘"));
-        freezerItems.add(new FoodData("쌀밥"));
-        freezerItems.add(new FoodData("해쉬브라운"));
-        freezerItems.add(new FoodData("목살"));
-        size_freezer = freezerItems.size();
-        adapter.setHeaderAndData(freezerItems, headerData);
-
-        pantryItems = new ArrayList<>();
-        pantryItems.add(new FoodData("짜파게티"));
-        pantryItems.add(new FoodData("귤"));
-        pantryItems.add(new FoodData("고구마"));
-        pantryItems.add(new FoodData("참치"));
-        pantryItems.add(new FoodData("스프"));
-        pantryItems.add(new FoodData("라면"));
-        pantryItems.add(new FoodData("과자"));
-        size_pantry = pantryItems.size();
-        adapter.setHeaderAndData(pantryItems, headerData);
-
-        for(FoodData food : foodList){
-            Log.d(TAG, food.getName());
-        }
-
-        Log.d(TAG, "냉장고 : " + size_fridge);
-        Log.d(TAG, "냉장고 : " + size_freezer);
-        Log.d(TAG, "냉장고 : " + size_pantry);
-
-    }
 
     // 음식 데이터 관리 - sticky ver
-    public class RecyclerAdapter extends StickHeaderRecyclerView<FoodData, HeaderDataInfo> {
-        @NonNull
+    public class SectionAdapter extends StickyAdapter<RecyclerView.ViewHolder, RecyclerView.ViewHolder> {
+        List<Section> items = new ArrayList<>();
+
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            switch (viewType) {
-                case HeaderDataInfo.HEADER_TYPE:
-                    return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_item_recycler, parent, false));
-                default:
-                    return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.food_list_item, parent, false));
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            if (viewType == Section.HEADER || viewType == Section.CUSTOM_HEADER) {
+                return new SectionAdapter.HeaderViewholder(inflater.inflate(R.layout.recycler_header_item, parent, false));
+            }
+            return new SectionAdapter.ItemViewHolder(inflater.inflate(R.layout.food_list_item, parent, false));
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+            int type = items.get(position).type(); // 홀더 타입
+            final int section = items.get(position).sectionPosition(); // section 번호
+
+            if (type == Section.HEADER) {
+                switch (section){
+                    case 1:
+                        ((HeaderViewholder) holder).tvHeader.setText("냉장 " + section);
+                        break;
+                    case 2:
+                        ((HeaderViewholder) holder).tvHeader.setText("냉동 " + section);
+                        break;
+                    case 3:
+                        ((HeaderViewholder) holder).tvHeader.setText("실온 " + section);
+                        break;
+                }
+
+            } else if (type == Section.ITEM){
+                final FoodData item = (FoodData) items.get(position); // 해당 item 객체
+                ((ItemViewHolder) holder).tvFoodName.setText("Item " + item.getName() + position);
+
+                // 모드에 따른 Visibility 설정
+                if(removeMode){
+                    ((ItemViewHolder) holder).checkBox.setVisibility(View.VISIBLE);
+                }else{
+                    ((ItemViewHolder) holder).checkBox.setVisibility(View.GONE);
+                    ((ItemViewHolder) holder).checkBox.setChecked(false);
+                }
+
+                // 체크박스 리스너
+                ((ItemViewHolder) holder).checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        Log.d(TAG, "checkbox" + item.getName());
+                        if(isChecked){
+                            removed.add(item);
+                        }else{
+                            removed.remove(item);
+                        }
+                    }
+                });
+
+//                // 현재 생성된 체크박스를 저장
+//                checkBoxes.add(((ItemViewHolder) holder).checkBox);
+//                Log.d(TAG, "checkbox add " + position);
+
+
+
+                // 레시피 검색
+                ((ItemViewHolder) holder).open.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle(1);
+                        bundle.putString("name", item.getName());
+                        mListener.onFragmentInteraction(bundle);
+                        // 로딩이 길다 ..
+                    }
+                });
+
+                // 아이템 삭제
+                ((ItemViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("onClick", item.getName() + position +" "+ item.sectionPosition());
+                        items.remove(position);
+                        notifyDataSetChanged();
+                    }
+                });
+
+
+            } else {
+                ((SectionAdapter.HeaderViewholder) holder).tvHeader.setText("Custom header");
             }
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            // header인지 구분하여 홀더와 바인드
-            if (holder instanceof ViewHolder) {
-                ((ViewHolder) holder).bindData(position);
-            } else if (holder instanceof HeaderViewHolder){
-                ((HeaderViewHolder) holder).bindData(position);
-            }
+        public int getItemViewType(int position) {
+            return items.get(position).type();
         }
 
         @Override
-        public void bindHeaderData(View header, int headerPosition) {
-            // 헤더가 상단에 닿았을 때
-            TextView tv = header.findViewById(R.id.tvHeader);
-            setHeaderTitle(tv, headerPosition, fridgeItems.size(), freezerItems.size());
+        public int getItemCount() {
+            return items.size();
         }
 
+        @Override
+        public int getHeaderPositionForItem(int itemPosition) {
+            return items.get(itemPosition).sectionPosition();
+        }
 
-        // 헤더
-        class HeaderViewHolder extends RecyclerView.ViewHolder {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int headerPosition) {
+            Log.d("onBindHeaderViewHolder",headerPosition+"");
+            // 상단에 헤더가 붙어 있을 때
+            switch (headerPosition){
+                case 1:
+                    ((HeaderViewholder) holder).tvHeader.setText("냉장 " + headerPosition);
+                    break;
+                case 2:
+                    ((HeaderViewholder) holder).tvHeader.setText("냉동 " + headerPosition);
+                    break;
+                case 3:
+                    ((HeaderViewholder) holder).tvHeader.setText("실온 " + headerPosition);
+                    break;
+            }
 
-            HeaderViewHolder(View itemView) {
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+            return createViewHolder(parent, Section.HEADER);
+        }
+
+        public class HeaderViewholder extends RecyclerView.ViewHolder {
+            TextView tvHeader;
+
+            HeaderViewholder(View itemView) {
                 super(itemView);
                 tvHeader = itemView.findViewById(R.id.tvHeader);
             }
-
-            void bindData(int position) {
-                Log.d(TAG, "header bind " + position);
-                setHeaderTitle(tvHeader, position, fridgeItems.size(), freezerItems.size());
-            }
         }
 
-        // 내용
-        class ViewHolder extends RecyclerView.ViewHolder{
-            public ViewHolder(@NonNull View itemView) {
+        public class ItemViewHolder extends RecyclerView.ViewHolder {
+            TextView tvFoodName;
+            CheckBox checkBox;
+            ImageView delete, open;
+
+            ItemViewHolder(View itemView) {
                 super(itemView);
                 tvFoodName = itemView.findViewById(R.id.tvFoodName);
+                checkBox = itemView.findViewById(R.id.checkBox);
                 delete = itemView.findViewById(R.id.delete);
                 open = itemView.findViewById(R.id.open);
-                checkBox = itemView.findViewById(R.id.checkBox);
-            }
-
-            void bindData(final int position) {
-                Log.d(TAG, "content bind " + position);
-
-            }
-        }
-
-        private void setHeaderTitle(TextView tv, int headerPosition, int size_fridge, int size_freezer) {
-            if(headerPosition <= size_fridge){
-//                Log.d(TAG,"0번, 냉장입니다 ");
-                tv.setText("냉장");
-            }else if(headerPosition > size_fridge && headerPosition < size_fridge + size_freezer + 2) {
-//                Log.d(TAG,(size_fridge+1)+"번, 냉동입니다 setheader");
-//                Log.d(TAG,(headerPosition)+"번 header");
-                tv.setText("냉동");
-            }else if(headerPosition >= size_fridge + size_freezer +2 ){
-//                Log.d(TAG,(size_fridge + size_freezer + 2)+"번, 실온입니다 ");
-                tv.setText("실온");
             }
         }
     }
 
-    // 냉장고 선택하기 쿠키바에 나올 냉장고 리스트
-    class ListViewAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return refrigeratorList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return refrigeratorList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if(convertView == null){
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.refrigerator_item, null);
-            }
-
-            tvName = convertView.findViewById(R.id.tvName);
-            tvName.setText(refrigeratorList.get(position).getName());
-
-            tvName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    setData(adapter);
-
-                    tvFridgeName.setText(refrigeratorList.get(position).getName());
-                    Log.d("log", refrigeratorList.get(position).getName());
-
-                    CookieBar.dismiss(getActivity());
-                }
-            });
-
-            return convertView;
-        }
-    }
-
+    // 프래그먼트 간 데이터 전달을 위한 인터페이스
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Bundle bundle); // 추상메소드
     }
