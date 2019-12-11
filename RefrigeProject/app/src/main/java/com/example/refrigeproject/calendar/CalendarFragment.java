@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.refrigeproject.FoodDBHelper;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
 
@@ -52,7 +51,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
     EditText edtEvent;
     private CalendarAdapter calendarAdapter;
 
-    FoodDBHelper dbHelper;
     SQLiteDatabase sqLiteDatabase;
 
     @Nullable
@@ -85,8 +83,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         ibtPrev.setOnClickListener(this);
         ibtNext.setOnClickListener(this);
         gvCalendar.setOnItemClickListener(this);
-
-        dbHelper = new FoodDBHelper(context);
 
 
         return view;

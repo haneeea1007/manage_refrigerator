@@ -13,7 +13,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.refrigeproject.FoodDBHelper;
 import com.example.refrigeproject.R;
 
 import java.util.Calendar;
@@ -35,7 +34,6 @@ public class CalendarAdapter extends BaseAdapter {
 
     public int selectedPosition = -1; // ????????????
 
-//    FoodDBHelper dbHelper;
 //    SQLiteDatabase sqLiteDatabase;
 
     LayoutInflater layoutInflater;
@@ -98,7 +96,7 @@ public class CalendarAdapter extends BaseAdapter {
 
 //            tvEvent.setText(items[position].getEvent());
         // DB에서 가져오기 /////////////////////////////////////////////////////
-//        dbHelper = new FoodDBHelper(context);
+//        dbHelper = new DBHelper(context);
 //        sqLiteDatabase = dbHelper.getReadableDatabase();
 //        Cursor cursor; // record set
 //        cursor = sqLiteDatabase.rawQuery("SELECT event FROM calendarTBL WHERE year = " + currentYear +
