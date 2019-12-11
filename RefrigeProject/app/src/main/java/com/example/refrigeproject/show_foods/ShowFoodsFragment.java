@@ -62,7 +62,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     public boolean removeMode;
     int i = 0;
     Set<FoodData> removed = new HashSet<>(); // 현재 체크된 체크박스의 MainData 모음 - delete 시 사용
-    ArrayList<CheckBox> checkBoxes = new ArrayList<CheckBox>(); // 현재 리사이클러뷰에 있는 아이템의 체크박스 모음 - Visiblity 관리용
     Menu menu;
     private RecyclerView rvFoods;
     private LinearLayout llRefrigerator;
@@ -175,10 +174,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
                 adapter.notifyDataSetChanged();
 
-//                for(CheckBox checkBox : checkBoxes){
-//                    checkBox.setVisibility(View.VISIBLE);
-//                }
-
                 break;
 
             case R.id.action_search:
@@ -198,8 +193,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 items.removeAll(removed);
 
                 removed.clear();
-                checkBoxes.clear();
-
                 rvFoods.removeAllViews();
                 adapter.notifyDataSetChanged();
 
@@ -217,9 +210,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 getActivity().invalidateOptionsMenu();
 
                 adapter.notifyDataSetChanged(); // 체크박스 재설정을 위함
-//                for(CheckBox checkBox : checkBoxes){
-//                    checkBox.setChecked(false);
-//                }
+                removed.clear();
 
                 break;
         }
@@ -310,12 +301,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                         }
                     }
                 });
-
-//                // 현재 생성된 체크박스를 저장
-//                checkBoxes.add(((ItemViewHolder) holder).checkBox);
-//                Log.d(TAG, "checkbox add " + position);
-
-
 
                 // 레시피 검색
                 ((ItemViewHolder) holder).open.setOnClickListener(new View.OnClickListener() {
