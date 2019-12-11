@@ -82,77 +82,76 @@ public class AddFoodEachCategory extends Fragment {
     }
 
 
-        public class GridViewAdapter extends BaseAdapter implements View.OnClickListener {
-            private Context context;
-            private int layout;
-            private ArrayList<AddFoodGridViewData> list;
-            private LayoutInflater layoutInflater;
-            private TextView tvFoodName;
+    public class GridViewAdapter extends BaseAdapter implements View.OnClickListener {
+        private Context context;
+        private int layout;
+        private ArrayList<AddFoodGridViewData> list;
+        private LayoutInflater layoutInflater;
+        private TextView tvFoodName;
 
-            public GridViewAdapter(Context context, int layout, ArrayList<AddFoodGridViewData> list) {
-                this.context = context;
-                this.layout = layout;
-                this.list = list;
+        public GridViewAdapter(Context context, int layout, ArrayList<AddFoodGridViewData> list) {
+            this.context = context;
+            this.layout = layout;
+            this.list = list;
 
-                layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            }
-
-            @Override
-            public int getCount() {
-                return list.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return list.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(final int position, View view, ViewGroup viewGroup) {
-
-                if (view == null) {
-                    view = layoutInflater.inflate(R.layout.add_food_item, null);
-                }
-
-                ImageView foodImageView = view.findViewById(R.id.foodImageView);
-                tvFoodName = view.findViewById(R.id.tvFoodName);
-
-                final AddFoodGridViewData addFoodGridViewData = list.get(position);
-                foodImageView.setImageResource(addFoodGridViewData.getImageID());
-                tvFoodName.setText(addFoodGridViewData.getFoodName());
-
-
-                foodImageView.setOnClickListener(this);
-                return view;
-            }
-
-            @Override
-            public void onClick(View view) {
-
-
-                Intent intent = new Intent(getContext(), FoodDetailsActivity.class);
-
-                intent.putExtra("FoodName", tvFoodName.getText().toString().trim());
-
-                startActivityForResult(intent, 1000);
-                Log.d(TAG, "vegeList");
-            }
-
+            layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
-        public void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
-            super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == 1000 && resultCode == 1001) {
-
-
-            }
+        public int getCount() {
+            return list.size();
         }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View view, ViewGroup viewGroup) {
+
+            if (view == null) {
+                view = layoutInflater.inflate(R.layout.add_food_item, null);
+            }
+
+            ImageView foodImageView = view.findViewById(R.id.foodImageView);
+            tvFoodName = view.findViewById(R.id.tvFoodName);
+
+            final AddFoodGridViewData addFoodGridViewData = list.get(position);
+            foodImageView.setImageResource(addFoodGridViewData.getImageID());
+            tvFoodName.setText(addFoodGridViewData.getFoodName());
+
+
+            foodImageView.setOnClickListener(this);
+            return view;
+        }
+
+        @Override
+        public void onClick(View view) {
+
+
+            Intent intent = new Intent(getContext(), FoodDetailsActivity.class);
+
+            intent.putExtra("FoodName", tvFoodName.getText().toString().trim());
+
+            startActivityForResult(intent, 1000);
+            Log.d(TAG, "vegeList");
+        }
+
     }
 
+    @Override
+    public void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1000 && resultCode == 1001) {
+
+
+        }
+    }
+}
 

@@ -44,8 +44,31 @@ public class AddFoodActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            AddFoodEachCategory.position = position;
-            return AddFoodEachCategory.newInstance();
+            switch (position) {
+                case 0:
+                    return AddVegetable.newInstance();
+                case 1:
+                    return AddFruits.newInstance();
+                case 2:
+                    return AddMeat.newInstance();
+                case 3:
+                    return AddSeafood.newInstance();
+                case 4:
+                    return AddDairyProduct.newInstance();
+                case 5:
+                    return AddSideDishes.newInstance();
+                case 6:
+                    return AddInstant.newInstance();
+                case 7:
+                    return AddDrinks.newInstance();
+                case 8:
+                    return AddSauce.newInstance();
+                case 9:
+                    return AddSeasoning.newInstance();
+                default:
+                    return null;
+            }
+
         }
 
 
