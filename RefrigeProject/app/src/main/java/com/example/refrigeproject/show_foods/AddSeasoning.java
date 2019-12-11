@@ -19,12 +19,9 @@ public class AddSeasoning extends Fragment {
     private GridView gridView;
     private ArrayList<AddFoodGridViewData> seasoningList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
-    static AddSeasoning addSeasoning;
 
     public static AddSeasoning newInstance() {
-        if(addSeasoning ==null) {
-            addSeasoning = new AddSeasoning(); //싱글톤과 같은 기능
-        }
+        AddSeasoning addSeasoning = new AddSeasoning(); //싱글톤과 같은 기능
         return addSeasoning;
     }
 
