@@ -41,6 +41,7 @@ public class AddDairyProduct extends Fragment {
     }
 
     private void listInsertFoodData() {
+        dairyList.clear();
         Integer[] dairyID = {R.drawable.dairy_butter, R.drawable.dairy_cream, R.drawable.dairy_milk,R.drawable.dairy_whipping, R.drawable.dairy_yogurt};
 
         String[] dairyName = {"버터", "생크림", "우유", "휘핑크림", "새우", "요거트"};

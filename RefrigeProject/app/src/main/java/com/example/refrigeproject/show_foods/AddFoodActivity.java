@@ -51,8 +51,6 @@ public class AddFoodActivity extends AppCompatActivity {
         fragmentPagerAdapter = new AddFoodViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
-        Slidr.attach(this);
     }
 
     private class AddFoodViewPagerAdapter extends FragmentPagerAdapter {

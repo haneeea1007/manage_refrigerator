@@ -41,6 +41,7 @@ public class AddSeasoning extends Fragment {
     }
 
     private void listInsertFoodData() {
+        seasoningList.clear();
         Integer[] seasoningID = {R.drawable.seasoning_flour, R.drawable.seasoning_salt, R.drawable.seasoning_pepper,R.drawable.seasoning_sugar};
 
         String[] seasoningName = {"밀가루", "소금", "후추", "설탕"};

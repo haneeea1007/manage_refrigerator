@@ -42,6 +42,7 @@ public class AddSideDishes extends Fragment {
     }
 
     private void listInsertFoodData() {
+        sideList.clear();
         Integer[] sideID = {R.drawable.side_curry, R.drawable.side_pickles, R.drawable.side_pot, R.drawable.side_stew, R.drawable.side_food};
         String[] sideName = {"카레", "피클", "찌개", "국", "반찬_직접입력"};
 

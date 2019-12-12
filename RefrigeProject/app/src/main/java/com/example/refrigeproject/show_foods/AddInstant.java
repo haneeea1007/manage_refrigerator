@@ -41,6 +41,7 @@ public class AddInstant extends Fragment {
     }
 
     private void listInsertFoodData() {
+        instantList.clear();
         Integer[] instantID = {R.drawable.instant_dimsum, R.drawable.instant_friedchicken, R.drawable.instant_fries,R.drawable.instant_noodles, R.drawable.instant_sausage, R.drawable.instant_spam};
 
         String[] instantName = {"만두", "치킨", "튀김", "라면", "소세지", "스팸"};

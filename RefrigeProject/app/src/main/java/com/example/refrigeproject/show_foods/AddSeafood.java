@@ -41,6 +41,7 @@ public class AddSeafood extends Fragment {
     }
 
     private void listInsertFoodData() {
+        seafoodList.clear();
         Integer[] seafoodID = {R.drawable.seafood_anchovy, R.drawable.seafood_crab, R.drawable.seafood_salmon,R.drawable.seafood_shellfish, R.drawable.seafood_shrimp, R.drawable.seafood_squid};
 
         String[] seafoodName = {"멸치", "게", "연어", "조개", "새우", "오징어"};

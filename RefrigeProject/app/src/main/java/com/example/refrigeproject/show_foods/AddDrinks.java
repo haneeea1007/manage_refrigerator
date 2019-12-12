@@ -41,6 +41,7 @@ public class AddDrinks extends Fragment {
     }
 
     private void listInsertFoodData() {
+        drinksList.clear();
         Integer[] drinkID = {R.drawable.drink_alcohol, R.drawable.drink_beverage, R.drawable.drink_juice,R.drawable.drink_softdrink, R.drawable.drink_soju, R.drawable.drink_water,R.drawable.drink_wine};
 
         String[] drinkName = {"주류_직접입력", "음료_직접입력", "과일주스", "탄산음료", "소주", "물", "와인"};

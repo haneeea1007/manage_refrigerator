@@ -41,6 +41,7 @@ public class AddSauce extends Fragment {
     }
 
     private void listInsertFoodData() {
+        sauceList.clear();
         Integer[] sauceID = {R.drawable.sauce_honey, R.drawable.sauce_jam, R.drawable.sauce_ketchup,R.drawable.sauce_mayonnaise, R.drawable.sauce_mustard, R.drawable.sauce_jar};
 
         String[] sauceName = {"꿀", "딸기잼", "케첩", "마요네즈", "머스타드", "소스_직접입력"};

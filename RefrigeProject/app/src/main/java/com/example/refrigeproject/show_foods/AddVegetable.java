@@ -46,6 +46,7 @@ public class AddVegetable extends Fragment {
     }
 
     private void listInsertFoodData() {
+        vegeList.clear();
         Integer[] vegeID = {R.drawable.vege_cucumber, R.drawable.vege_broccoli, R.drawable.vege_carrot, R.drawable.vege_chili, R.drawable.vege_corn,
                 R.drawable.vege_eggplant, R.drawable.vege_garlic, R.drawable.vege_radish, R.drawable.vege_onion};
 

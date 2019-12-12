@@ -41,6 +41,7 @@ public class AddMeat extends Fragment {
     }
 
     private void listInsertFoodData() {
+        meatList.clear();
         Integer[] meatID = {R.drawable.meat_chicken, R.drawable.meat_pork, R.drawable.meat_beef};
 
         String[] meatName = {"닭고기", "돼지고기", "소고기"};
