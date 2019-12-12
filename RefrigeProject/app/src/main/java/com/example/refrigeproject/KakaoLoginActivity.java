@@ -29,12 +29,12 @@ public class KakaoLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kakao_login);
 
+        // 키해시 구할 때 쓰는 함수
         //getHashKey();
 
         sessionCallback = new SessionCallback(); // SessionCallback 초기화
         Session.getCurrentSession().addCallback(sessionCallback); // 현재 세션에 콜백 붙임.
         Session.getCurrentSession().checkAndImplicitOpen(); // 자동 로그인
-
 
         btnLogin = findViewById(R.id.btnLogin);
         kakaoLogin = findViewById(R.id.kakaoLogin);
@@ -106,10 +106,11 @@ public class KakaoLoginActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(MeV2Response result) {
 
-                    Intent intent = new Intent(getApplicationContext(), KakaoLoginMainActivity.class);
+                    // 인텐트를 통해 메인 액티비티에 유저정보 전달
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.putExtra("name", result.getNickname()); // 유저 닉네임
-                    intent.putExtra("id", result.getId());
                     intent.putExtra("profile", result.getProfileImagePath()); // 카카오톡 프로필 이미지
+                    intent.putExtra("id", result.getId()); // 유저 고유 아이디
 
                     startActivity(intent);
                     finish();

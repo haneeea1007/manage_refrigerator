@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -21,12 +22,14 @@ import com.facebook.stetho.Stetho;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements ShowFoodsFragment.OnFragmentInteractionListener{
+
     private BottomNavigationView bottomMenu;
     private FrameLayout frameLayout;
     private Fragment calendar, searchRecipe, showFoods, checkList, setting;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private Bundle bundle;
+    String strNickname, strProfile, strId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         setContentView(R.layout.activity_main);
 
         Stetho.initializeWithDefaults(this);
-
-
 
         bottomMenu = findViewById(R.id.bottomMenu);
         frameLayout = findViewById(R.id.frameLayout);
@@ -63,6 +64,17 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         showFoods = new ShowFoodsFragment();
         checkList = new CheckListFragment();
         setting = new SettingFragment();
+
+        Intent intent = getIntent();
+        strNickname = intent.getStringExtra("name");
+        strProfile = intent.getStringExtra("profile");
+        strId = String.valueOf(intent.getLongExtra("id", 0));
+
+        // 인텐트로 셋팅 프래그먼트에 전달
+        Intent putIntent = new Intent(this, SettingFragment.class);
+        putIntent.putExtra("name", strNickname); // 유저 닉네임
+        putIntent.putExtra("profile", strProfile); // 카카오톡 프로필 이미지
+        putIntent.putExtra("id", strProfile); // 유저 고유 아이디
 
     }
 

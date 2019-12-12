@@ -1,8 +1,13 @@
 package com.example.refrigeproject.setting;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +15,35 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.SplashActivity;
 import com.example.refrigeproject.show_foods.FoodDetailsActivity;
+import com.example.refrigeproject.show_foods.ShowFoodsFragment;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.LogoutResponseCallback;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class SettingFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     View view;
 
-    LinearLayout llManage, llAlarm, llShare, llReport;
+    CircleImageView imgProfile;
+    TextView tvUserName;
+    LinearLayout llManage, llAlarm, llShare, llReport, llLogout;
     RadioGroup rdoGroup;
     Switch switchAlarm;
+    String strNickname, strProfile, strId;
+    Bitmap bitmap;
 
     @Nullable
     @Override
@@ -35,6 +54,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         llShare = view.findViewById(R.id.llShare);
         llAlarm = view.findViewById(R.id.llAlarm);
         llReport = view.findViewById(R.id.llReport);
+        llLogout = view.findViewById(R.id.llLogout);
+        tvUserName = view.findViewById(R.id.tvUserName);
+        imgProfile = view.findViewById(R.id.imgProfile);
 
         rdoGroup = view.findViewById(R.id.rdoGroup);
         switchAlarm = view.findViewById(R.id.switchAlarm);
@@ -46,6 +68,51 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
 
         rdoGroup.setOnCheckedChangeListener(this);
         switchAlarm.setOnCheckedChangeListener(this);
+
+        // 인텐트로 유저 닉네임, 프로필사진, 고유아이디 받아오기
+        Intent intent = this.getActivity().getIntent();
+        strNickname = intent.getStringExtra("name");
+        strProfile = intent.getStringExtra("profile");
+        strId = String.valueOf(intent.getLongExtra("id", 0));
+
+        tvUserName.setText(strNickname);
+        Log.d("KakaoLoginMainActivity", strId);
+
+        // 로그아웃 버튼 클릭 이벤트
+        llLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickLogout();
+                Toast.makeText(view.getContext(), "로그아웃이 완료되었습니다." + '\n' + "다시 로그인 해주세요.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 프로필 이미지 셋팅
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+
+                try {
+                    URL url = new URL(strProfile);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoInput(true);
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(is);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
+
+        try {
+            thread.join();
+            imgProfile.setImageBitmap(bitmap);
+        } catch (InterruptedException e) {
+
+        }
 
         return view;
     }
@@ -65,7 +132,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
                 Intent sharedMessage = new Intent(Intent.ACTION_SEND);
                 sharedMessage.addCategory(Intent.CATEGORY_DEFAULT);
                 sharedMessage.putExtra(Intent.EXTRA_SUBJECT, "언니 올때 메로나 냉동실^^");
-                sharedMessage.putExtra(Intent.EXTRA_TEXT,   '\n' + "냉장고 열쇠: " + "");
+                sharedMessage.putExtra(Intent.EXTRA_TEXT, '\n' + "냉장고 열쇠: " + "");
                 sharedMessage.setType("text/plain");
                 startActivity(Intent.createChooser(sharedMessage, "냉장고 공유하기"));
 
@@ -77,19 +144,17 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
                 email.setType("plain/text");
                 String[] address = {"k012497@gmail.com"};
                 email.putExtra(Intent.EXTRA_EMAIL, address);
-                email.putExtra(Intent.EXTRA_SUBJECT,"어플 문의");
-                email.putExtra(Intent.EXTRA_TEXT,"");
+                email.putExtra(Intent.EXTRA_SUBJECT, "어플 문의");
+                email.putExtra(Intent.EXTRA_TEXT, "");
                 startActivity(email);
                 break;
 
             default:
                 break;
-
-            // 관리하기에 더 넣을 만한 것들 ?
         }
     }
 
-    // 라디오버튼 체크 감지
+    // 라디오버튼 체크를 감지해서 인텐트로 보냄
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
@@ -97,22 +162,53 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
 
         if (radioGroup.getCheckedRadioButtonId() == R.id.rdo1Day) {
             radioIntent.putExtra("dateSetting", 1);
+            Toast.makeText(getContext(), "알림이 소비 만료일자 1일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
 
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.rdo3Day) {
             radioIntent.putExtra("dateSetting", 3);
+            Toast.makeText(getContext(), "알림이 소비 만료일자 3일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
 
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.rdo7Day) {
             radioIntent.putExtra("dateSetting", 7);
+            Toast.makeText(getContext(), "알림이 소비 만료일자 7일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
 
         }
     }
 
-    // 스위치 체크 감지
+    // 스위치 체크를 감지해서 인텐트로 보냄
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
         Intent switchIntent = new Intent(getContext(), FoodDetailsActivity.class);
         switchIntent.putExtra("switchSetting", isChecked);
+
+        Toast.makeText(getContext(), "알람 설정 : " + isChecked, Toast.LENGTH_SHORT).show();
+    }
+
+    // 로그아웃 버튼 클릭 이벤트
+    private void onClickLogout() {
+
+        UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
+            @Override
+            public void onCompleteLogout() {
+
+                Intent intent = new Intent(view.getContext(), SplashActivity.class);
+                startActivity(intent);
+
+//                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+//                dialog.setTitle("로그아웃 확인")
+//                        .setMessage("로그아웃 하시겠습니까?")
+//                        .setNegativeButton("취소", null)
+//                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Intent intent = new Intent(view.getContext(), SplashActivity.class);
+//                                startActivity(intent);
+//                                Toast.makeText(view.getContext(), "로그아웃이 완료되었습니다." + '\n' + "다시 로그인 해주세요.", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }).show();
+            }
+        });
     }
 }
 

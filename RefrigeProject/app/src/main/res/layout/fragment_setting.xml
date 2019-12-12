@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/llManage"
+        android:id="@+id/llProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_vertical">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/fridge"/>
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/kakao_default_profile_image"
+            app:civ_border_color="#FFCCCCCC"
+            app:civ_border_width="2dp" />
+
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tvUserName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:text="내 냉장고 관리"/>
+            android:gravity="center"
+            android:text="이름"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
-    <View style="@style/Divider"/>
-
-    <LinearLayout
-        android:id="@+id/llShare"
+    <View
+        style="@style/Divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_vertical">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/fridge"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="냉장고 공유하기"/>
-    </LinearLayout>
-
-    <View style="@style/Divider"/>
+        android:layout_height="1dp" />
 
     <LinearLayout
         android:id="@+id/llAlarm"
@@ -48,10 +45,12 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:gravity="center_vertical">
+
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/fridge"/>
+            android:layout_marginRight="15dp"
+            android:src="@drawable/fridge" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,11 +70,16 @@
             android:checked="true" />
     </LinearLayout>
 
+    <View
+        style="@style/Divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
     <RadioGroup
         android:id="@+id/rdoGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:checkedButton="@id/rdo1Day"
         android:gravity="center"
         android:orientation="horizontal">
@@ -90,6 +94,8 @@
             android:id="@+id/rdo3Day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:text="3일 전" />
 
         <RadioButton
@@ -99,6 +105,52 @@
             android:text="7일 전" />
     </RadioGroup>
 
+    <View
+        android:id="@+id/view"
+        style="@style/Divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <LinearLayout
+        android:id="@+id/llManage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/fridge" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="내 냉장고 관리"/>
+    </LinearLayout>
+
+    <View style="@style/Divider"/>
+
+    <LinearLayout
+        android:id="@+id/llShare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/fridge" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="냉장고 공유하기"/>
+    </LinearLayout>
+
     <View style="@style/Divider"/>
 
     <LinearLayout
@@ -107,10 +159,12 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:gravity="center_vertical">
+
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/fridge"/>
+            android:layout_marginRight="15dp"
+            android:src="@drawable/fridge" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,6 +173,31 @@
     </LinearLayout>
 
     <View style="@style/Divider"/>
+
+    <LinearLayout
+        android:id="@+id/llLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/fridge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="로그아웃" />
+    </LinearLayout>
+
+    <View
+        style="@style/Divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
 
 
 </LinearLayout>

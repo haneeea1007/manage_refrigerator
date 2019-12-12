@@ -21,20 +21,20 @@
         android:gravity="bottom"
         android:paddingBottom="10dp"
         android:layout_toRightOf="@id/ivRecipe">
+
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Recipe title"
-            android:textSize="22sp"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/tvSummary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Recipe summary"
-            android:textStyle="bold"/>
+            android:text="Recipe summary"/>
     </LinearLayout>
     <View style="@style/Divider"
         android:layout_marginTop="10dp"
