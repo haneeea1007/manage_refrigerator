@@ -34,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "expirationDate VARCHAR(20)," +
                 "code VARCHAR(20), " +
                 "place VARCHAR(10), " +
-                "FOREIGN KEY(code) REFERENCES refrigeratorTBL(code) on delete cascade)  ;";
+                "FOREIGN KEY(code) REFERENCES refrigeratorTBL(code) on delete cascade);";
 
         String checkListTBL = "CREATE TABLE checkListTBL (" +
                 "text VARCHAR(30) PRIMARY KEY," +

@@ -119,7 +119,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
                     food.setImageUrl(foodObject.getString("IMG_URL"));
                     food.setRegistDate(foodObject.getString("REGIST_DE"));
                     seasonalFoods.add(food);
-                    Log.d("testest",food.getFoodName());
+                    Log.d(TAG, food.getFoodName());
                 }
             }
         }catch (JSONException e) {

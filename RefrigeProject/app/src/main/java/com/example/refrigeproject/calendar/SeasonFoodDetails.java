@@ -44,21 +44,14 @@ public class SeasonFoodDetails extends AppCompatActivity implements View.OnClick
     }
     public void setData(){
         String effect;
-        String purchaseTip, trimmingTip;
         effect = food.getEffect().replace("-", "\n").replace("?", "");
-        purchaseTip = food.getPurchaseTips().replace("?", " ");
-        trimmingTip = food.getTrimmingTips().replace("?", " ");
-        Log.d("purchaseTip",purchaseTip);
-        Log.d("trimmingTip",trimmingTip);
-        Log.d("trimmingTip",trimmingTip.contains("?")+"");
-
 
         tvFoodName.setText(food.getFoodName());
         tvCategory.setText(food.getClassification());
         tvRegion.setText(food.getProductionRegion());
         tvEffect.setText(effect);
-        tvPurchaseTip.setText(purchaseTip);
-        tvTrimmingTip.setText(trimmingTip);
+        tvPurchaseTip.setText(food.getPurchaseTips());
+        tvTrimmingTip.setText(food.getTrimmingTips());
     }
 
     @Override
