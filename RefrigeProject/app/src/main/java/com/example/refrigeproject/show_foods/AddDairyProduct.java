@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AddDairyProduct extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> dairyList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> dairyList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
     public static AddDairyProduct newInstance() {
@@ -44,10 +44,8 @@ public class AddDairyProduct extends Fragment {
         dairyList.clear();
         Integer[] dairyID = {R.drawable.dairy_butter, R.drawable.dairy_cream, R.drawable.dairy_milk,R.drawable.dairy_whipping, R.drawable.dairy_yogurt};
 
-        String[] dairyName = {"버터", "생크림", "우유", "휘핑크림", "새우", "요거트"};
-
         for (int i = 0; i < 5; i++) {
-            dairyList.add(new AddFoodGridViewData(dairyID[i], dairyName[i]));
+            dairyList.add(new AddFoodGridViewData(dairyID[i], AddFoodActivity.dairyName[i]));
         }
 
     }

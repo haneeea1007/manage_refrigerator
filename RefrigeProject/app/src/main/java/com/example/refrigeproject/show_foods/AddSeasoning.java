@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AddSeasoning extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> seasoningList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> seasoningList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
     public static AddSeasoning newInstance() {
@@ -44,9 +44,8 @@ public class AddSeasoning extends Fragment {
         seasoningList.clear();
         Integer[] seasoningID = {R.drawable.seasoning_flour, R.drawable.seasoning_salt, R.drawable.seasoning_pepper,R.drawable.seasoning_sugar};
 
-        String[] seasoningName = {"밀가루", "소금", "후추", "설탕"};
         for (int i = 0; i < 3; i++) {
-            seasoningList.add(new AddFoodGridViewData(seasoningID[i], seasoningName[i]));
+            seasoningList.add(new AddFoodGridViewData(seasoningID[i], AddFoodActivity.seasoningName[i]));
         }
 
 

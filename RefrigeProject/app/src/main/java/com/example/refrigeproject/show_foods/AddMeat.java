@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AddMeat extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> meatList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> meatList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
     public static AddMeat newInstance() {
@@ -44,10 +44,8 @@ public class AddMeat extends Fragment {
         meatList.clear();
         Integer[] meatID = {R.drawable.meat_chicken, R.drawable.meat_pork, R.drawable.meat_beef};
 
-        String[] meatName = {"닭고기", "돼지고기", "소고기"};
-
         for (int i = 0; i < 2; i++) {
-            meatList.add(new AddFoodGridViewData(meatID[i], meatName[i]));
+            meatList.add(new AddFoodGridViewData(meatID[i], AddFoodActivity.meatName[i]));
         }
 
     }

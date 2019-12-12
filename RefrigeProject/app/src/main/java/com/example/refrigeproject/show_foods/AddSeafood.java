@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AddSeafood extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> seafoodList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> seafoodList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
     public static AddSeafood newInstance() {
@@ -44,10 +44,8 @@ public class AddSeafood extends Fragment {
         seafoodList.clear();
         Integer[] seafoodID = {R.drawable.seafood_anchovy, R.drawable.seafood_crab, R.drawable.seafood_salmon,R.drawable.seafood_shellfish, R.drawable.seafood_shrimp, R.drawable.seafood_squid};
 
-        String[] seafoodName = {"멸치", "게", "연어", "조개", "새우", "오징어"};
-
         for (int i = 0; i < 4; i++) {
-            seafoodList.add(new AddFoodGridViewData(seafoodID[i], seafoodName[i]));
+            seafoodList.add(new AddFoodGridViewData(seafoodID[i], AddFoodActivity.seafoodName[i]));
         }
 
     }

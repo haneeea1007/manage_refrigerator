@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AddInstant extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> instantList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> instantList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
     public static AddInstant newInstance() {
@@ -44,10 +44,8 @@ public class AddInstant extends Fragment {
         instantList.clear();
         Integer[] instantID = {R.drawable.instant_dimsum, R.drawable.instant_friedchicken, R.drawable.instant_fries,R.drawable.instant_noodles, R.drawable.instant_sausage, R.drawable.instant_spam};
 
-        String[] instantName = {"만두", "치킨", "튀김", "라면", "소세지", "스팸"};
-
         for (int i = 0; i < 5; i++) {
-            instantList.add(new AddFoodGridViewData(instantID[i], instantName[i]));
+            instantList.add(new AddFoodGridViewData(instantID[i], AddFoodActivity.instantName[i]));
         }
 
     }

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class AddFruits extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> fruitList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> fruitList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
 
@@ -49,11 +49,9 @@ public class AddFruits extends Fragment {
     private void listInsertFoodData() {
         fruitList.clear();
         Integer[] fruitID = {R.drawable.fruit_apple, R.drawable.fruit_banana, R.drawable.fruit_blueberries, R.drawable.fruit_cherries, R.drawable.fruit_grapes, R.drawable.fruit_kiwi, R.drawable.fruit_lemon, R.drawable.fruit_melon, R.drawable.fruit_orange, R.drawable.fruit_peach, R.drawable.fruit_pear, R.drawable.fruit_pineapple, R.drawable.fruit_plum, R.drawable.fruit_tomato, R.drawable.fruit_watermelon};
-        String[] fruitName = {"사과", "바나나", "블루베리", "체리", "포도", "키위", "레몬", "멜론", "오렌지", "복숭아", "배", "파인애플", "자두", "토마토", "수박"};
-
 
         for (int i = 0; i < 14; i++) {
-            fruitList.add(new AddFoodGridViewData(fruitID[i], fruitName[i]));
+            fruitList.add(new AddFoodGridViewData(fruitID[i], AddFoodActivity.fruitName[i]));
 
         }
 

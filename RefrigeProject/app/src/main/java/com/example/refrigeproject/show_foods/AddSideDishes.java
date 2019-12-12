@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AddSideDishes extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> sideList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> sideList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
 
@@ -44,11 +44,9 @@ public class AddSideDishes extends Fragment {
     private void listInsertFoodData() {
         sideList.clear();
         Integer[] sideID = {R.drawable.side_curry, R.drawable.side_pickles, R.drawable.side_pot, R.drawable.side_stew, R.drawable.side_food};
-        String[] sideName = {"카레", "피클", "찌개", "국", "반찬_직접입력"};
-
 
         for (int i = 0; i < 4; i++) {
-            sideList.add(new AddFoodGridViewData(sideID[i], sideName[i]));
+            sideList.add(new AddFoodGridViewData(sideID[i], AddFoodActivity.sideName[i]));
 
         }
 

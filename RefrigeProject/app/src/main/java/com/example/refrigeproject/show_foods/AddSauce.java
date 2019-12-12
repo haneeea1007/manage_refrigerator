@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class AddSauce extends Fragment {
     private View view;
     private GridView gridView;
-    private ArrayList<AddFoodGridViewData> sauceList = new ArrayList<>();
+    public static ArrayList<AddFoodGridViewData> sauceList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
 
     public static AddSauce newInstance() {
@@ -44,10 +44,8 @@ public class AddSauce extends Fragment {
         sauceList.clear();
         Integer[] sauceID = {R.drawable.sauce_honey, R.drawable.sauce_jam, R.drawable.sauce_ketchup,R.drawable.sauce_mayonnaise, R.drawable.sauce_mustard, R.drawable.sauce_jar};
 
-        String[] sauceName = {"꿀", "딸기잼", "케첩", "마요네즈", "머스타드", "소스_직접입력"};
-
         for (int i = 0; i < 5; i++) {
-            sauceList.add(new AddFoodGridViewData(sauceID[i], sauceName[i]));
+            sauceList.add(new AddFoodGridViewData(sauceID[i], AddFoodActivity.sauceName[i]));
         }
 
     }
