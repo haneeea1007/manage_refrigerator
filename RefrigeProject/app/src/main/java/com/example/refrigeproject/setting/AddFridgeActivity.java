@@ -13,21 +13,29 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.database.RefrigeratorRequest;
 import com.example.refrigeproject.show_foods.RefrigeratorData;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.r0adkll.slidr.Slidr;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Random;
 
 public class AddFridgeActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = "AddFridgeActivity";
 
     // Widget
-    RadioGroup radioGroup;
-    RadioButton rbRef1, rbRef2, rbRef3;
-    Button btnRefAdd;
-    EditText edtTxt;
+    private RadioGroup radioGroup;
+    private RadioButton rbRef1, rbRef2, rbRef3;
+    private Button btnRefAdd;
+    private EditText edtTxt;
 
     // DB
     private DBHelper fridgeDBHelper;
@@ -86,44 +94,53 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                     }
 
                     randomCode = bufCode.toString().trim();
-                    Log.d("CODE", randomCode);
+                    Log.d(TAG, "랜덤코드" + randomCode);
 
                     // 냉장고 이름 가져오기
                     refName = edtTxt.getText().toString().trim();
-                    Log.d("NAME", refName);
+                    Log.d(TAG, "냉장고 이름" + refName);
 
-                    switch (radioGroup.getCheckedRadioButtonId()){
-                        case R.id.rbRef1:
-                            imgSource = R.drawable.fridge1;
-                            break;
-                        case R.id.rbRef2:
-                            imgSource = R.drawable.fridge2;
-                            break;
-                        case R.id.rbRef3:
-                            imgSource = R.drawable.fridge3;
-                            break;
-                    }
-
-                    Log.d("IMAGE", String.valueOf(R.drawable.fridge1));
-                    Log.d("IMAGE", imgSource+"");
+                    String type = ((RadioButton) findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
+                    Log.d(TAG , type);
 
 
                     // DB에 저장
-                    sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
+                    Response.Listener<String> responseListener = new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                boolean success = jsonObject.getBoolean("success");
+                                if(success){
+                                    Toast.makeText(getApplicationContext(), refName + " 추가되었습니다.", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }else{
+                                    Toast.makeText(getApplicationContext(), refName + " 추가 실패", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
 
-                    String str = "INSERT INTO refrigeratorTBL values('" +
-                            randomCode + "', '" +
-                            refName + "', " +
-                            imgSource + ");";
+                    RefrigeratorRequest registerRequest = new RefrigeratorRequest(randomCode, refName, type, responseListener); // 자료 다 들어있음. 상대방주소,데이터,데이터랩방식 등
+                    RequestQueue requestQueue = Volley.newRequestQueue(AddFridgeActivity.this);
+                    requestQueue.add(registerRequest);
 
-                    sqLiteDatabase.execSQL(str);
-                    sqLiteDatabase.close();
+//                    sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
+//
+//                    String str = "INSERT INTO refrigeratorTBL values('" +
+//                            randomCode + "', '" +
+//                            refName + "', " +
+//                            imgSource + ");";
+//
+//                    sqLiteDatabase.execSQL(str);
+//                    sqLiteDatabase.close();
 
                     // ArrayList에 저장
                     ShowFoodsFragment.refrigeratorList.add(new RefrigeratorData(randomCode, refName, imgSource));
 
-                    Toast.makeText(getApplicationContext(), refName + " 추가되었습니다.", Toast.LENGTH_LONG).show();
-                    finish();
                 }
             }
         });
