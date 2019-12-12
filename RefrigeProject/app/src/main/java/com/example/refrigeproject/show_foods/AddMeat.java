@@ -42,9 +42,10 @@ public class AddMeat extends Fragment {
 
     private void listInsertFoodData() {
         meatList.clear();
-        Integer[] meatID = {R.drawable.meat_chicken, R.drawable.meat_pork, R.drawable.meat_beef};
+        Integer[] meatID = {R.drawable.meat_eggs, R.drawable.meat_chicken, R.drawable.meat_chickenbreast, R.drawable.meat_chickenleg,
+                R.drawable.meat_chickenwings, R.drawable.meat_pork, R.drawable.meat_sirloinsteak, R.drawable.meat_beef};
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 8; i++) {
             meatList.add(new AddFoodGridViewData(meatID[i], AddFoodActivity.meatName[i]));
         }
 

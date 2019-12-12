@@ -42,9 +42,10 @@ public class AddInstant extends Fragment {
 
     private void listInsertFoodData() {
         instantList.clear();
-        Integer[] instantID = {R.drawable.instant_dimsum, R.drawable.instant_friedchicken, R.drawable.instant_fries,R.drawable.instant_noodles, R.drawable.instant_sausage, R.drawable.instant_spam};
+        Integer[] instantID = {R.drawable.instant_pizza,R.drawable.instant_burger,R.drawable.instant_dimsum, R.drawable.instant_friedchicken,
+                R.drawable.instant_fries,R.drawable.instant_noodles, R.drawable.instant_sausage, R.drawable.instant_spam};
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 8; i++) {
             instantList.add(new AddFoodGridViewData(instantID[i], AddFoodActivity.instantName[i]));
         }
 

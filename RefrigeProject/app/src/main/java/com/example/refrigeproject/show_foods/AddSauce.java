@@ -42,9 +42,11 @@ public class AddSauce extends Fragment {
 
     private void listInsertFoodData() {
         sauceList.clear();
-        Integer[] sauceID = {R.drawable.sauce_honey, R.drawable.sauce_jam, R.drawable.sauce_ketchup,R.drawable.sauce_mayonnaise, R.drawable.sauce_mustard, R.drawable.sauce_jar};
+        Integer[] sauceID = {R.drawable.sauce_dressing, R.drawable.sauce_mix, R.drawable.sauce_soybean,R.drawable.sauce_chilli,
+                R.drawable.sauce_soysauce,R.drawable.sauce_vinegar,R.drawable.sauce_porkcutlet,R.drawable.sauce_honey, R.drawable.sauce_jam,
+                R.drawable.sauce_ketchup,R.drawable.sauce_mayonnaise, R.drawable.sauce_mustard, R.drawable.sauce_jar};
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 13; i++) {
             sauceList.add(new AddFoodGridViewData(sauceID[i], AddFoodActivity.sauceName[i]));
         }
 

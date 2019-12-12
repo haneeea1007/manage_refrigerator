@@ -42,9 +42,10 @@ public class AddSeafood extends Fragment {
 
     private void listInsertFoodData() {
         seafoodList.clear();
-        Integer[] seafoodID = {R.drawable.seafood_anchovy, R.drawable.seafood_crab, R.drawable.seafood_salmon,R.drawable.seafood_shellfish, R.drawable.seafood_shrimp, R.drawable.seafood_squid};
+        Integer[] seafoodID = {R.drawable.seafood_seaweed, R.drawable.seafood_anchovy, R.drawable.seafood_crab, R.drawable.seafood_salmon,
+                R.drawable.seafood_shellfish, R.drawable.seafood_shrimp, R.drawable.seafood_squid,R.drawable.seafood_fish};
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             seafoodList.add(new AddFoodGridViewData(seafoodID[i], AddFoodActivity.seafoodName[i]));
         }
 

@@ -42,9 +42,10 @@ public class AddDrinks extends Fragment {
 
     private void listInsertFoodData() {
         drinksList.clear();
-        Integer[] drinkID = {R.drawable.drink_alcohol, R.drawable.drink_beverage, R.drawable.drink_juice,R.drawable.drink_softdrink, R.drawable.drink_soju, R.drawable.drink_water,R.drawable.drink_wine};
+        Integer[] drinkID = {R.drawable.drink_alcohol, R.drawable.drink_beverage, R.drawable.drink_juice,R.drawable.drink_softdrink,
+                R.drawable.drink_soju, R.drawable.drink_water,R.drawable.drink_wine};
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             drinksList.add(new AddFoodGridViewData(drinkID[i], AddFoodActivity.drinkName[i]));
         }
 

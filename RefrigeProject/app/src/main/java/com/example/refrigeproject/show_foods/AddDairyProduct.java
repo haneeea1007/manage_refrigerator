@@ -42,7 +42,8 @@ public class AddDairyProduct extends Fragment {
 
     private void listInsertFoodData() {
         dairyList.clear();
-        Integer[] dairyID = {R.drawable.dairy_butter, R.drawable.dairy_cream, R.drawable.dairy_milk,R.drawable.dairy_whipping, R.drawable.dairy_yogurt};
+        Integer[] dairyID = {R.drawable.dairy_butter, R.drawable.dairy_cream, R.drawable.dairy_milk,R.drawable.dairy_whipping,
+                R.drawable.dairy_yogurt};
 
         for (int i = 0; i < 5; i++) {
             dairyList.add(new AddFoodGridViewData(dairyID[i], AddFoodActivity.dairyName[i]));

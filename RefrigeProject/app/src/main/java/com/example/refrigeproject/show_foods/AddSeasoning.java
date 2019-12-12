@@ -42,9 +42,10 @@ public class AddSeasoning extends Fragment {
 
     private void listInsertFoodData() {
         seasoningList.clear();
-        Integer[] seasoningID = {R.drawable.seasoning_flour, R.drawable.seasoning_salt, R.drawable.seasoning_pepper,R.drawable.seasoning_sugar};
+        Integer[] seasoningID = {R.drawable.seasoning_flour, R.drawable.seasoning_salt, R.drawable.seasoning_pepper,R.drawable.seasoning_sugar,
+                R.drawable.seasoning_buchim, R.drawable.seasoning_currypowder,R.drawable.seaoning_powder};
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 7; i++) {
             seasoningList.add(new AddFoodGridViewData(seasoningID[i], AddFoodActivity.seasoningName[i]));
         }
 

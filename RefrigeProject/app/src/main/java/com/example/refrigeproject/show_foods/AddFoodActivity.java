@@ -39,15 +39,15 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
 
     public static HashMap<Integer, String[]> list = new HashMap<Integer, String[]>();
     public static String[] vegeName = {"오이", "브로콜리", "당근", "고추", "옥수수", "가지", "마늘", "무", "양파", "나물", "상추", "배추", "청경채", "버섯", "파프리카", "감자", "호박", "콩", "콩나무"};
-    public static String[] seafoodName = {"멸치", "게", "연어", "조개", "새우", "오징어"};
-    public static String[] sideName = {"카레", "피클", "찌개", "국", "반찬_직접입력"};
-    public static String[] instantName = {"만두", "치킨", "튀김", "라면", "소세지", "스팸"};
-    public static String[] meatName = {"닭고기", "돼지고기", "소고기"};
-    public static String[] drinkName = {"주류_직접입력", "음료_직접입력", "과일주스", "탄산음료", "소주", "물", "와인"};
-    public static String[] sauceName = {"꿀", "딸기잼", "케첩", "마요네즈", "머스타드", "소스_직접입력"};
     public static String[] fruitName = {"사과", "바나나", "블루베리", "체리", "포도", "키위", "레몬", "멜론", "오렌지", "복숭아", "배", "파인애플", "자두", "토마토", "수박"};
-    public static String[] dairyName = {"버터", "생크림", "우유", "휘핑크림", "새우", "요거트"};
-    public static String[] seasoningName = {"밀가루", "소금", "후추", "설탕"};
+    public static String[] meatName = {"달걀", "닭고기", "닭가슴살", "닭다리", "닭날개", "돼지고기_직접입력", "소등심","소고기_직접입력"};
+    public static String[] seafoodName = {"미역", "멸치", "게", "회", "조개", "새우", "오징어", "생선_직접입력"};
+    public static String[] dairyName = {"버터", "생크림", "우유", "휘핑크림", "요거트"};
+    public static String[] sideName = {"달걀","두부", "밥", "카레", "피클", "찌개", "국", "반찬_직접입력"};
+    public static String[] instantName = {"피자","햄버거","만두", "치킨", "튀김", "라면", "소세지", "스팸"};
+    public static String[] drinkName = {"주류_직접입력", "음료_직접입력", "과일주스", "탄산음료", "소주", "물", "와인"};
+    public static String[] sauceName = {"드레싱","쌈장", "된장","고추장","간장","식초","돈까스소스", "꿀", "딸기잼", "케첩", "마요네즈", "머스타드", "소스_직접입력"};
+    public static String[] seasoningName = {"밀가루", "소금", "후추", "설탕", "부침가루","카레가루", "조미료_직접입력"};
 
 
     public static int category;

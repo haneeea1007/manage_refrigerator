@@ -46,7 +46,7 @@ public class AddVegetable extends Fragment {
                 R.drawable.vege_eggplant, R.drawable.vege_garlic, R.drawable.vege_radish, R.drawable.vege_onion, R.drawable.vege_herbs, R.drawable.vege_lettuce,
         R.drawable.vege_cabbage, R.drawable.vege_chung, R.drawable.vege_mushrooms, R.drawable.vege_paprika, R.drawable.vege_potato, R.drawable.vege_pumpkin,
         R.drawable.vege_soybean, R.drawable.vege_sproutingbean};
-        for (int i = 0; i < vegeList.size(); i++) {
+        for (int i = 0; i < 19; i++) {
             vegeList.add(new AddFoodGridViewData(vegeID[i], AddFoodActivity.vegeName[i]));
         }
 

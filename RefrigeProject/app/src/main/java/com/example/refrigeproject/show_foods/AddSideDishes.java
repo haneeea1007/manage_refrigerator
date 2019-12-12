@@ -43,9 +43,10 @@ public class AddSideDishes extends Fragment {
 
     private void listInsertFoodData() {
         sideList.clear();
-        Integer[] sideID = {R.drawable.side_curry, R.drawable.side_pickles, R.drawable.side_pot, R.drawable.side_stew, R.drawable.side_food};
+        Integer[] sideID = {R.drawable.side_eggroll, R.drawable.side_tufu, R.drawable.side_rice, R.drawable.side_curry,
+                R.drawable.side_pickles, R.drawable.side_pot, R.drawable.side_stew, R.drawable.side_food};
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             sideList.add(new AddFoodGridViewData(sideID[i], AddFoodActivity.sideName[i]));
 
         }
