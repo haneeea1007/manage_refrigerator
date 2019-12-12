@@ -2,9 +2,11 @@ package com.example.refrigeproject.show_foods;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,16 +15,16 @@ import android.widget.Toast;
 import com.example.refrigeproject.R;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 
-public class GridViewAdapter extends BaseAdapter{
+public class GridViewAdapter extends BaseAdapter {
     private Context context;
     private int layout;
     private ArrayList<AddFoodGridViewData> list;
     private LayoutInflater layoutInflater;
     private TextView tvFoodName;
+
 
     public static int select = -1;
 
@@ -58,8 +60,9 @@ public class GridViewAdapter extends BaseAdapter{
 
         ImageView foodImageView = view.findViewById(R.id.foodImageView);
         tvFoodName = view.findViewById(R.id.tvFoodName);
-        ImageView ivFound = view.findViewById(R.id.ivFound);
+        final ImageView ivFound = view.findViewById(R.id.ivFound);
         final AddFoodGridViewData addFoodGridViewData = list.get(position);
+
         foodImageView.setImageResource(addFoodGridViewData.getImageID());
         tvFoodName.setText(addFoodGridViewData.getFoodName());
 
@@ -78,7 +81,18 @@ public class GridViewAdapter extends BaseAdapter{
 
         if ((select != -1) && (position == select)) {
             ivFound.setVisibility(View.VISIBLE);
+
+
             select = -1;
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    ivFound.setVisibility(View.GONE);
+                }
+            }, 3000);
+
         } else {
             // edt 지울 때, 완료 누를 때
             ivFound.setVisibility(View.INVISIBLE);
