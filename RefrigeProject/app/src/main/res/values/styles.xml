@@ -30,5 +30,9 @@
         <item name="android:layout_weight">1</item>
     </style>
 
+    <string name="kakao_app_key">5110c01f8aba94e677675b2320a6fa4e</string>
+
+    <!-- 디버그 키 -->
+    <!-- <string name="Sla/S0CWMZmvgO7mMsTGEz2RmRE="></string> -->
 
 </resources>
