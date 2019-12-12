@@ -38,7 +38,7 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
     private boolean find = false;
 
     public static HashMap<Integer, String[]> list = new HashMap<Integer, String[]>();
-    public static String[] vegeName = {"오이", "브로콜리", "당근", "고추", "옥수수", "가지", "마늘", "무", "양파"};
+    public static String[] vegeName = {"오이", "브로콜리", "당근", "고추", "옥수수", "가지", "마늘", "무", "양파", "나물", "상추", "배추", "청경채", "버섯", "파프리카", "감자", "호박", "콩", "콩나무"};
     public static String[] seafoodName = {"멸치", "게", "연어", "조개", "새우", "오징어"};
     public static String[] sideName = {"카레", "피클", "찌개", "국", "반찬_직접입력"};
     public static String[] instantName = {"만두", "치킨", "튀김", "라면", "소세지", "스팸"};
@@ -117,8 +117,8 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                 for (int i = 0; i < tabLayout.getTabCount(); i++) {
                     if (Arrays.asList(list.get(i)).contains(searchFood)) {
                         String[] selectList = list.get(i);
-                        for (int j = 0 ; j < selectList.length ; j++){
-                            if(selectList[j].equals(searchFood)){
+                        for (int j = 0; j < selectList.length; j++) {
+                            if (selectList[j].equals(searchFood)) {
                                 GridViewAdapter.select = j;
                                 break;
                             }
