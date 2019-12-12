@@ -32,6 +32,7 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
     private ImageButton ibtBack, ibtSearchToAddFood;
     private EditText edtSearchFood;
     public static String searchFood;
+    private boolean find=false;
 
     public static HashMap<Integer, String[]> list = new HashMap<Integer, String[]>();
     public static String[] vegeName = {"오이", "브로콜리", "당근", "고추", "옥수수", "가지", "마늘", "무", "양파"};
@@ -106,16 +107,19 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.ibtSearchToAddFood:
                 searchFood = edtSearchFood.getText().toString().trim();
-                Toast.makeText(getApplicationContext(), list.toString(), Toast.LENGTH_SHORT).show();
-                Log.d("TESTEST", list.toString());
+
 
                 for (int i = 0; i < tabLayout.getTabCount(); i++) {
                     if (Arrays.asList(list.get(i)).contains(searchFood)) {
 
                         TabLayout.Tab tab = tabLayout.getTabAt(i);
                         tab.select();
+                        find=true;
                         break;
                     }
+                }
+                if(!find){
+                    Toast.makeText(this,"검색한 식재료가 없습니다. 직접 입력해서 추가해 주세요.", Toast.LENGTH_LONG).show();
                 }
 
 

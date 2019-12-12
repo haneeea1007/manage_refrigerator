@@ -163,7 +163,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private void setData() {
         Intent intent = getIntent();
         String from = intent.getStringExtra("from");
-        Toast.makeText(getApplicationContext(), from, Toast.LENGTH_SHORT).show();
         switch (from) {
             case "GridViewAdapter":
                 int category = intent.getIntExtra("category", 0);

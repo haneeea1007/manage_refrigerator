@@ -63,7 +63,6 @@ public class GridViewAdapter extends BaseAdapter implements View.OnClickListener
         foodImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, AddFoodActivity.category+"", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, FoodDetailsActivity.class);
                 intent.putExtra("category",  AddFoodActivity.category);
                 intent.putExtra("section", addFoodGridViewData.getFoodName());
