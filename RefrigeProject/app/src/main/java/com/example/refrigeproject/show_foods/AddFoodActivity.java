@@ -35,7 +35,7 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
     private ImageButton ibtBack, ibtSearchToAddFood;
     private EditText edtSearchFood;
     public static String searchFood;
-    private boolean find=false;
+    private boolean find = false;
 
     public static HashMap<Integer, String[]> list = new HashMap<Integer, String[]>();
     public static String[] vegeName = {"오이", "브로콜리", "당근", "고추", "옥수수", "가지", "마늘", "무", "양파"};
@@ -88,9 +88,8 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         ibtBack.setOnClickListener(this);
         ibtSearchToAddFood.setOnClickListener(this);
 
-edtSearchFood.setOnKeyListener(this);
+        edtSearchFood.setOnKeyListener(this);
     }
-
 
 
     private void setList() {
@@ -115,18 +114,25 @@ edtSearchFood.setOnKeyListener(this);
             case R.id.ibtSearchToAddFood:
                 searchFood = edtSearchFood.getText().toString().trim();
 
-
                 for (int i = 0; i < tabLayout.getTabCount(); i++) {
                     if (Arrays.asList(list.get(i)).contains(searchFood)) {
-
+                        String[] selectList = list.get(i);
+                        for (int j = 0 ; j < selectList.length ; j++){
+                            if(selectList[j].equals(searchFood)){
+                                GridViewAdapter.select = j;
+                                break;
+                            }
+                        }
                         TabLayout.Tab tab = tabLayout.getTabAt(i);
                         tab.select();
-                        find=true;
+                        find = true;
                         break;
                     }
+
+
                 }
-                if(!find){
-                    Toast.makeText(this,"검색한 식재료가 없습니다. \n직접 입력해서 추가해 주세요.", Toast.LENGTH_LONG).show();
+                if (!find) {
+                    Toast.makeText(this, "검색한 식재료가 없습니다. \n직접 입력해서 추가해 주세요.", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -136,7 +142,7 @@ edtSearchFood.setOnKeyListener(this);
 
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-        if(keyCode==KeyEvent.KEYCODE_ENTER){
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
             ibtSearchToAddFood.callOnClick();
         }
         return true;

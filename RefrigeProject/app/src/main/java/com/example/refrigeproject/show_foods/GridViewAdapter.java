@@ -13,14 +13,18 @@ import android.widget.Toast;
 import com.example.refrigeproject.R;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 
-public class GridViewAdapter extends BaseAdapter implements View.OnClickListener {
+public class GridViewAdapter extends BaseAdapter{
     private Context context;
     private int layout;
     private ArrayList<AddFoodGridViewData> list;
     private LayoutInflater layoutInflater;
     private TextView tvFoodName;
+
+    public static int select = -1;
 
     public GridViewAdapter(Context context, int layout, ArrayList<AddFoodGridViewData> list) {
         this.context = context;
@@ -54,7 +58,7 @@ public class GridViewAdapter extends BaseAdapter implements View.OnClickListener
 
         ImageView foodImageView = view.findViewById(R.id.foodImageView);
         tvFoodName = view.findViewById(R.id.tvFoodName);
-
+        ImageView ivFound = view.findViewById(R.id.ivFound);
         final AddFoodGridViewData addFoodGridViewData = list.get(position);
         foodImageView.setImageResource(addFoodGridViewData.getImageID());
         tvFoodName.setText(addFoodGridViewData.getFoodName());
@@ -64,20 +68,22 @@ public class GridViewAdapter extends BaseAdapter implements View.OnClickListener
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FoodDetailsActivity.class);
-                intent.putExtra("category",  AddFoodActivity.category);
+                intent.putExtra("category", AddFoodActivity.category);
                 intent.putExtra("section", addFoodGridViewData.getFoodName());
                 intent.putExtra("image", addFoodGridViewData.getImageID());
-                intent.putExtra("from",  "GridViewAdapter");
+                intent.putExtra("from", "GridViewAdapter");
                 context.startActivity(intent);
             }
         });
+
+        if ((select != -1) && (position == select)) {
+            ivFound.setVisibility(View.VISIBLE);
+            select = -1;
+        } else {
+            // edt 지울 때, 완료 누를 때
+            ivFound.setVisibility(View.INVISIBLE);
+        }
         return view;
     }
 
-    @Override
-    public void onClick(View view) {
-
-
-
-    }
 }
