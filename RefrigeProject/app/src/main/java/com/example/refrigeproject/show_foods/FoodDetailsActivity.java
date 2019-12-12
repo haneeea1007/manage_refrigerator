@@ -15,11 +15,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,6 +35,9 @@ import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+
+import org.aviran.cookiebar2.CookieBar;
+import org.aviran.cookiebar2.OnActionClickListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,15 +62,26 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
     private File tempFile;
     private Calendar calendar;
+    private Calendar calendarTemp;
     private DBHelper dBHelper;
     private SQLiteDatabase sqLiteDatabase;
     private AlarmManager alarmManager;
 
-    int dateSetting;
-    boolean switchSetting;
-    String notiContent;
-    int alarmID;
-    String rdoClick;
+    private int dateSetting;
+    private int alarmID;
+    private boolean switchSetting;
+    private String notiContent;
+    private String rdoClick;
+
+//    private int getYearPur;
+//    private int getMonthPur;
+//    private int getDayPur;
+    private int getYearEx;
+    private int getMonthEx;
+    private int getDayEx;
+
+    private Long millis;
+    private Long millisTemp;
 
     // 리퀘스트코드
     private static final int PICK_FROM_CAMERA = 1;
@@ -82,6 +98,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         context = getApplicationContext();
         dBHelper = new DBHelper(context);
         calendar = Calendar.getInstance();
+        calendarTemp = Calendar.getInstance();
 
         ibtBack = findViewById(R.id.ibtBack);
         tvDone = findViewById(R.id.tvDone);
@@ -127,7 +144,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        Toast.makeText(context, "카메라 권한 요청이 허용되었습니다.", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "카메라 권한 요청이 허용되었습니다.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -147,8 +164,8 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         Intent intent = getIntent();
         String from = intent.getStringExtra("from");
         Toast.makeText(getApplicationContext(), from, Toast.LENGTH_SHORT).show();
-        switch (from){
-            case "GridViewAdapter" :
+        switch (from) {
+            case "GridViewAdapter":
                 int category = intent.getIntExtra("category", 0);
                 tvCategory.setText(getCategory(category)); // 타이틀로 바꾸기
 
@@ -163,17 +180,27 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private String getCategory(int category) {
-        switch (category){
-            case 0: return "야채";
-            case 1: return "과일";
-            case 2: return "육류";
-            case 3: return "해산물";
-            case 4: return "유제품";
-            case 5: return "반찬";
-            case 6: return "인스턴트";
-            case 7: return "음료";
-            case 8: return "양념";
-            case 9: return "조미료";
+        switch (category) {
+            case 0:
+                return "야채";
+            case 1:
+                return "과일";
+            case 2:
+                return "육류";
+            case 3:
+                return "해산물";
+            case 4:
+                return "유제품";
+            case 5:
+                return "반찬";
+            case 6:
+                return "인스턴트";
+            case 7:
+                return "음료";
+            case 8:
+                return "양념";
+            case 9:
+                return "조미료";
         }
         return null;
     }
@@ -188,6 +215,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 NotificationSetting();
 
                 Toast.makeText(context, foodName + " 추가되었습니다.", Toast.LENGTH_SHORT).show();
+
+                // 소비만료 날짜 확인
+//                Toast.makeText(context, calendar.get(Calendar.YEAR) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
                 finish();
 
                 break;
@@ -206,16 +236,28 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
                         // 알림 날짜 설정
-                        calendar.set(Calendar.YEAR, year);
-                        calendar.set(Calendar.MONTH, month);
-                        calendar.set(Calendar.DATE, dayOfMonth);
-                        
+                        calendarTemp.set(Calendar.YEAR, year);
+                        calendarTemp.set(Calendar.MONTH, month);
+                        calendarTemp.set(Calendar.DATE, dayOfMonth);
+
+                        // 현재보다 이후이면 등록 못하도록 함
+                        if (calendarTemp.after(Calendar.getInstance())) {
+                            Toast.makeText(context, "현재 날짜 이후로 설정할 수 없습니다.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+//                        getYearPur = year;
+//                        getMonthPur = month;
+//                        getDayPur = dayOfMonth;
+
+                        millisTemp = calendarTemp.getTimeInMillis();
+
                         // 날짜 표시
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                        tvPurchaseDate.setText(String.valueOf(format.format(calendar.getTime())));
+                        tvPurchaseDate.setText(String.valueOf(format.format(calendarTemp.getTime())));
 
                     }
-                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                }, calendarTemp.get(Calendar.YEAR), calendarTemp.get(Calendar.MONTH), calendarTemp.get(Calendar.DAY_OF_MONTH));
                 dialog.show();
 
 
@@ -228,10 +270,29 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 DatePickerDialog dialog2 = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        // 알림 날짜 설정
+
+                        // 알림 날짜 설정, 0시 0분
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DATE, dayOfMonth);
+                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0);
+
+                        // 현재 날짜, 0시 0분
+                        Calendar today = Calendar.getInstance();
+                        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH) -1, 0, 0);
+
+                        // 현재 날짜보다 이전이면 등록 못하도록 함
+                        if (calendar.before(today)) {
+//                        if (calendar.getTimeInMillis() < today.getTimeInMillis()) {
+                            Toast.makeText(context, "현재 날짜 이전으로 설정할 수 없습니다.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        getYearEx = year;
+                        getMonthEx = month;
+                        getDayEx = dayOfMonth;
+
+                        millis = calendar.getTimeInMillis();
 
                         // 날짜 표시
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -246,28 +307,28 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             case R.id.tvRefrige:
                 // 냉장고 선택
 
-//                CookieBar.build(FoodDetailsActivity.this)
-//                        .setCustomView(R.layout.cookiebar_select_fridge)
-//                        .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
-//                            @Override
-//                            public void initView(View view) {
-//
-//                                ListView listView = view.findViewById(R.id.listView);
-//                                ListViewAdapter listViewAdapter = new ListViewAdapter(FoodDetailsActivity.this, tvRefrige);
-//                                listView.setAdapter(listViewAdapter);
-//                            }
-//                        })
-//                        .setAction("Close", new OnActionClickListener() {
-//                            @Override
-//                            public void onClick() {
-//                                CookieBar.dismiss(FoodDetailsActivity.this);
-//                            }
-//                        })
-//                        .setSwipeToDismiss(true)
-//                        .setEnableAutoDismiss(true)
-//                        .setDuration(5000)
-//                        .setCookiePosition(CookieBar.BOTTOM)
-//                        .show();
+                CookieBar.build(FoodDetailsActivity.this)
+                        .setCustomView(R.layout.cookiebar_select_fridge)
+                        .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
+                            @Override
+                            public void initView(View view) {
+
+                                ListView listView = view.findViewById(R.id.listView);
+                                ListViewAdapter listViewAdapter = new ListViewAdapter(FoodDetailsActivity.this, tvRefrige);
+                                listView.setAdapter(listViewAdapter);
+                            }
+                        })
+                        .setAction("Close", new OnActionClickListener() {
+                            @Override
+                            public void onClick() {
+                                CookieBar.dismiss(FoodDetailsActivity.this);
+                            }
+                        })
+                        .setSwipeToDismiss(true)
+                        .setEnableAutoDismiss(true)
+                        .setDuration(5000)
+                        .setCookiePosition(CookieBar.BOTTOM)
+                        .show();
 
                 // 선택한 값 받아서 디비에 넣기
 
@@ -312,6 +373,12 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     // 알람 연결
     private void NotificationSetting() {
 
+        // 소비만료 일자가 구입일자보다 이전일 때
+        if (millis <= millisTemp) {
+            Toast.makeText(context, "소비만료 일자가 구입일자보다 이전일 수 없습니다." + '\n' + "다시 선택해 주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // 추가할 때 DB문 (INSERT)
         if (FROM_ADD_OR_EDIT == 1) {
 
@@ -347,12 +414,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
         //=========================================================================================//
 
-        // 알람 날짜 및 시간 설정 (소비만료 일자)
-
-        int getYear = (datePicker.getYear());
-        int getMonth = (datePicker.getMonth());
-        int getDay = (datePicker.getDayOfMonth());
-
         // 인텐트로 셋팅값 가져오기
         Intent settingIntent = getIntent();
         dateSetting = settingIntent.getIntExtra("dateSetting", dateSetting);
@@ -361,8 +422,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         // 설정탭에서 인텐트를통해 여기로 체크값을 보냄 (1일전 = 1, 3일전 = 3, 7일전 = 7)
         // 여기서 인텐트를통해 리시버로 1일전, 3일전, 5일전의 날짜를 보냄
         // 리시버에서 스위치값을 감지해서 if else 문으로 서비스로 전달
-
-        Long millis = calendar.getTimeInMillis();
 
         // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
         if (dateSetting == 1) {
@@ -378,21 +437,16 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         }
 
         // 캘린더에 셋팅함 (시간은 오후 4시 0분 0초)
-        calendar.set(Calendar.YEAR, getYear);
-        calendar.set(Calendar.MONTH, getMonth);
-        calendar.set(Calendar.DAY_OF_MONTH, getDay);
+        calendar.set(Calendar.YEAR, getYearEx);
+        calendar.set(Calendar.MONTH, getMonthEx);
+        calendar.set(Calendar.DAY_OF_MONTH, getDayEx);
         calendar.set(Calendar.HOUR_OF_DAY, 16);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        // 현재보다 이전이면 등록 못하도록 함
-        if (calendar.before(Calendar.getInstance())) {
-            Toast.makeText(context, "현재보다 이전일 수 없습니다.", Toast.LENGTH_LONG).show();
-            return;
-        }
-
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+        // 구입일자가 소비만료일자보다 이상이면 안됨
 
         // 미완성!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //=======================================================================================//4
