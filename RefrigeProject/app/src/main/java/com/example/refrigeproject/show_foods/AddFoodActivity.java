@@ -2,9 +2,12 @@ package com.example.refrigeproject.show_foods;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class AddFoodActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddFoodActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
     private FragmentPagerAdapter fragmentPagerAdapter;
     private ViewPager viewPager;
@@ -84,7 +87,11 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
 
         ibtBack.setOnClickListener(this);
         ibtSearchToAddFood.setOnClickListener(this);
+
+edtSearchFood.setOnKeyListener(this);
     }
+
+
 
     private void setList() {
         AddFoodActivity.list.put(0, vegeName);
@@ -119,12 +126,20 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
                 if(!find){
-                    Toast.makeText(this,"검색한 식재료가 없습니다. 직접 입력해서 추가해 주세요.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,"검색한 식재료가 없습니다. \n직접 입력해서 추가해 주세요.", Toast.LENGTH_LONG).show();
                 }
 
 
                 break;
         }
+    }
+
+    @Override
+    public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+        if(keyCode==KeyEvent.KEYCODE_ENTER){
+            ibtSearchToAddFood.callOnClick();
+        }
+        return true;
     }
 
     private class AddFoodViewPagerAdapter extends FragmentPagerAdapter {

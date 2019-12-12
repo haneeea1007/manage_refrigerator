@@ -33,9 +33,10 @@
         android:textSize="20sp"/>
     <EditText
         android:id="@+id/edtSearchFood"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:singleLine="true"/>
     <ImageButton
         android:id="@+id/ibtSearchToAddFood"
         android:layout_width="wrap_content"
