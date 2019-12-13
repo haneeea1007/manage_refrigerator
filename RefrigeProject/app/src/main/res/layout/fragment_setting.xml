@@ -42,31 +42,34 @@
     <LinearLayout
         android:id="@+id/llAlarm"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_vertical">
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
+        android:padding="10dp">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/fridge" />
+            android:src="@drawable/clock" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="알람 설정"/>
+            android:text="알람 설정" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="on"/>
+            android:text="on" />
 
         <Switch
             android:id="@+id/switchAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="10dp"
             android:checked="true" />
     </LinearLayout>
 
@@ -114,20 +117,22 @@
     <LinearLayout
         android:id="@+id/llManage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_vertical">
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
+        android:padding="10dp">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/fridge" />
+            android:src="@drawable/fridgemain" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="내 냉장고 관리"/>
+            android:text="내 냉장고 관리" />
     </LinearLayout>
 
     <View style="@style/Divider"/>
@@ -135,20 +140,22 @@
     <LinearLayout
         android:id="@+id/llShare"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_vertical">
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
+        android:padding="10dp">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/fridge" />
+            android:src="@drawable/share" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="냉장고 공유하기"/>
+            android:text="냉장고 공유하기" />
     </LinearLayout>
 
     <View style="@style/Divider"/>
@@ -156,20 +163,22 @@
     <LinearLayout
         android:id="@+id/llReport"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_vertical">
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
+        android:padding="10dp">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/fridge" />
+            android:src="@drawable/letter" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="개발자 문의 하기"/>
+            android:text="개발자 문의 하기" />
     </LinearLayout>
 
     <View style="@style/Divider"/>
@@ -177,15 +186,16 @@
     <LinearLayout
         android:id="@+id/llLogout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:gravity="center_vertical"
         android:padding="10dp">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/fridge" />
+            android:src="@drawable/outdoor" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/cookie"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:background="#673AB7"
-    android:id="@+id/cookie">
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:padding="5dp">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:textSize="20sp"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
         android:gravity="center"
-        android:text="냉장고 선택"/>
+        android:text="냉장고 선택"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 </LinearLayout>

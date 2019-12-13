@@ -9,6 +9,6 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:padding="10dp"
-        android:background="#AB99CC" />
+        android:background="@color/colorPrimary" />
 
 </LinearLayout>

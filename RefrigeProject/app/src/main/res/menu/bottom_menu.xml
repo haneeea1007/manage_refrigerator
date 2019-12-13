@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/action_1"
+    <item
+        android:id="@+id/action_1"
         android:enabled="true"
-        android:icon="@drawable/fridge"
-        android:title="달력"/>
+        android:icon="@drawable/calendar"
+        android:title="달력" />
 
-    <item android:id="@+id/action_2"
+    <item
+        android:id="@+id/action_2"
         android:enabled="true"
-        android:icon="@drawable/fridge"
-        android:title="레시피"/>
+        android:icon="@drawable/cook"
+        android:title="레시피" />
 
-    <item android:id="@+id/action_3"
+    <item
+        android:id="@+id/action_3"
         android:enabled="true"
-        android:icon="@drawable/fridge"
-        android:title="냉장고"/>
+        android:icon="@drawable/fridgemain"
+        android:title="냉장고" />
 
-    <item android:id="@+id/action_4"
+    <item
+        android:id="@+id/action_4"
         android:enabled="true"
-        android:icon="@drawable/fridge"
-        android:title="장보기"/>
+        android:icon="@drawable/cart"
+        android:title="장보기" />
 
-    <item android:id="@+id/action_5"
+    <item
+        android:id="@+id/action_5"
         android:enabled="true"
-        android:icon="@drawable/fridge"
-        android:title="설정"/>
+        android:icon="@drawable/setting"
+        android:title="설정" />
 
 </menu>
