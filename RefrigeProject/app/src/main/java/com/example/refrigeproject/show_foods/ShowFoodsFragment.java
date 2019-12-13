@@ -380,7 +380,8 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         public class ItemViewHolder extends RecyclerView.ViewHolder {
             TextView tvFoodName;
             CheckBox checkBox;
-            ImageView delete, open;
+            ImageView open;
+            TextView delete;
 
             ItemViewHolder(View itemView) {
                 super(itemView);
