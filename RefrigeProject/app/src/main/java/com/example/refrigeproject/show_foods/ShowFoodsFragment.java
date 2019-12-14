@@ -48,6 +48,7 @@ import com.example.refrigeproject.database.GetRefrigerator;
 import com.example.refrigeproject.database.ManageRequest;
 import com.example.refrigeproject.search_recipe.Recipe;
 import com.example.refrigeproject.setting.AddFridgeActivity;
+import com.example.refrigeproject.setting.ManageFridgeActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.shuhart.stickyheader.StickyAdapter;
 import com.shuhart.stickyheader.StickyHeaderItemDecorator;
@@ -523,9 +524,58 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 ((ItemViewHolder) holder).delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d("onClick", item.getName() + position +" "+ item.sectionPosition());
-                        items.remove(position);
-                        notifyDataSetChanged();
+                        // DB에서 삭제
+                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                        Log.d(TAG, MainActivity.strId);
+
+                        // Initialize a new JsonArrayRequest instance
+                        StringRequest jsonArrayRequest = new StringRequest(
+                                Request.Method.POST,
+                                "http://jms1132.dothome.co.kr/deleteFood.php",
+                                new Response.Listener<String>() {
+
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(response);
+                                            boolean success = jsonObject.getBoolean("success");
+                                            if(success){
+                                                // 삭제 확인
+                                                simpleCookieBar(item.getName() + "을(를) 삭제하였습니다.");
+//                                                Toast.makeText(getContext(), item.getName() + "(을)를 삭제에 하였습니다.", Toast.LENGTH_SHORT).show();
+
+                                                // 데이터 변경 알림
+                                                Log.d("onClick", item.getName() + position +" "+ item.sectionPosition());
+                                                items.remove(position);
+                                                notifyDataSetChanged();
+                                            } else {
+                                                simpleCookieBar("삭제에 실패하였습니다.");
+//                                                Toast.makeText(getContext(), ".", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                },
+                                new Response.ErrorListener(){
+                                    @Override
+                                    public void onErrorResponse(VolleyError error){
+                                        // Do something when error occurred
+                                        Log.d(TAG, error.toString());
+                                    }
+
+                                }
+
+                        ){
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> params = new HashMap<>();
+                                // 보내줄 인자
+                                params.put("id", String.valueOf(item.getId()));
+                                return params;
+                            }
+                        };
+                        requestQueue.add(jsonArrayRequest);
                     }
                 });
 
@@ -610,6 +660,16 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 open = itemView.findViewById(R.id.open);
             }
         }
+    }
+
+    public void simpleCookieBar(String message){
+        CookieBar.build(getActivity())
+                .setTitle(message)
+                .setSwipeToDismiss(true)
+                .setEnableAutoDismiss(true)
+                .setDuration(2000)
+                .setCookiePosition(CookieBar.BOTTOM)
+                .show();
     }
 
     // 프래그먼트 간 데이터 전달을 위한 인터페이스
