@@ -74,7 +74,7 @@ public class GridViewAdapter extends BaseAdapter {
                 intent.putExtra("category", AddFoodActivity.category);
                 intent.putExtra("section", addFoodGridViewData.getFoodName());
                 intent.putExtra("image", addFoodGridViewData.getImageID());
-                intent.putExtra("from", "GridViewAdapter");
+                intent.setAction("add");
                 context.startActivity(intent);
             }
         });

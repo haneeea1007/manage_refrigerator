@@ -189,16 +189,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
 //        switch (from) {
 //            case "GridViewAdapter":
-//                int category = intent.getIntExtra("category", 0);
-//                tvCategory.setText(getCategory(category)); // 타이틀로 바꾸기
-//
-//                String section = intent.getStringExtra("section");
-//                tvGroup.setText(section);
-//                edtName.setText(section);
-//
-//                int image = intent.getIntExtra("image", 0);
-//                foodImage.setImageResource(image);
-//                break;
+
 //        }
 
         switch(action){
@@ -220,6 +211,15 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                 break;
             case "add":
+                int category = intent.getIntExtra("category", 0);
+                tvCategory.setText(getCategory(category)); // 타이틀로 바꾸기
+
+                String section = intent.getStringExtra("section");
+                tvGroup.setText(section);
+                edtName.setText(section);
+
+                int image = intent.getIntExtra("image", 0);
+                foodImage.setImageResource(image);
                 break;
         }
     }
