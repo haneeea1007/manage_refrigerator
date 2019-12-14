@@ -52,6 +52,7 @@ class ListViewAdapter extends BaseAdapter {
                 tvFridgeName.setText(ShowFoodsFragment.refrigeratorList.get(position).getName());
                 Log.d("log", ShowFoodsFragment.refrigeratorList.get(position).getName());
 
+
                 CookieBar.dismiss(activity);
             }
         });

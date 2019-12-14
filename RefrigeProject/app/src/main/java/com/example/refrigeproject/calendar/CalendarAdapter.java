@@ -13,9 +13,24 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.show_foods.FoodData;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CalendarAdapter extends BaseAdapter {
     private final static String TAG = "CalendarAdapter";
@@ -72,9 +87,9 @@ public class CalendarAdapter extends BaseAdapter {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.month_item, null);
 
-        ImageView ivMark = view.findViewById(R.id.ivMark);
+        final ImageView ivMark = view.findViewById(R.id.ivMark);
         TextView tvDayValue = view.findViewById(R.id.tvDayValue);
-        TextView tvEvent = view.findViewById(R.id.tvEvent);
+        final TextView tvEvent = view.findViewById(R.id.tvEvent);
 
         int day = items[position].getDayValue();
         if(day != 0) tvDayValue.setText(String.valueOf(day));
@@ -92,7 +107,6 @@ public class CalendarAdapter extends BaseAdapter {
 
         String event = null;
         Log.d("12/20", items[19].isMark()+"");
-
 
 //            tvEvent.setText(items[position].getEvent());
         // DB에서 가져오기 /////////////////////////////////////////////////////
@@ -118,6 +132,62 @@ public class CalendarAdapter extends BaseAdapter {
 //        sqLiteDatabase.close();
 
         ////////////////////////////////////////////////////////////////////////////
+        final String date = currentYear + "-" + currentMonth + "-" + String.valueOf(day);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        Log.d(TAG, MainActivity.strId);
+
+        // Initialize a new JsonArrayRequest instance
+        StringRequest jsonArrayRequest = new StringRequest(
+                Request.Method.POST,
+                "http://jms1132.dothome.co.kr/getExpirationDate.php",
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        try{
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("food");
+
+                            Log.d("calendar event size",jsonArray.length()+"");
+
+                            for(int i = 0 ; i < jsonArray.length() ; i++) {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                FoodData data = new FoodData();
+
+                                data.setName(object.getString("name"));
+
+                                tvEvent.setText(data.getName());
+                                ivMark.setImageResource(R.drawable.circle);
+                            }
+
+                        }catch (JSONException e){
+                            Log.d(TAG, e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Log.d(TAG, error.toString());
+                    }
+
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // 보내줄 인자
+                params.put("id", MainActivity.strId);
+                params.put("date", date);
+                return params;
+            }
+        };
+
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
 
         return view;
     }

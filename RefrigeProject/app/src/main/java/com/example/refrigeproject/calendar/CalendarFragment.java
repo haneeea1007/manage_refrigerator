@@ -22,14 +22,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
+import com.example.refrigeproject.show_foods.FoodData;
+import com.example.refrigeproject.show_foods.RefrigeratorData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CalendarFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     View view;
@@ -46,7 +58,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
     private RecyclerViewAdapter recyclerAdapter;
 
     //달력
-    private final static String TAG = "MainActivity";
+    private final static String TAG = "CalendarFragment";
 
     GridView gvCalendar;
     Button btnPrevious, btnNext;
@@ -78,12 +90,17 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         tvYearMonth = view.findViewById(R.id.tvYearMonth);
 
         setSeasonalFoodInfo();
+        setExpirationDate();
 
         ibtPrev.setOnClickListener(this);
         ibtNext.setOnClickListener(this);
         gvCalendar.setOnItemClickListener(this);
 
         return view;
+    }
+
+    private void setExpirationDate() {
+
     }
 
     private void setSeasonalFoodInfo() {

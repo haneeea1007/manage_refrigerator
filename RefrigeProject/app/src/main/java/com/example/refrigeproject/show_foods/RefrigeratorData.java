@@ -3,12 +3,15 @@ package com.example.refrigeproject.show_foods;
 public class RefrigeratorData {
     String code;
     String name;
-    int imgResource;
+    String type;
 
-    public RefrigeratorData(String code, String name, int imgResource) {
+    public RefrigeratorData() {
+    }
+
+    public RefrigeratorData(String code, String name, String type) {
         this.code = code;
         this.name = name;
-        this.imgResource = imgResource;
+        this.type = type;
     }
 
     public String getCode() {
@@ -19,9 +22,19 @@ public class RefrigeratorData {
         return name;
     }
 
-    public int getImgResource() {
-        return imgResource;
+    public String getType() {
+        return type;
     }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

@@ -44,7 +44,7 @@ public class SeasonFoodDetails extends AppCompatActivity implements View.OnClick
     }
     public void setData(){
         String effect;
-        effect = food.getEffect().replace("-", "\n").replace("?", "");
+        effect = food.getEffect().replace("-", "\n");
 
         tvFoodName.setText(food.getFoodName());
         tvCategory.setText(food.getClassification());

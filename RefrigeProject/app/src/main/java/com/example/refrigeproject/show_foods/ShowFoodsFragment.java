@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,23 +22,50 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.daimajia.swipe.SwipeLayout;
 import com.example.refrigeproject.DBHelper;
+import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.calendar.SeasonalFood;
+import com.example.refrigeproject.database.GetRefrigerator;
+import com.example.refrigeproject.database.ManageRequest;
+import com.example.refrigeproject.search_recipe.Recipe;
+import com.example.refrigeproject.setting.AddFridgeActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.shuhart.stickyheader.StickyAdapter;
 import com.shuhart.stickyheader.StickyHeaderItemDecorator;
 
 import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 public class ShowFoodsFragment extends Fragment implements View.OnClickListener {
@@ -51,6 +79,8 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
     ArrayList<Section> items = new ArrayList<>();
     SectionAdapter adapter;
+
+    public static RefrigeratorData selectedFridge;
 
     // 냉장고 리스트
     public static ArrayList<RefrigeratorData> refrigeratorList = new ArrayList<RefrigeratorData>();
@@ -81,7 +111,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
 
-
         // 테이블 생성 및 냉장고 세팅
         foodDBHelper = new DBHelper(getContext());
         getRefrigeratorData();
@@ -94,7 +123,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         rvFoods.setAdapter(adapter);
         StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(adapter);
         decorator.attachToRecyclerView(rvFoods);
-        setFoodsData(adapter);
+
 
         setHasOptionsMenu(true);
         return view;
@@ -102,45 +131,220 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
     private void setFoodsData(SectionAdapter adapter) {
         items.add(new SectionHeader(1));
-        items.add(new FoodData(1, "냉장템1 "));
+        Log.d("ThreadName", Thread.currentThread().getName()+"");
+        FoodData foodData = new FoodData();
+        foodData.setPostion(1);
+        foodData.setName("왕감자");
+        foodData.setCategory("야채");
+        foodData.setSection("감자");
+        foodData.setMemo("베란다에 있음");
+        foodData.setPlace("실온");
+
+
+        items.add(foodData);
+//        items.addAll(selectItems("냉장"));
+        Log.d("setFoodsData 1", items.size()+"");
         items.add(new FoodData(1, "냉장템2 "));
-        items.add(new FoodData(1, "냉장템3 "));
-        items.add(new FoodData(1, "냉장템4 "));
+//        items.add(new FoodData(1, "냉장템3 "));
+//        items.add(new FoodData(1, "냉장템4 "));
 
         items.add(new SectionHeader(2));
-        items.add(new FoodData(2, "냉동템1 "));
-        items.add(new FoodData(2, "냉동템2 "));
-        items.add(new FoodData(2, "냉동템3 "));
-        items.add(new FoodData(2, "냉동템4 "));
+//        selectItems(items,"냉동");
+//        items.addAll(selectItems("냉동"));
+        Log.d("setFoodsData 2", items.size()+"");
+//        items.add(new FoodData(2, "냉동템1 "));
+//        items.add(new FoodData(2, "냉동템2 "));
+//        items.add(new FoodData(2, "냉동템3 "));
+//        items.add(new FoodData(2, "냉동템4 "));
 
+//        selectItems(items,"실온");
+//        selectItems("실온");
         items.add(new SectionHeader(3));
-        items.add(new FoodData(3, "실온템1 "));
-        items.add(new FoodData(3, "실온템2 "));
-        items.add(new FoodData(3, "실온템3 "));
-        items.add(new FoodData(3, "실온템4 "));
-        items.add(new FoodData(3, "실온템5 "));
-        items.add(new FoodData(3, "실온템6 "));
+        Log.d("setFoodsData 3", items.size()+"");
+//        items.add(new FoodData(3, "실온템1 "));
+//        items.add(new FoodData(3, "실온템2 "));
+//        items.add(new FoodData(3, "실온템3 "));
+//        items.add(new FoodData(3, "실온템4 "));
+//        items.add(new FoodData(3, "실온템5 "));
+//        items.add(new FoodData(3, "실온템6 "));
 
         adapter.items = items;
         adapter.notifyDataSetChanged();
     }
 
+    private ArrayList<FoodData> selectItems(final String place) {
+        final ArrayList<FoodData> dbList = new ArrayList<FoodData>();;
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        StringRequest jsonArrayRequest = new StringRequest(
+                Request.Method.POST,
+                "http://jms1132.dothome.co.kr/getFoodByPlace.php",
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        try{
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("food");
+
+                            Log.d("testest " + place,jsonArray.length()+"");
+                            Log.d("ThreadName", Thread.currentThread().getName()+"");
+
+                            for(int i = 0 ; i < jsonArray.length() ; i++) {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                FoodData foodData = new FoodData();
+
+                                if(place.equals("냉장")){
+                                    foodData.setPostion(1);
+                                } else if(place.equals("냉동")){
+                                    foodData.setPostion(2);
+                                } else if(place.equals("실온")){
+                                    foodData.setPostion(3);
+                                }
+
+                                foodData.setId(object.getInt("id"));
+                                foodData.setCategory(object.getString("category"));
+                                foodData.setSection(object.getString("section"));
+                                foodData.setName(object.getString("name"));
+                                foodData.setImagePath(object.getString("imagePath"));
+                                foodData.setMemo(object.getString("memo"));
+                                foodData.setPurchaseDate(object.getString("purchaseDate"));
+                                foodData.setExpirationDate(object.getString("expirationDate"));
+                                foodData.setCode(object.getString("code"));
+                                foodData.setPlace(object.getString("place"));
+                                foodData.setAlarmID(object.getInt("alarmID"));
+
+                                dbList.add(foodData);
+                                items.add(foodData);
+
+                                //debug
+                                Log.d(TAG, items.size()+"");
+                                Log.d(TAG, foodData.getName());
+                                Log.d(TAG, foodData.getPlace());
+                                Log.d(TAG, foodData.getImagePath());
+                                Log.d(TAG, foodData.getId()+"");
+                                Log.d(TAG, foodData.getCategory());
+                                Log.d(TAG, foodData.getAlarmID()+"");
+                                Log.d(TAG, foodData.getPurchaseDate());
+                                Log.d(TAG, dbList.size()+"");
+
+                                Log.d("setFoodsData 1", items.size()+"");
+                            }
+
+                        }catch (JSONException e){
+                            Log.d("testest","catch");
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Log.d(TAG, error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // 보내줄 인자
+                params.put("code", selectedFridge.getCode());
+                params.put("place", place);
+                return params;
+            }
+        };
+
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
+
+        return dbList;
+    }
+
     // 냉장고 정보 가져오기
     private void getRefrigeratorData() {
         refrigeratorList.clear();
-        Log.d(TAG, "getRefrigeratorData");
-        sqLite = foodDBHelper.getReadableDatabase();
+        // Initialize a new RequestQueue instance
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        Log.d("testest","getRefrigeratorData");
+        Log.d("testest 아이디",MainActivity.strId);
 
-        String sql = "SELECT * FROM refrigeratorTBL;";
-        Cursor cursor = sqLite.rawQuery(sql,null);
+        // Initialize a new JsonArrayRequest instance
+        StringRequest jsonArrayRequest = new StringRequest(
+                Request.Method.POST,
+                "http://jms1132.dothome.co.kr/getFridgeByUser.php",
+                new Response.Listener<String>() {
 
-        RefrigeratorData data = null;
-        while (cursor.moveToNext()) {
-            data = new RefrigeratorData(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
-            refrigeratorList.add(data);
-        }
-        cursor.close();
-        sqLite.close();
+                    @Override
+                    public void onResponse(String response) {
+                        try{
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("refrigerator");
+
+                            Log.d("testest",jsonArray.length()+"");
+
+                            for(int i = 0 ; i < jsonArray.length() ; i++) {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                RefrigeratorData refrigerator = new RefrigeratorData();
+
+                                refrigerator.setCode(object.getString("code"));
+                                refrigerator.setName(object.getString("name"));
+                                refrigerator.setType(object.getString("type"));
+
+                                refrigeratorList.add(refrigerator);
+                                Log.d(TAG, refrigerator.getName());
+
+                            }
+
+                            // 첫 냉장고 값 세팅
+                            selectedFridge = refrigeratorList.get(0);
+                            tvFridgeName.setText(selectedFridge.getName());
+                            setFoodsData(adapter);
+
+                            selectItems("냉장");
+                            selectItems("냉동");
+                            selectItems("실온");
+
+                        }catch (JSONException e){
+                            Log.d("testest","catch");
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Log.d(TAG, error.toString());
+                    }
+
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // 보내줄 인자
+                params.put("id", MainActivity.strId);
+                return params;
+            }
+        };
+
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
+
+
+//        Log.d(TAG, "getRefrigeratorData");
+//        sqLite = foodDBHelper.getReadableDatabase();
+//
+//        String sql = "SELECT * FROM refrigeratorTBL;";
+//        Cursor cursor = sqLite.rawQuery(sql,null);
+//
+//        RefrigeratorData data = null;
+//        while (cursor.moveToNext()) {
+//            data = new RefrigeratorData(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
+//            refrigeratorList.add(data);
+//        }
+//        cursor.close();
+//        sqLite.close();
     }
 
     @Override
@@ -267,26 +471,28 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             if (type == Section.HEADER) {
                 switch (section){
                     case 1:
-                        ((HeaderViewholder) holder).tvHeader.setText("냉장 " + section);
+                        ((HeaderViewholder) holder).tvHeader.setText("냉장");
                         break;
                     case 2:
-                        ((HeaderViewholder) holder).tvHeader.setText("냉동 " + section);
+                        ((HeaderViewholder) holder).tvHeader.setText("냉동");
                         break;
                     case 3:
-                        ((HeaderViewholder) holder).tvHeader.setText("실온 " + section);
+                        ((HeaderViewholder) holder).tvHeader.setText("실온");
                         break;
                 }
 
             } else if (type == Section.ITEM){
                 final FoodData item = (FoodData) items.get(position); // 해당 item 객체
-                ((ItemViewHolder) holder).tvFoodName.setText("Item " + item.getName() + position);
+                ((ItemViewHolder) holder).tvFoodName.setText(item.getName());
 
-                // 모드에 따른 Visibility 설정
+                // 모드에 따른 Visibility, swipe 설정
                 if(removeMode){
                     ((ItemViewHolder) holder).checkBox.setVisibility(View.VISIBLE);
+                    ((ItemViewHolder) holder).swipeLayout.setSwipeEnabled(false);
                 }else{
                     ((ItemViewHolder) holder).checkBox.setVisibility(View.GONE);
                     ((ItemViewHolder) holder).checkBox.setChecked(false);
+                    ((ItemViewHolder) holder).swipeLayout.setSwipeEnabled(true);
                 }
 
                 // 체크박스 리스너
@@ -307,7 +513,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle(1);
-                        bundle.putString("name", item.getName());
+                        bundle.putString("name", item.getSection());
                         mListener.onFragmentInteraction(bundle);
                         // 로딩이 길다 ..
                     }
@@ -320,6 +526,16 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                         Log.d("onClick", item.getName() + position +" "+ item.sectionPosition());
                         items.remove(position);
                         notifyDataSetChanged();
+                    }
+                });
+
+                ((ItemViewHolder)holder).tvFoodName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), FoodDetailsActivity.class);
+                        intent.putExtra("food", item); // 음식 정보 전달하기
+                        intent.setAction("edit");
+                        startActivity(intent);
                     }
                 });
 
@@ -351,13 +567,13 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             // 상단에 헤더가 붙어 있을 때
             switch (headerPosition){
                 case 1:
-                    ((HeaderViewholder) holder).tvHeader.setText("냉장 " + headerPosition);
+                    ((HeaderViewholder) holder).tvHeader.setText("냉장");
                     break;
                 case 2:
-                    ((HeaderViewholder) holder).tvHeader.setText("냉동 " + headerPosition);
+                    ((HeaderViewholder) holder).tvHeader.setText("냉동");
                     break;
                 case 3:
-                    ((HeaderViewholder) holder).tvHeader.setText("실온 " + headerPosition);
+                    ((HeaderViewholder) holder).tvHeader.setText("실온");
                     break;
             }
 
@@ -378,6 +594,8 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         }
 
         public class ItemViewHolder extends RecyclerView.ViewHolder {
+            SwipeLayout swipeLayout;
+//            ConstraintLayout constraintLayout;
             TextView tvFoodName;
             CheckBox checkBox;
             ImageView open;
@@ -385,6 +603,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
             ItemViewHolder(View itemView) {
                 super(itemView);
+                swipeLayout = itemView.findViewById(R.id.swipeLayout);
                 tvFoodName = itemView.findViewById(R.id.tvFoodName);
                 checkBox = itemView.findViewById(R.id.checkBox);
                 delete = itemView.findViewById(R.id.delete);

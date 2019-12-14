@@ -168,7 +168,20 @@ public class ManageFridgeActivity extends AppCompatActivity {
                 // 해당 냉장고 아이템
                 final RefrigeratorData ref = ShowFoodsFragment.refrigeratorList.get(position);
 
-                ivFridge.setImageResource(ref.getImgResource());
+                switch (ref.getType()){
+                    case "기본형":
+                        ivFridge.setImageResource(R.drawable.fridge1);
+                        break;
+
+                    case "양문형":
+                        ivFridge.setImageResource(R.drawable.fridge2);
+                        break;
+
+                    case "김치냉장고":
+                        ivFridge.setImageResource(R.drawable.fridge3);
+                        break;
+                }
+
                 tvName.setText(ref.getName());
                 tvCode.setVisibility(View.VISIBLE);
                 tvCode.setText(ref.getCode()); // ArrayList 타입 다시 정의하기!
@@ -252,6 +265,7 @@ public class ManageFridgeActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         Log.d(TAG, "sdf");
+
         // 추가가 되었으면
         adapter.notifyDataSetChanged();
         simpleCookieBar("냉장고가 추가되었습니다");

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
@@ -29,12 +30,14 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private Bundle bundle;
-    String strNickname, strProfile, strId;
+    String strNickname, strProfile;
+    public static String strId = "1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("testest 메인 아이디", strId);
 
         Stetho.initializeWithDefaults(this);
 
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         strNickname = intent.getStringExtra("name");
         strProfile = intent.getStringExtra("profile");
         strId = String.valueOf(intent.getLongExtra("id", 0));
+        strId = "1"; // to test
 
         // 인텐트로 셋팅 프래그먼트에 전달
         Intent putIntent = new Intent(this, SettingFragment.class);

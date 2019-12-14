@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class FoodRequest extends StringRequest {
 
-    final static private String URL = "http://soproject.dothome.co.kr/Food.php";
+    final static private String URL = "http://jms1132.dothome.co.kr/food.php";
     private Map<String, String> map;
     private int id;
     private String category;
