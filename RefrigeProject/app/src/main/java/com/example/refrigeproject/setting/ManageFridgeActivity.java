@@ -16,19 +16,35 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.refrigeproject.DBHelper;
+import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.show_foods.FoodData;
 import com.example.refrigeproject.show_foods.RefrigeratorData;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.r0adkll.slidr.Slidr;
 
 import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ManageFridgeActivity extends AppCompatActivity {
     private static final String TAG = "ManageFridgeActivity";
@@ -231,18 +247,68 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         // DB 삭제
-                                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-                                                        String sql = "DELETE FROM refrigeratorTBL WHERE code = '" +
-                                                                ref.getCode() + "';";
-                                                        sqLiteDatabase.execSQL(sql);
-                                                        sqLiteDatabase.close();
+                                                        RequestQueue requestQueue = Volley.newRequestQueue(ManageFridgeActivity.this);
+                                                        Log.d(TAG, MainActivity.strId);
 
-                                                        // 삭제 확인
-                                                        simpleCookieBar(ref.getName() + "(이)가 삭제되었습니다.");
+                                                        // Initialize a new JsonArrayRequest instance
+                                                        StringRequest jsonArrayRequest = new StringRequest(
+                                                                Request.Method.POST,
+                                                                "http://jms1132.dothome.co.kr/deleteFridge.php",
+                                                                new Response.Listener<String>() {
 
-                                                        // 데이터 변경 알림
-                                                        ShowFoodsFragment.refrigeratorList.remove(ref);
-                                                        adapter.notifyDataSetChanged();
+                                                                    @Override
+                                                                    public void onResponse(String response) {
+                                                                        try {
+                                                                            JSONObject jsonObject = new JSONObject(response);
+                                                                            boolean success = jsonObject.getBoolean("success");
+                                                                            if(success){
+                                                                                // 삭제 확인
+                                                                                simpleCookieBar(ref.getName() + "(이)가 삭제되었습니다.");
+
+                                                                                // 데이터 변경 알림
+                                                                                ShowFoodsFragment.refrigeratorList.remove(ref);
+                                                                                adapter.notifyDataSetChanged();
+
+                                                                                finish();
+                                                                            }else{
+                                                                                simpleCookieBar("삭제에 실패하였습니다.");
+                                                                            }
+                                                                        } catch (JSONException e) {
+                                                                            e.printStackTrace();
+                                                                        }
+                                                                    }
+                                                                },
+                                                                new Response.ErrorListener(){
+                                                                    @Override
+                                                                    public void onErrorResponse(VolleyError error){
+                                                                        // Do something when error occurred
+                                                                        Log.d(TAG, error.toString());
+                                                                    }
+
+                                                                }
+
+                                                        ){
+                                                            @Override
+                                                            protected Map<String, String> getParams() throws AuthFailureError {
+                                                                Map<String, String> params = new HashMap<>();
+                                                                // 보내줄 인자
+                                                                params.put("code", ref.getCode());
+                                                                return params;
+                                                            }
+                                                        };
+
+                                                        // Add JsonArrayRequest to the RequestQueue
+                                                        requestQueue.add(jsonArrayRequest);
+
+
+//                                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
+//                                                        String sql = "DELETE FROM refrigeratorTBL WHERE code = '" +
+//                                                                ref.getCode() + "';";
+//                                                        sqLiteDatabase.execSQL(sql);
+//                                                        sqLiteDatabase.close();
+
+
+
                                                     }
                                                 })
                                                 .setNegativeButton("취소", null)
