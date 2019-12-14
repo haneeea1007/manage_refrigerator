@@ -1,10 +1,12 @@
 package com.example.refrigeproject.show_foods;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -29,6 +31,8 @@ import java.util.HashMap;
 
 public class AddFoodActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
 
+
+    private InputMethodManager imm;
     private FragmentPagerAdapter fragmentPagerAdapter;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -56,6 +60,10 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_food);
+
+
+        imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
 
         ibtBack = findViewById(R.id.ibtBack);
         ibtSearchToAddFood = findViewById(R.id.ibtSearchToAddFood);
@@ -112,6 +120,8 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.ibtSearchToAddFood:
+                
+                
                 searchFood = edtSearchFood.getText().toString().trim();
 
                 for (int i = 0; i < tabLayout.getTabCount(); i++) {
@@ -135,9 +145,14 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                     Toast.makeText(this, "검색한 식재료가 없습니다. \n직접 입력해서 추가해 주세요.", Toast.LENGTH_LONG).show();
                 }
 
-
+                hideKeyboard();
                 break;
         }
+    }
+
+    private void hideKeyboard() {
+        imm.hideSoftInputFromWindow(edtSearchFood.getWindowToken(), 0);
+
     }
 
     @Override
