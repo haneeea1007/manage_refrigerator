@@ -289,9 +289,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                         uploadData();
 
-                        // 알람연결
-                        NotificationSetting();
-
                         Toast.makeText(context, foodName + " 추가되었습니다.", Toast.LENGTH_SHORT).show();
 
                         // 소비만료 날짜 확인
@@ -440,7 +437,73 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void updateFood() {
+        final int newRequestCode = makeAlarmId();
         // DB 수정
+        RequestQueue rq = Volley.newRequestQueue(this);
+        String url = "http://jms1132.dothome.co.kr/food.php";
+        Log.d("URL", url);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                try {
+                    Log.e("RESPONSE", response);
+                    //JSONObject json = new JSONObject(response);
+
+                    Toast.makeText(getBaseContext(),
+                            "The image is upload", Toast.LENGTH_SHORT)
+                            .show();
+
+                } catch (Exception e) {
+                    Log.d("JSON Exception", e.toString());
+                    Toast.makeText(getBaseContext(),
+                            "Error while loadin data!"+e.toString(),
+                            Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR", "Error [" + error + "]");
+                Toast.makeText(getBaseContext(),
+                        "Cannot connect to server"+error, Toast.LENGTH_LONG)
+                        .show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("category", tvCategory.getText().toString());
+                params.put("section", tvGroup.getText().toString());
+                params.put("name", edtName.getText().toString());
+                params.put("memo", edtMemo.getText().toString());
+                params.put("image", encodedString);
+                params.put("purchaseDate", tvPurchaseDate.getText().toString());
+                params.put("expirationDate",tvExpirationDate.getText().toString());
+                params.put("place", rdoClick);
+
+                // 유통기한 바뀌었을 때만 알람아이디 수정
+                if(!tvExpirationDate.getText().toString().equals(food.getExpirationDate())){
+                    params.put("alarmID", String.valueOf(newRequestCode)); // 새로운 알람 아이디 부여
+                    // 기존 알람 cancel 후 재생성하기 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // 취소
+                    // 재생성
+                } else {
+                    params.put("alarmID", String.valueOf(food.getAlarmID())); // 기존 알람 아이디 부여
+                }
+
+                params.put("id", String.valueOf(food.getId()));
+
+                return params;
+
+            }
+
+        };
+        rq.add(stringRequest);
     }
 
     public void uploadData() {
@@ -482,7 +545,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 
-//                params.put("id", MainActivity.strId);
                 params.put("category", tvCategory.getText().toString());
                 params.put("section", tvGroup.getText().toString());
                 params.put("name", edtName.getText().toString());
@@ -492,7 +554,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 params.put("expirationDate",tvExpirationDate.getText().toString());
                 params.put("code", ShowFoodsFragment.selectedFridge.getCode());  // 선택된 냉장고 코드 가져오기
                 params.put("place", rdoClick);
-                params.put("alarmID", String.valueOf(makeAlarmId()));// 등록 시간 - 사용자 아이디 = 알람 리퀘스트코드로 사용
+                int requestCode = makeAlarmId();
+                params.put("alarmID", String.valueOf(requestCode));// 등록 시간 - 사용자 아이디 = 알람 리퀘스트코드로 사용
+
+                // 만들어진 알람 아이디로 알람 세팅
+                notificationSetting(requestCode);
 
                 return params;
 
@@ -518,40 +584,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     // 인텐트로 category, section, code 받기
 
     // 알람 연결
-    private void NotificationSetting() {
-
-        // 추가할 때 DB문 (INSERT)
-        if (FROM_ADD_OR_EDIT == 1) {
-
-//        sqLiteDatabase = dBHelper.getWritableDatabase();
-//
-//        String str = "INSERT INTO foodTBL values('" +
-//                null + "', '" +
-//                category + "', '" +
-//                section + "', '" +
-//                foodName + "', '" +
-//                tempFile.getPath() + "', '" +
-//                edtMemo.getText().toString() + "', '" +
-//                tvPurchaseDate.getText().toString() + "', '" +
-//                tvExpirationDate.getText().toString() + "', '" +
-//                code + "', '" +
-//                rdoClick + "');";
-//
-//        sqLiteDatabase.execSQL(str);
-//        sqLiteDatabase.close();
-
-            // 수정할 때 DB문 (UPDATE)
-        } else if (FROM_ADD_OR_EDIT == 2) {
-
-//            sqLiteDatabase = dBHelper.getWritableDatabase();
-//
-//
-//
-//
-//            sqLiteDatabase.execSQL(str);
-//            sqLiteDatabase.close();
-
-        }
+    private void notificationSetting(int requestCode) {
 
         //=========================================================================================//
 
