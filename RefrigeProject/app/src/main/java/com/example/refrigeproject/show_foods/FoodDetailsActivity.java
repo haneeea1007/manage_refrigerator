@@ -520,12 +520,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     // 알람 연결
     private void NotificationSetting() {
 
-        // 소비만료 일자가 구입일자보다 이전일 때
-        if (millis <= millisTemp) {
-            Toast.makeText(context, "소비만료 일자가 구입일자보다 이전일 수 없습니다." + '\n' + "다시 선택해 주세요.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         // 추가할 때 DB문 (INSERT)
         if (FROM_ADD_OR_EDIT == 1) {
 
