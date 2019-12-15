@@ -21,7 +21,7 @@
             android:scaleType="centerInside"
             android:paddingLeft="25dp"
             android:paddingRight="25dp" />
-v
+
         <TextView
             android:id="@+id/delete"
             android:layout_width="90dp"
@@ -51,10 +51,11 @@ v
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
+        <com.dinuscxj.progressbar.CircleProgressBar
             android:id="@+id/progressBar"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            app:progress_text_color="#00000000"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

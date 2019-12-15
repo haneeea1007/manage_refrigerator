@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +41,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.daimajia.swipe.SwipeLayout;
+import com.dinuscxj.progressbar.CircleProgressBar;
 import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
@@ -132,20 +136,20 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
     private void setFoodsData(SectionAdapter adapter) {
         items.add(new SectionHeader(1));
-        Log.d("ThreadName", Thread.currentThread().getName()+"");
-        FoodData foodData = new FoodData();
-        foodData.setPostion(1);
-        foodData.setName("왕감자");
-        foodData.setCategory("야채");
-        foodData.setSection("감자");
-        foodData.setMemo("베란다에 있음");
-        foodData.setPlace("실온");
-
-
-        items.add(foodData);
+//        Log.d("ThreadName", Thread.currentThread().getName()+"");
+//        FoodData foodData = new FoodData();
+//        foodData.setPostion(1);
+//        foodData.setName("왕감자");
+//        foodData.setCategory("야채");
+//        foodData.setSection("감자");
+//        foodData.setMemo("베란다에 있음");
+//        foodData.setPlace("실온");
+//
+//
+//        items.add(foodData);
 //        items.addAll(selectItems("냉장"));
         Log.d("setFoodsData 1", items.size()+"");
-        items.add(new FoodData(1, "냉장템2 "));
+//        items.add(new FoodData(1, "냉장템2 "));
 //        items.add(new FoodData(1, "냉장템3 "));
 //        items.add(new FoodData(1, "냉장템4 "));
 
@@ -486,6 +490,18 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 final FoodData item = (FoodData) items.get(position); // 해당 item 객체
                 ((ItemViewHolder) holder).tvFoodName.setText(item.getName());
 
+                // 이미지 세팅
+                if(item.getImagePath() != null){
+                    Glide.with(getContext()).load(item.getImagePath()).into(((ItemViewHolder) holder).imageView);
+                }
+
+                // 프로그레스바 세팅
+                calculateDaysLeft(item.getPurchaseDate(), item.getExpirationDate());
+                Log.d("calculateDaysLeft", item.getPurchaseDate()+"");
+                Log.d("calculateDaysLeft", item.getExpirationDate()+"");
+                ((ItemViewHolder) holder).progressBar.setProgress(30);
+
+
                 // 모드에 따른 Visibility, swipe 설정
                 if(removeMode){
                     ((ItemViewHolder) holder).checkBox.setVisibility(View.VISIBLE);
@@ -542,7 +558,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                             if(success){
                                                 // 삭제 확인
                                                 ManageFridgeActivity.simpleCookieBar(item.getName() + "을(를) 삭제하였습니다.", getActivity());
-//                                                Toast.makeText(getContext(), item.getName() + "(을)를 삭제에 하였습니다.", Toast.LENGTH_SHORT).show();
 
                                                 // 데이터 변경 알림
                                                 Log.d("onClick", item.getName() + position +" "+ item.sectionPosition());
@@ -550,7 +565,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                                 notifyDataSetChanged();
                                             } else {
                                                 ManageFridgeActivity.simpleCookieBar("삭제에 실패하였습니다.", getActivity());
-//                                                Toast.makeText(getContext(), ".", Toast.LENGTH_SHORT).show();
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -591,8 +605,22 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
 
             } else {
-                ((SectionAdapter.HeaderViewholder) holder).tvHeader.setText("Custom header");
+                ((HeaderViewholder) holder).tvHeader.setText("Custom header");
             }
+        }
+
+        private int calculateDaysLeft(String purchaseDate, String expirationDate) {
+            Calendar start = Calendar.getInstance();
+            Calendar end = Calendar.getInstance();
+
+            String purchase = purchaseDate.replace("-", "").substring(0,3);
+            String expiration = expirationDate.replace("-", "");
+
+            Log.d("calculateDaysLeft", purchase+"");
+            Log.d("calculateDaysLeft", expiration+"");
+            
+            int daysLeft;
+            return 0;
         }
 
         @Override
@@ -645,7 +673,8 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
         public class ItemViewHolder extends RecyclerView.ViewHolder {
             SwipeLayout swipeLayout;
-//            ConstraintLayout constraintLayout;
+            CircleProgressBar progressBar;
+            ImageView imageView;
             TextView tvFoodName;
             CheckBox checkBox;
             ImageView open;
@@ -654,10 +683,18 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             ItemViewHolder(View itemView) {
                 super(itemView);
                 swipeLayout = itemView.findViewById(R.id.swipeLayout);
+                progressBar = itemView.findViewById(R.id.progressBar);
                 tvFoodName = itemView.findViewById(R.id.tvFoodName);
+                imageView = itemView.findViewById(R.id.imageView);
                 checkBox = itemView.findViewById(R.id.checkBox);
                 delete = itemView.findViewById(R.id.delete);
                 open = itemView.findViewById(R.id.open);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    progressBar.setMax(100);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         }
     }
