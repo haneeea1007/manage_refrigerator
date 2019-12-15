@@ -24,6 +24,7 @@ public class GridViewAdapter extends BaseAdapter {
     private ArrayList<AddFoodGridViewData> list;
     private LayoutInflater layoutInflater;
     private TextView tvFoodName;
+    private ImageView foodImageView;
 
 
     public static int select = -1;
@@ -58,7 +59,7 @@ public class GridViewAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.add_food_item, null);
         }
 
-        ImageView foodImageView = view.findViewById(R.id.foodImageView);
+        foodImageView = view.findViewById(R.id.foodImageView);
         tvFoodName = view.findViewById(R.id.tvFoodName);
         final ImageView ivFound = view.findViewById(R.id.ivFound);
         final AddFoodGridViewData addFoodGridViewData = list.get(position);
@@ -83,7 +84,7 @@ public class GridViewAdapter extends BaseAdapter {
             ivFound.setVisibility(View.VISIBLE);
 
 
-            select = -1;
+
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -92,11 +93,11 @@ public class GridViewAdapter extends BaseAdapter {
                     ivFound.setVisibility(View.GONE);
                 }
             }, 3000);
-
-        } else {
-            // edt 지울 때, 완료 누를 때
-            ivFound.setVisibility(View.INVISIBLE);
         }
+//        } else {
+//            // edt 지울 때, 완료 누를 때
+//            ivFound.setVisibility(View.INVISIBLE);
+//        }
         return view;
     }
 
