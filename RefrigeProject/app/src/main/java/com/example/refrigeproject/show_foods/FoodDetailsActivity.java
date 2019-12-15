@@ -23,6 +23,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -77,6 +78,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private DatePicker datePicker;
     private ImageView foodImage;
     private String foodName;
+    private LinearLayout llRefrige;
 
     private File tempFile;
     private Calendar calendar;
@@ -110,7 +112,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private static final int FROM_ADD_OR_EDIT = 0;
     Intent intent;
     String action; // 이 액티비티를 부르면서 설정한 액션을 받는 변수 (수정 or 추가)
-    String from;
     FoodData food; // 인텐트로 받은 FoodData
 
     //DB
@@ -132,14 +133,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         tvDone = findViewById(R.id.tvDone);
         tvCategory = findViewById(R.id.tvCategory);
         tvGroup = findViewById(R.id.tvGroup);
-        edtName = findViewById(R.id.edtName);
-        datePicker = findViewById(R.id.datePicker);
-        foodImage = findViewById(R.id.foodImage);
-
-        ibtBack = findViewById(R.id.ibtBack);
-        tvDone = findViewById(R.id.tvDone);
-        tvCategory = findViewById(R.id.tvCategory);
-        tvGroup = findViewById(R.id.tvGroup);
         tvTitle = findViewById(R.id.tvTitle);
         tvPurchaseDate = findViewById(R.id.tvPurchaseDate);
         tvExpirationDate = findViewById(R.id.tvExpirationDate);
@@ -152,6 +145,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         rdoPantry = findViewById(R.id.rdoPantry);
         datePicker = findViewById(R.id.datePicker);
         foodImage = findViewById(R.id.foodImage);
+        llRefrige = findViewById(R.id.llRefrige);
 
         tvDone.setOnClickListener(this);
         ibtBack.setOnClickListener(this);
@@ -163,10 +157,8 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
         intent = getIntent();
         action = intent.getAction(); // edit or add
-        foodName = intent.getStringExtra("foodName");
-        edtName.setText(foodName);
+        rdoFridge.setChecked(true); // 보관유형 기본값 냉장
 
-        from = intent.getStringExtra("from");
         setData();
 
         // 권한 요청
@@ -209,12 +201,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     case "실온": rdoPantry.setChecked(true); break;
 
                 }
-                tvRefrige.setVisibility(View.GONE);
-
-//                switch (food.getCode()){
-//                    // 냉장고 코드에 맞는 냉장고 이름 보여주기
-//                    // 냉장고 못 옮기게 할까 ????? ㅇ
-//                }
+                llRefrige.setVisibility(View.GONE);
 
                 break;
             case "add":
@@ -224,6 +211,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 String section = intent.getStringExtra("section");
                 tvGroup.setText(section);
                 edtName.setText(section);
+                tvRefrige.setText(ShowFoodsFragment.selectedFridge.getName());
 
                 int image = intent.getIntExtra("image", 0);
                 foodImage.setImageResource(image);
@@ -289,7 +277,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                         uploadData();
 
-                        Toast.makeText(context, foodName + " 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, edtName.getText().toString() + " 추가되었습니다.", Toast.LENGTH_SHORT).show();
 
                         // 소비만료 날짜 확인
 //                Toast.makeText(context, calendar.get(Calendar.YEAR) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
@@ -626,9 +614,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         //=======================================================================================//4
 
         Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("foodName", foodName);
+        intent.putExtra("foodName", edtName.getText().toString());
         intent.putExtra("content", notiContent);
-        intent.putExtra("id", alarmID);
+        intent.putExtra("id", requestCode);
         intent.putExtra("switch", switchSetting);
         PendingIntent pender = PendingIntent.getBroadcast(context, alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
