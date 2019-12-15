@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -63,9 +64,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -452,8 +455,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 .show();
     }
 
-
-
     // 음식 데이터 관리 - sticky ver
     public class SectionAdapter extends StickyAdapter<RecyclerView.ViewHolder, RecyclerView.ViewHolder> {
         List<Section> items = new ArrayList<>();
@@ -490,18 +491,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 final FoodData item = (FoodData) items.get(position); // 해당 item 객체
                 ((ItemViewHolder) holder).tvFoodName.setText(item.getName());
 
-                // 이미지 세팅
-                if(item.getImagePath() != null){
-                    Glide.with(getContext()).load(item.getImagePath()).into(((ItemViewHolder) holder).imageView);
-                }
-
-                // 프로그레스바 세팅
-                calculateDaysLeft(item.getPurchaseDate(), item.getExpirationDate());
-                Log.d("calculateDaysLeft", item.getPurchaseDate()+"");
-                Log.d("calculateDaysLeft", item.getExpirationDate()+"");
-                ((ItemViewHolder) holder).progressBar.setProgress(30);
-
-
                 // 모드에 따른 Visibility, swipe 설정
                 if(removeMode){
                     ((ItemViewHolder) holder).checkBox.setVisibility(View.VISIBLE);
@@ -510,6 +499,39 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                     ((ItemViewHolder) holder).checkBox.setVisibility(View.GONE);
                     ((ItemViewHolder) holder).checkBox.setChecked(false);
                     ((ItemViewHolder) holder).swipeLayout.setSwipeEnabled(true);
+                }
+
+                // 이미지 세팅
+                if(item.getImagePath() != null){
+                    Glide.with(getContext()).load(item.getImagePath()).into(((ItemViewHolder) holder).imageView);
+                }
+
+                // 프로그레스바 세팅
+                // 최대값 = 만료일 - 구입일
+                // 현재 프로그레스 = 만료일 - 오늘
+                int max = calculateDday(item.getPurchaseDate(), item.getExpirationDate()) - 1;
+                int value = calculateDday(null, item.getExpirationDate()) - 1;
+                Log.d("프로그레스바 최대", max+" "+item.getName());
+                Log.d("프로그레스바 최대", value+" "+item.getName());
+                if(max == 0){
+                    // 오늘 구입 오늘 만료인 경우
+                    ((ItemViewHolder) holder).progressBar.setMax(1);
+                    ((ItemViewHolder) holder).progressBar.setProgress(1);
+                }else{
+                    ((ItemViewHolder) holder).progressBar.setMax(max);
+                    ((ItemViewHolder) holder).progressBar.setProgress(max - value);
+                }
+
+                // D-day 값 세팅
+                if(value == 0){
+                    ((ItemViewHolder) holder).tvDday.setText("D-day!");
+                    ((ItemViewHolder) holder).tvDday.setTextColor(Color.RED);
+                }else if(value < 0){
+                    ((ItemViewHolder) holder).tvDday.setText("기간만료");
+                    ((ItemViewHolder) holder).tvFoodName.setTextColor(Color.RED);
+                    ((ItemViewHolder) holder).tvDday.setTextColor(Color.RED);
+                }else{
+                    ((ItemViewHolder) holder).tvDday.setText("D-" + value);
                 }
 
                 // 체크박스 리스너
@@ -609,18 +631,54 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             }
         }
 
-        private int calculateDaysLeft(String purchaseDate, String expirationDate) {
-            Calendar start = Calendar.getInstance();
-            Calendar end = Calendar.getInstance();
 
-            String purchase = purchaseDate.replace("-", "").substring(0,3);
-            String expiration = expirationDate.replace("-", "");
+//        private int calculateTotalDay(String startDate, String expirationDate) {
+//            try {
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//                Date start = simpleDateFormat.parse(startDate);
+//                Date end = simpleDateFormat.parse(expirationDate);
+//                long startMilli = start.getTime() / (24 * 60 * 60 * 1000);
+//                long endMilli = end.getTime() / (24 * 60 * 60 * 1000);
+//                // 오늘로부터 만료일까지 남은 일 수
+//                int result = (int)(endMilli - startMilli);
+//
+//                Log.d("Milli start", startMilli+"");
+//                Log.d("Milli end", endMilli+"");
+//                Log.d("calculateDays result", result+"");
+//
+//                return result; // 오늘로부터 처리일자까지 남은 일 수 리턴
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//                return -1;
+//            }
+//        }
 
-            Log.d("calculateDaysLeft", purchase+"");
-            Log.d("calculateDaysLeft", expiration+"");
-            
-            int daysLeft;
-            return 0;
+        private int calculateDday(String purchaseDate, String expirationDate) {
+            try {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date end = simpleDateFormat.parse(expirationDate);
+                long endMilli = end.getTime() / (24 * 60 * 60 * 1000);
+                long startMilli = 0;
+                if(purchaseDate == null){
+                    // 오늘로부터의 D-day
+                    startMilli = Calendar.getInstance().getTimeInMillis() / (24 * 60 * 60 * 1000);
+                } else {
+                    // 구입일로부터의 D-day
+                    Date start = simpleDateFormat.parse(purchaseDate);
+                    startMilli = start.getTime() / (24 * 60 * 60 * 1000);
+                }
+                // 오늘로부터 만료일까지 남은 일 수
+                int result = (int)(endMilli - startMilli) + 1;
+
+                Log.d("Milli start", startMilli+"");
+                Log.d("Milli end", endMilli+"");
+                Log.d("calculateDays result", result+"");
+
+                return result; // 오늘로부터 처리일자까지 남은 일 수 리턴
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return -1;
+            }
         }
 
         @Override
@@ -675,7 +733,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             SwipeLayout swipeLayout;
             CircleProgressBar progressBar;
             ImageView imageView;
-            TextView tvFoodName;
+            TextView tvFoodName, tvDday;
             CheckBox checkBox;
             ImageView open;
             TextView delete;
@@ -687,11 +745,11 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 tvFoodName = itemView.findViewById(R.id.tvFoodName);
                 imageView = itemView.findViewById(R.id.imageView);
                 checkBox = itemView.findViewById(R.id.checkBox);
+                tvDday = itemView.findViewById(R.id.tvDday);
                 delete = itemView.findViewById(R.id.delete);
                 open = itemView.findViewById(R.id.open);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    progressBar.setMax(100);
                 } else {
                     progressBar.setVisibility(View.GONE);
                 }
