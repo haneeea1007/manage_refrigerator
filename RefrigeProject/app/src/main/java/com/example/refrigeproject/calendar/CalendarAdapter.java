@@ -28,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +55,10 @@ public class CalendarAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
     View view;
+    TextView tvEvent;
+    ImageView ivMark;
+    ArrayList<FoodData> list = new ArrayList<FoodData>();
+    String date;
 
     public CalendarAdapter(Context context) {
         this.context = context;
@@ -65,6 +71,7 @@ public class CalendarAdapter extends BaseAdapter {
 
         recalculate();
         resetDayNumbers();
+        setCurrentMonthData();
     }
 
     @Override
@@ -87,9 +94,9 @@ public class CalendarAdapter extends BaseAdapter {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.month_item, null);
 
-        final ImageView ivMark = view.findViewById(R.id.ivMark);
+        ivMark = view.findViewById(R.id.ivMark);
         TextView tvDayValue = view.findViewById(R.id.tvDayValue);
-        final TextView tvEvent = view.findViewById(R.id.tvEvent);
+        tvEvent  = view.findViewById(R.id.tvEvent);
 
         int day = items[position].getDayValue();
         if(day != 0) tvDayValue.setText(String.valueOf(day));
@@ -132,10 +139,25 @@ public class CalendarAdapter extends BaseAdapter {
 //        sqLiteDatabase.close();
 
         ////////////////////////////////////////////////////////////////////////////
-        final String date = currentYear + "-" + currentMonth + "-" + String.valueOf(day);
+        date = currentYear + "-" + (currentMonth + 1) + "-" + day;
+        Log.d(TAG, date);
+        for(int i = 0 ; i < list.size() ; i++){
+            if(Arrays.asList(list.get(i).getExpirationDate()).contains(date)){
+                Log.d(TAG, list.get(i).getName() + "를 달력에 추가하라 !!!!");
+                tvEvent.setText(list.get(i).getName());
+                ivMark.setImageResource(R.drawable.circle);
+            }
+        }
+
+
+        return view;
+    }
+
+    private void setCurrentMonthData() {
+        final String thisMonth = currentYear + "-" + (currentMonth + 1) + "-__";
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        Log.d(TAG, MainActivity.strId);
+        Log.d(TAG, "CalendarAdapter getView");
 
         // Initialize a new JsonArrayRequest instance
         StringRequest jsonArrayRequest = new StringRequest(
@@ -146,6 +168,7 @@ public class CalendarAdapter extends BaseAdapter {
                     @Override
                     public void onResponse(String response) {
                         try{
+                            list.clear();
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("food");
 
@@ -156,9 +179,14 @@ public class CalendarAdapter extends BaseAdapter {
                                 FoodData data = new FoodData();
 
                                 data.setName(object.getString("name"));
+                                data.setPlace(object.getString("place"));
+                                data.setExpirationDate(object.getString("expirationDate"));
 
-                                tvEvent.setText(data.getName());
-                                ivMark.setImageResource(R.drawable.circle);
+                                list.add(data);
+                                Log.d(TAG, ""+list.size());
+                                if(list != null){
+                                    Log.d(TAG, ""+list.get(0).getName());
+                                }
                             }
 
                         }catch (JSONException e){
@@ -181,15 +209,13 @@ public class CalendarAdapter extends BaseAdapter {
                 Map<String, String> params = new HashMap<>();
                 // 보내줄 인자
                 params.put("id", MainActivity.strId);
-                params.put("date", date);
+                params.put("date", thisMonth);
                 return params;
             }
         };
 
         // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
-
-        return view;
     }
 
     private void resetDayNumbers() {
@@ -212,6 +238,8 @@ public class CalendarAdapter extends BaseAdapter {
         resetDayNumbers();
         // 아직 분석안됐따...
         selectedPosition = -1;
+        setCurrentMonthData();
+
     }
 
     // 다음달 버튼
@@ -222,6 +250,8 @@ public class CalendarAdapter extends BaseAdapter {
         resetDayNumbers();
         // 아직 분석안됐따...
         selectedPosition = -1;
+        setCurrentMonthData();
+
     }
 
     private void recalculate() {

@@ -541,7 +541,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                             boolean success = jsonObject.getBoolean("success");
                                             if(success){
                                                 // 삭제 확인
-                                                simpleCookieBar(item.getName() + "을(를) 삭제하였습니다.");
+                                                ManageFridgeActivity.simpleCookieBar(item.getName() + "을(를) 삭제하였습니다.", getActivity());
 //                                                Toast.makeText(getContext(), item.getName() + "(을)를 삭제에 하였습니다.", Toast.LENGTH_SHORT).show();
 
                                                 // 데이터 변경 알림
@@ -549,7 +549,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                                 items.remove(position);
                                                 notifyDataSetChanged();
                                             } else {
-                                                simpleCookieBar("삭제에 실패하였습니다.");
+                                                ManageFridgeActivity.simpleCookieBar("삭제에 실패하였습니다.", getActivity());
 //                                                Toast.makeText(getContext(), ".", Toast.LENGTH_SHORT).show();
                                             }
                                         } catch (JSONException e) {
@@ -660,16 +660,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 open = itemView.findViewById(R.id.open);
             }
         }
-    }
-
-    public void simpleCookieBar(String message){
-        CookieBar.build(getActivity())
-                .setTitle(message)
-                .setSwipeToDismiss(true)
-                .setEnableAutoDismiss(true)
-                .setDuration(2000)
-                .setCookiePosition(CookieBar.BOTTOM)
-                .show();
     }
 
     // 프래그먼트 간 데이터 전달을 위한 인터페이스

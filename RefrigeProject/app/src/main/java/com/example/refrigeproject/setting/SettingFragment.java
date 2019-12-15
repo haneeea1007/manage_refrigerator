@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -26,9 +27,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.SplashActivity;
 import com.example.refrigeproject.show_foods.FoodDetailsActivity;
+import com.example.refrigeproject.show_foods.ListViewAdapter;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
+
+import org.aviran.cookiebar2.CookieBar;
+import org.aviran.cookiebar2.OnActionClickListener;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -129,12 +134,28 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
 
             case R.id.llShare:
                 // 냉장고 공유
-                Intent sharedMessage = new Intent(Intent.ACTION_SEND);
-                sharedMessage.addCategory(Intent.CATEGORY_DEFAULT);
-                sharedMessage.putExtra(Intent.EXTRA_SUBJECT, "언니 올때 메로나 냉동실^^");
-                sharedMessage.putExtra(Intent.EXTRA_TEXT, '\n' + "냉장고 열쇠: " + "");
-                sharedMessage.setType("text/plain");
-                startActivity(Intent.createChooser(sharedMessage, "냉장고 공유하기"));
+                CookieBar.build(getActivity())
+                        .setCustomView(R.layout.cookiebar_select_fridge)
+                        .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
+                            @Override
+                            public void initView(View view) {
+
+                                ListView listView = view.findViewById(R.id.listView);
+                                ListViewAdapter listViewAdapter = new ListViewAdapter(getActivity(), null);
+                                listView.setAdapter(listViewAdapter);
+                            }
+                        })
+                        .setAction("Close", new OnActionClickListener() {
+                            @Override
+                            public void onClick() {
+                                CookieBar.dismiss(getActivity());
+                            }
+                        })
+                        .setSwipeToDismiss(true)
+                        .setEnableAutoDismiss(true)
+                        .setDuration(5000)
+                        .setCookiePosition(CookieBar.BOTTOM)
+                        .show();
 
                 break;
 

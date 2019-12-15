@@ -1,6 +1,7 @@
 package com.example.refrigeproject.show_foods;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,7 @@ import com.example.refrigeproject.R;
 
 import org.aviran.cookiebar2.CookieBar;
 
-class ListViewAdapter extends BaseAdapter {
+public class ListViewAdapter extends BaseAdapter {
     private Activity activity;
     private TextView tvFridgeName;
 
@@ -37,7 +38,7 @@ class ListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         if(convertView == null){
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.refrigerator_item, null);
         }
@@ -49,9 +50,18 @@ class ListViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                tvFridgeName.setText(ShowFoodsFragment.refrigeratorList.get(position).getName());
-                Log.d("log", ShowFoodsFragment.refrigeratorList.get(position).getName());
-
+                if(tvFridgeName != null){
+                    tvFridgeName.setText(ShowFoodsFragment.refrigeratorList.get(position).getName());
+                    Log.d("log", ShowFoodsFragment.refrigeratorList.get(position).getName());
+                } else {
+                    // 공유하기에서 눌렀을 때
+                    Intent sharedMessage = new Intent(Intent.ACTION_SEND);
+                    sharedMessage.addCategory(Intent.CATEGORY_DEFAULT);
+                    sharedMessage.putExtra(Intent.EXTRA_SUBJECT, "냉장고 공유");
+                    sharedMessage.putExtra(Intent.EXTRA_TEXT, "냉장고 같이 관리해요!\n냉장고 열쇠: " + ShowFoodsFragment.refrigeratorList.get(position).getCode());
+                    sharedMessage.setType("text/plain");
+                    parent.getContext().startActivity(Intent.createChooser(sharedMessage, "냉장고 공유하기"));
+                }
 
                 CookieBar.dismiss(activity);
             }

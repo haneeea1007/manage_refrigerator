@@ -1,5 +1,6 @@
 package com.example.refrigeproject.setting;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -155,7 +156,7 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                         // 잘못된 코드일 경우
 
                                                         // 수정 확인
-                                                        simpleCookieBar("냉장고를 성공적으로 불러왔습니다.");
+                                                        simpleCookieBar("냉장고를 성공적으로 불러왔습니다.", ManageFridgeActivity.this);
 
                                                         // 데이터 변경 알림
 //                                                        ShowFoodsFragment.refrigeratorList.add(?);
@@ -221,18 +222,64 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                 .setTitle("냉장고 정보")
                                 .setNeutralButton("수정", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    public void onClick(final DialogInterface dialog, int which) {
                                         // DB 수정
-                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-                                        String sql = "UPDATE refrigeratorTBL SET name = '" +
-                                                edtName.getText().toString().trim() +
-                                                "' WHERE code = '" +
-                                                ref.getCode() + "';";
-                                        sqLiteDatabase.execSQL(sql);
-                                        sqLiteDatabase.close();
+                                        RequestQueue requestQueue = Volley.newRequestQueue(ManageFridgeActivity.this);
 
-                                        // 수정 확인
-                                        simpleCookieBar(edtName.getText().toString().trim() + "(으)로 변경되었습니다.");
+                                        StringRequest jsonArrayRequest = new StringRequest(
+                                                Request.Method.POST,
+                                                "http://jms1132.dothome.co.kr/updateFridge.php",
+                                                new Response.Listener<String>() {
+
+                                                    @Override
+                                                    public void onResponse(String response) {
+                                                        try {
+                                                            JSONObject jsonObject = new JSONObject(response);
+                                                            boolean success = jsonObject.getBoolean("success");
+                                                            if(success){
+                                                                // 수정 확인
+                                                                simpleCookieBar(edtName.getText().toString().trim() + "(으)로 수정되었습니다.", ManageFridgeActivity.this);
+
+                                                                // 데이터 변경 알림
+                                                                adapter.notifyDataSetChanged();
+                                                                ShowFoodsFragment.refrigeratorList.set(position,
+                                                                        new RefrigeratorData(ref.getCode(), edtName.getText().toString(), ref.getType()));
+                                                                dialog.dismiss();
+                                                            } else {
+                                                                simpleCookieBar("수정에 실패하였습니다.", ManageFridgeActivity.this);
+                                                            }
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                },
+                                                new Response.ErrorListener(){
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError error){
+                                                        // Do something when error occurred
+                                                        Log.d(TAG, error.toString());
+                                                    }
+                                                }
+                                        ){
+                                            @Override
+                                            protected Map<String, String> getParams() throws AuthFailureError {
+                                                Map<String, String> params = new HashMap<>();
+                                                // 보내줄 인자
+                                                params.put("name", edtName.getText().toString().trim());
+                                                params.put("code", ref.getCode());
+                                                return params;
+                                            }
+                                        };
+                                        requestQueue.add(jsonArrayRequest);
+
+//                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
+//                                        String sql = "UPDATE refrigeratorTBL SET name = '" +
+//                                                edtName.getText().toString().trim() +
+//                                                "' WHERE code = '" +
+//                                                ref.getCode() + "';";
+//                                        sqLiteDatabase.execSQL(sql);
+//                                        sqLiteDatabase.close();
+
                                     }
                                 })
                                 .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
@@ -245,10 +292,9 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                 .setMessage("냉장고에 포함된 음식도 삭제됩니다")
                                                 .setNeutralButton("삭제하기", new DialogInterface.OnClickListener() {
                                                     @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
+                                                    public void onClick(final DialogInterface dialog, int which) {
                                                         // DB 삭제
                                                         RequestQueue requestQueue = Volley.newRequestQueue(ManageFridgeActivity.this);
-                                                        Log.d(TAG, MainActivity.strId);
 
                                                         // Initialize a new JsonArrayRequest instance
                                                         StringRequest jsonArrayRequest = new StringRequest(
@@ -263,15 +309,15 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                                             boolean success = jsonObject.getBoolean("success");
                                                                             if(success){
                                                                                 // 삭제 확인
-                                                                                simpleCookieBar(ref.getName() + "(이)가 삭제되었습니다.");
+                                                                                simpleCookieBar(ref.getName() + "(이)가 삭제되었습니다.", ManageFridgeActivity.this);
 
                                                                                 // 데이터 변경 알림
                                                                                 ShowFoodsFragment.refrigeratorList.remove(ref);
                                                                                 adapter.notifyDataSetChanged();
 
-                                                                                finish();
+                                                                                dialog.dismiss();
                                                                             }else{
-                                                                                simpleCookieBar("삭제에 실패하였습니다.");
+                                                                                simpleCookieBar("삭제에 실패하였습니다.", ManageFridgeActivity.this);
                                                                             }
                                                                         } catch (JSONException e) {
                                                                             e.printStackTrace();
@@ -296,8 +342,6 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                                 return params;
                                                             }
                                                         };
-
-                                                        // Add JsonArrayRequest to the RequestQueue
                                                         requestQueue.add(jsonArrayRequest);
 
 
@@ -334,11 +378,11 @@ public class ManageFridgeActivity extends AppCompatActivity {
 
         // 추가가 되었으면
         adapter.notifyDataSetChanged();
-        simpleCookieBar("냉장고가 추가되었습니다");
+        simpleCookieBar("냉장고가 추가되었습니다", ManageFridgeActivity.this);
     }
 
-    public void simpleCookieBar(String message){
-        CookieBar.build(ManageFridgeActivity.this)
+    public static void simpleCookieBar(String message, Activity activity){
+        CookieBar.build(activity)
                 .setTitle(message)
                 .setSwipeToDismiss(true)
                 .setEnableAutoDismiss(true)

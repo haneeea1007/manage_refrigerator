@@ -90,17 +90,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         tvYearMonth = view.findViewById(R.id.tvYearMonth);
 
         setSeasonalFoodInfo();
-        setExpirationDate();
 
         ibtPrev.setOnClickListener(this);
         ibtNext.setOnClickListener(this);
         gvCalendar.setOnItemClickListener(this);
 
         return view;
-    }
-
-    private void setExpirationDate() {
-
     }
 
     private void setSeasonalFoodInfo() {

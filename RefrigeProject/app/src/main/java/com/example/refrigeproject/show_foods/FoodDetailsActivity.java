@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -43,11 +44,14 @@ import com.bumptech.glide.Glide;
 import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.setting.ManageFridgeActivity;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.r0adkll.slidr.Slidr;
 
 import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -62,7 +66,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class FoodDetailsActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
-
+    private final static String TAG = "FoodDetailsActivity";
     private Context context;
 
     private ImageButton ibtBack;
@@ -107,6 +111,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     Intent intent;
     String action; // 이 액티비티를 부르면서 설정한 액션을 받는 변수 (수정 or 추가)
     String from;
+    FoodData food; // 인텐트로 받은 FoodData
 
     //DB
     Bitmap bitmapTemp;
@@ -116,6 +121,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_details);
+        Slidr.attach(this);
 
         context = getApplicationContext();
         dBHelper = new DBHelper(context);
@@ -185,16 +191,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void setData() {
-//        Intent intent = getIntent();
-
-//        switch (from) {
-//            case "GridViewAdapter":
-
-//        }
-
         switch(action){
             case "edit":
-                FoodData food = intent.getParcelableExtra("food");
+                food = intent.getParcelableExtra("food");
                 if(food.getImagePath()!=null){
                     Glide.with(this).load(food.getImagePath()).into(foodImage);
                 }
@@ -204,9 +203,17 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 tvPurchaseDate.setText(food.getPurchaseDate());
                 tvExpirationDate.setText(food.getExpirationDate());
                 edtMemo.setText(food.getMemo());
+                switch (food.getPlace()){
+                    case "냉장": rdoFridge.setChecked(true); break;
+                    case "냉동": rdoFreezer.setChecked(true); break;
+                    case "실온": rdoPantry.setChecked(true); break;
+
+                }
+                tvRefrige.setVisibility(View.GONE);
+
 //                switch (food.getCode()){
 //                    // 냉장고 코드에 맞는 냉장고 이름 보여주기
-//                    // 냉장고 못 옮기게 할까 ?????
+//                    // 냉장고 못 옮기게 할까 ????? ㅇ
 //                }
 
                 break;
@@ -254,10 +261,18 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvDone:
+                // 입력 값이 없을 경우
+                if(edtName.getText().toString().equals("") || tvPurchaseDate.getText().toString().equals("")
+                    || rdoClick.equals("")){
+                    ManageFridgeActivity.simpleCookieBar("정보를 입력해주세요", FoodDetailsActivity.this);
+                    return;
+                }
+
                 switch(action){
                     case "edit":
                         // DB 내용 수정
-                        finish(); // resultcode보내기
+                        updateFood();
+                        finish(); // resultcode보내기 & notify
                         break;
                     case "add":
                         if(bitmapTemp == null){
@@ -272,8 +287,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                         // Encode Image to String
                         encodedString = Base64.encodeToString(byte_arr, 0);
 
-                        uploadImage();
-
+                        uploadData();
 
                         // 알람연결
                         NotificationSetting();
@@ -294,7 +308,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.tvPurchaseDate:
                 // 구입일자
-                // DB 내용 수정
 
                 DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -330,7 +343,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.tvExpirationDate:
                 // 소비만료 일자
-                // DB 내용 수정
 
                 DatePickerDialog dialog2 = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -395,14 +407,10 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                         .setCookiePosition(CookieBar.BOTTOM)
                         .show();
 
-                // 선택한 값 받아서 디비에 넣기
-
                 break;
 
             case R.id.foodImage:
                 // 이미지 넣기
-                // DB 내용 수정
-
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                 try {
@@ -431,14 +439,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    public void uploadImage() {
-        Calendar calendar = Calendar.getInstance();
-        String date;
-        SimpleDateFormat format = new SimpleDateFormat("MMddHHmmSS", Locale.getDefault());
-        date = format.format(calendar.getTime());
-        final int alarmId = Integer.parseInt(date) - Integer.parseInt(MainActivity.strId);
-        Log.d("alarmId", alarmId+"");
+    private void updateFood() {
+        // DB 수정
+    }
 
+    public void uploadData() {
         RequestQueue rq = Volley.newRequestQueue(this);
         String url = "http://jms1132.dothome.co.kr/food.php";
         Log.d("URL", url);
@@ -487,7 +492,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 params.put("expirationDate",tvExpirationDate.getText().toString());
                 params.put("code", ShowFoodsFragment.selectedFridge.getCode());  // 선택된 냉장고 코드 가져오기
                 params.put("place", rdoClick);
-                params.put("alarmID", String.valueOf(alarmId));// 등록 시간 - 사용자 아이디 = 알람 리퀘스트코드로 사용
+                params.put("alarmID", String.valueOf(makeAlarmId()));// 등록 시간 - 사용자 아이디 = 알람 리퀘스트코드로 사용
 
                 return params;
 
@@ -495,6 +500,17 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
         };
         rq.add(stringRequest);
+    }
+
+    private int makeAlarmId() {
+        Calendar calendar = Calendar.getInstance();
+        String date;
+        SimpleDateFormat format = new SimpleDateFormat("MMddHHmmSS", Locale.getDefault());
+        date = format.format(calendar.getTime());
+        int alarmId = Integer.parseInt(date) - Integer.parseInt(MainActivity.strId);
+        Log.d("alarmId", alarmId+"");
+
+        return alarmId;
     }
 
     //==============================================================================================//
@@ -596,30 +612,38 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_FROM_CAMERA) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
 
-            ExifInterface exifInterface = null;
-            // 속성을 체크해야된다.
-            try {
-                exifInterface = new ExifInterface(tempFile.getAbsolutePath());
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == PICK_FROM_CAMERA) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+
+                ExifInterface exifInterface = null;
+                // 속성을 체크해야된다.
+                try {
+                    exifInterface = new ExifInterface(tempFile.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                int exifOrientation; // 방향 설정값 저장 변수
+                int exifDegree; // Degree 설정값 저장 변수
+                if (exifInterface != null) {
+                    exifOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_NORMAL);
+                    exifDegree = exifOrientationToDegree(exifOrientation);
+                } else {
+                    exifDegree = 0;
+                }
+
+                bitmapTemp = rotate(originalBm, exifDegree);
+
+                foodImage.setImageBitmap(bitmapTemp);
             }
-            int exifOrientation; // 방향 설정값 저장 변수
-            int exifDegree; // Degree 설정값 저장 변수
-            if (exifInterface != null) {
-                exifOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                        ExifInterface.ORIENTATION_NORMAL);
-                exifDegree = exifOrientationToDegree(exifOrientation);
-            } else {
-                exifDegree = 0;
-            }
 
-            bitmapTemp = rotate(originalBm, exifDegree);
-
-            foodImage.setImageBitmap(bitmapTemp);
+        } else {
+            Toast.makeText(context, "촬영이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+            return;
         }
     }
 
