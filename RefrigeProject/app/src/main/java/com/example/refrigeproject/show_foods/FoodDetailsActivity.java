@@ -103,7 +103,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private int getMonthEx;
     private int getDayEx;
     private final String PREFERENCE = "com.example.refrigeproject";
-
+    private ArrayList<PendingIntent> intentArray = new ArrayList<>();
     private Long millis;
     private Long millisTemp;
     Calendar today;
@@ -195,11 +195,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void setData() {
-        switch(action){
+        switch (action) {
             case "edit":
                 food = intent.getParcelableExtra("food");
                 tvTitle.setText(food.getName());
-                if(food.getImagePath()!=null){
+                if (food.getImagePath() != null) {
                     Glide.with(this).load(food.getImagePath()).into(foodImage);
                 }
                 tvCategory.setText(food.getCategory());
@@ -208,10 +208,16 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 tvPurchaseDate.setText(food.getPurchaseDate());
                 tvExpirationDate.setText(food.getExpirationDate());
                 edtMemo.setText(food.getMemo());
-                switch (food.getPlace()){
-                    case "냉장": rdoFridge.setChecked(true); break;
-                    case "냉동": rdoFreezer.setChecked(true); break;
-                    case "실온": rdoPantry.setChecked(true); break;
+                switch (food.getPlace()) {
+                    case "냉장":
+                        rdoFridge.setChecked(true);
+                        break;
+                    case "냉동":
+                        rdoFreezer.setChecked(true);
+                        break;
+                    case "실온":
+                        rdoPantry.setChecked(true);
+                        break;
 
                 }
                 llRefrige.setVisibility(View.GONE);
@@ -239,7 +245,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
     private void crawlingDays() {
         Log.d("CRAWLING TEST", "doInBackground " + tvCategory.getText().toString());
-        htmlPageUrl = "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + tvGroup.getText().toString() +"+보관기간";
+        htmlPageUrl = "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + tvGroup.getText().toString() + "+보관기간";
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
         jsoupAsyncTask.execute();
     }
@@ -258,9 +264,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 Document doc = Jsoup.connect(htmlPageUrl).get(); // 해당 페이지의 html 저
 
                 //body > div:nth-child(4) > div.right_wrap > div.wrap_recipe > div > dl:nth-child(3) > dt
-                Elements titles= doc.select(".result_area em.v");
+                Elements titles = doc.select(".result_area em.v");
                 System.out.println("-------------------------------------------------------------");
-                for(Element e: titles){
+                for (Element e : titles) {
                     System.out.println("title: " + e.text());
                     htmlContentInStringFormat = "* 추천 보관일은 " + e.text().trim() + " 입니다.";
                     Log.d("CRAWLING TEST", e.text().trim());
@@ -311,13 +317,13 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.tvDone:
                 // 입력 값이 없을 경우
-                if(edtName.getText().toString().equals("") || tvPurchaseDate.getText().toString().equals("")
-                    || rdoClick == null){
+                if (edtName.getText().toString().equals("") || tvPurchaseDate.getText().toString().equals("")
+                        || rdoClick == null) {
                     ManageFridgeActivity.simpleCookieBar("정보를 입력해주세요", FoodDetailsActivity.this);
                     return;
                 }
 
-                switch(action){
+                switch (action) {
                     case "edit":
                         makeEncodedString(); // 이미지 처리
                         // DB 내용 수정
@@ -388,7 +394,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                         // 현재 날짜, 0시 0분
                         today = Calendar.getInstance();
-                        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH) -1, 0, 0);
+                        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH) - 1, 0, 0);
 
                         // 현재 날짜보다 이전이면 등록 못하도록 함
                         if (calendar.before(today)) {
@@ -470,9 +476,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void makeEncodedString() {
-        if(bitmapTemp == null){
+        if (bitmapTemp == null) {
             // 사진을 찍지 않고 아이콘을 이미지로 등록할 경우
-            bitmapTemp = ((BitmapDrawable)foodImage.getDrawable()).getBitmap();
+            bitmapTemp = ((BitmapDrawable) foodImage.getDrawable()).getBitmap();
         }
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -503,7 +509,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 } catch (Exception e) {
                     Log.d("JSON Exception", e.toString());
                     Toast.makeText(getBaseContext(),
-                            "Error while loadin data!"+e.toString(),
+                            "Error while loadin data!" + e.toString(),
                             Toast.LENGTH_LONG).show();
                 }
 
@@ -514,7 +520,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             public void onErrorResponse(VolleyError error) {
                 Log.d("ERROR", "Error [" + error + "]");
                 Toast.makeText(getBaseContext(),
-                        "Cannot connect to server"+error, Toast.LENGTH_LONG)
+                        "Cannot connect to server" + error, Toast.LENGTH_LONG)
                         .show();
             }
         }) {
@@ -529,7 +535,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 params.put("memo", edtMemo.getText().toString());
                 params.put("image", encodedString);
                 params.put("purchaseDate", tvPurchaseDate.getText().toString());
-                params.put("expirationDate",tvExpirationDate.getText().toString());
+                params.put("expirationDate", tvExpirationDate.getText().toString());
 
                 Log.d("DATA FOR UPDATE", tvCategory.getText().toString());
                 Log.d("DATA FOR UPDATE", tvGroup.getText().toString());
@@ -539,18 +545,26 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 Log.d("DATA FOR UPDATE", food.getPlace());
 
                 // 보관유형을 바꿨을 경우에만 place 수정
-                if(rdoClick == null){
+                if (rdoClick == null) {
                     params.put("place", food.getPlace());
-                }else{
+                } else {
                     params.put("place", rdoClick);
                 }
 
                 // 유통기한을 바꿨을 경우에만 alarmID 수정
-                if(!tvExpirationDate.getText().toString().equals(food.getExpirationDate())){
+                if (!tvExpirationDate.getText().toString().equals(food.getExpirationDate())) {
                     params.put("alarmID", String.valueOf(newRequestCode)); // 새로운 알람 아이디 부여
-                    // 기존 알람 cancel 후 재생성하기 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    // 취소
-                    // 재생성
+
+                    // 기존 알람 취소
+                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+                    Intent intent = new Intent(context, AlarmReceiver.class);
+                    PendingIntent pender = PendingIntent.getBroadcast(context, food.getAlarmID(), intent, 0);
+                    alarmManager.cancel(pender);
+
+                    // 알람 다시 생성
+                    notificationSetting(newRequestCode);
+
+
                 } else {
                     params.put("alarmID", String.valueOf(food.getAlarmID())); // 기존 알람 아이디 부여
                 }
@@ -567,6 +581,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         RequestQueue rq = Volley.newRequestQueue(this);
         String url = "http://jms1132.dothome.co.kr/food.php";
         Log.d("URL", url);
+        final int requestCode = makeAlarmId();
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 url, new Response.Listener<String>() {
 
@@ -576,6 +591,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     Log.e("RESPONSE", response);
                     //JSONObject json = new JSONObject(response);
 
+                    // 만들어진 알람 아이디로 알람 세팅
+                    notificationSetting(requestCode);
+
                     Toast.makeText(getBaseContext(),
                             "The image is upload", Toast.LENGTH_SHORT)
                             .show();
@@ -583,7 +601,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 } catch (Exception e) {
                     Log.d("JSON Exception", e.toString());
                     Toast.makeText(getBaseContext(),
-                            "Error while loadin data!"+e.toString(),
+                            "Error while loadin data!" + e.toString(),
                             Toast.LENGTH_LONG).show();
                 }
 
@@ -594,7 +612,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             public void onErrorResponse(VolleyError error) {
                 Log.d("ERROR", "Error [" + error + "]");
                 Toast.makeText(getBaseContext(),
-                        "Cannot connect to server"+error, Toast.LENGTH_LONG)
+                        "Cannot connect to server" + error, Toast.LENGTH_LONG)
                         .show();
             }
         }) {
@@ -608,14 +626,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 params.put("memo", edtMemo.getText().toString());
                 params.put("image", encodedString);
                 params.put("purchaseDate", tvPurchaseDate.getText().toString());
-                params.put("expirationDate",tvExpirationDate.getText().toString());
+                params.put("expirationDate", tvExpirationDate.getText().toString());
                 params.put("code", ShowFoodsFragment.selectedFridge.getCode());  // 선택된 냉장고 코드 가져오기
                 params.put("place", rdoClick);
-                int requestCode = makeAlarmId();
-                params.put("alarmID", String.valueOf(requestCode));// 등록 시간 - 사용자 아이디 = 알람 리퀘스트코드로 사용
 
-                // 만들어진 알람 아이디로 알람 세팅
-                notificationSetting(requestCode);
+                params.put("alarmID", String.valueOf(requestCode));// 등록 시간 - 사용자 아이디 = 알람 리퀘스트코드로 사용
 
                 return params;
 
@@ -631,7 +646,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         SimpleDateFormat format = new SimpleDateFormat("MMddHHmmSS", Locale.getDefault());
         date = format.format(calendar.getTime());
         int alarmId = Integer.parseInt(date) - Integer.parseInt(MainActivity.strId);
-        Log.d("alarmId", alarmId+"");
+        Log.d("alarmId", alarmId + "");
 
         return alarmId;
     }
@@ -650,70 +665,70 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
         //============================================================================//
 
-        millis = calendar.getTimeInMillis();
-
-        // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
-        if (dateSetting == 1) {
-            millis -= 86400000;
-
-            // 3일전에 체크되었을때 소비만료 일자에서 3일을 빼줌
-        } else if (dateSetting == 3) {
-            millis -= 86400000 * 3;
-
-            // 7일전에 체크되었을때 소비만료 일자에서 7일을 빼줌
-        } else if (dateSetting == 7) {
-            millis -= 86400000 * 7;
-
-
-            //============================================================================//
-
-//        // 테스트용 calendarTemp
-//        Calendar calendarTemp = Calendar.getInstance();
+//        millis = calendar.getTimeInMillis();
 //
-//        // (선택한 년월일 - 오늘로 직접 설정하기 , 현재 시간)
-//        calendarTemp.set(Calendar.YEAR, getYearEx);
-//        calendarTemp.set(Calendar.MONTH, getMonthEx);
-//        calendarTemp.set(Calendar.DAY_OF_MONTH, getDayEx);
-//        calendarTemp.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-//        calendarTemp.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
-//        calendarTemp.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
-//
-//        millisTemp = calendarTemp.getTimeInMillis();
-
-//        // 테스트용
-//
+//        // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
 //        if (dateSetting == 1) {
-//            millisTemp += 300000;
+//            millis -= 86400000;
 //
+//            // 3일전에 체크되었을때 소비만료 일자에서 3일을 빼줌
 //        } else if (dateSetting == 3) {
-//            millisTemp += 600000;
+//            millis -= 86400000 * 3;
 //
+//            // 7일전에 체크되었을때 소비만료 일자에서 7일을 빼줌
 //        } else if (dateSetting == 7) {
-//            millisTemp += 900000;
-//        }
-//
-//        //======================================================================//
+//            millis -= 86400000 * 7;
 
-            alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-            Intent intent = new Intent(context, AlarmReceiver.class);
-            intent.putExtra("foodName", edtName.getText().toString());
-            intent.putExtra("dateSetting", dateSetting);
-            intent.putExtra("switchSetting", switchSetting);
-            intent.putExtra("id", requestCode);
-            PendingIntent pender = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
-            Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
+        //============================================================================//
 
-            // 테스트용
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, millisTemp, pender);
-//        Log.d("알람셋팅완료", calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) +1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
+        // 테스트용 calendarTemp
+        Calendar calendarTemp = Calendar.getInstance();
+
+        // (선택한 년월일 - 오늘로 직접 설정하기 , 현재 시간)
+        calendarTemp.set(Calendar.YEAR, getYearEx);
+        calendarTemp.set(Calendar.MONTH, getMonthEx);
+        calendarTemp.set(Calendar.DAY_OF_MONTH, getDayEx);
+        calendarTemp.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        calendarTemp.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
+        calendarTemp.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
+
+        millisTemp = calendarTemp.getTimeInMillis();
+
+        // 테스트용
+
+        if (dateSetting == 1) {
+            millisTemp += 40000;
+
+        } else if (dateSetting == 3) {
+            millisTemp += 600000;
+
+        } else if (dateSetting == 7) {
+            millisTemp += 900000;
         }
+
+        //======================================================================//
+
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("foodName", edtName.getText().toString());
+        intent.putExtra("dateSetting", dateSetting);
+        intent.putExtra("switchSetting", switchSetting);
+        intent.putExtra("id", requestCode);
+        PendingIntent pender = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
+//            Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
+
+
+//         테스트용
+        alarmManager.set(AlarmManager.RTC_WAKEUP, millisTemp, pender);
+        Log.d("알람셋팅완료", calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) + 1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
+
     }
 
     //==============================================================================================//
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
