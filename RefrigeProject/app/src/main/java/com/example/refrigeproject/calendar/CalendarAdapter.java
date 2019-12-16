@@ -270,6 +270,7 @@ public class CalendarAdapter extends BaseAdapter {
                 return params;
             }
         };
+        requestQueue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
             @Override
             public void onRequestFinished(Request<Object> request) {
                 notifyDataSetChanged();
