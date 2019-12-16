@@ -40,10 +40,11 @@
         android:layout_height="70dp"
         android:layout_margin="5dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:padding="3dp"
             android:src="@drawable/vege_carrot"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toStartOf="@id/llFoodInfo"

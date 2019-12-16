@@ -132,9 +132,18 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(adapter);
         decorator.attachToRecyclerView(rvFoods);
 
+        Log.d(TAG, "온크리에이트 실행?");
 
         setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "온리줌 실행?");
+        adapter.notifyDataSetChanged();
+
     }
 
     private void setFoodsData(SectionAdapter adapter) {
@@ -180,8 +189,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         adapter.notifyDataSetChanged();
     }
 
-    private ArrayList<FoodData> selectItems(final String place) {
-        final ArrayList<FoodData> dbList = new ArrayList<FoodData>();;
+    private void selectItems(final String place) {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest jsonArrayRequest = new StringRequest(
                 Request.Method.POST,
@@ -194,7 +202,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("food");
 
-                            Log.d("testest " + place,jsonArray.length()+"");
+                            Log.d("selectItems " + place,jsonArray.length()+"");
                             Log.d("ThreadName", Thread.currentThread().getName()+"");
 
                             for(int i = 0 ; i < jsonArray.length() ; i++) {
@@ -221,7 +229,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                 foodData.setPlace(object.getString("place"));
                                 foodData.setAlarmID(object.getInt("alarmID"));
 
-                                dbList.add(foodData);
                                 items.add(foodData);
 
                                 //debug
@@ -233,7 +240,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                 Log.d(TAG, foodData.getCategory());
                                 Log.d(TAG, foodData.getAlarmID()+"");
                                 Log.d(TAG, foodData.getPurchaseDate());
-                                Log.d(TAG, dbList.size()+"");
 
                                 Log.d("setFoodsData 1", items.size()+"");
                             }
@@ -265,7 +271,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
 
-        return dbList;
     }
 
     // 냉장고 정보 가져오기
@@ -306,14 +311,22 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                             // 첫 냉장고 값 세팅
                             selectedFridge = refrigeratorList.get(0);
                             tvFridgeName.setText(selectedFridge.getName());
-                            setFoodsData(adapter);
+//                            setFoodsData(adapter);
 
+                            ////// 헤더는 빨리 추가되고 selectItems()가 늦게 작동해서 순서 안 맞음
+                            items.clear();
+                            items.add(new SectionHeader(1));
                             selectItems("냉장");
+                            items.add(new SectionHeader(2));
                             selectItems("냉동");
+                            items.add(new SectionHeader(3));
                             selectItems("실온");
 
+                            adapter.items = items;
+                            adapter.notifyDataSetChanged();
+
                         }catch (JSONException e){
-                            Log.d("testest","catch");
+                            Log.e(TAG,e.toString());
                         }
                     }
                 },
@@ -772,4 +785,5 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
             throw new RuntimeException(context.toString() + "OnFragmentInteractionListener을 구현하라");
         }
     }
+
 }

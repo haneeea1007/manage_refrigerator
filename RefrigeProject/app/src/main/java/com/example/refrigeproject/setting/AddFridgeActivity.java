@@ -1,5 +1,7 @@
 package com.example.refrigeproject.setting;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -107,12 +109,11 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                     refName = edtTxt.getText().toString().trim();
                     Log.d(TAG, "냉장고 이름" + refName);
 
-                    String type = ((RadioButton) findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
+                    final String type = ((RadioButton) findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
                     Log.d(TAG , type);
 
 
                     // DB에 저장
-
                     // insert into refrigeratorTBL
                     Response.Listener<String> responseListener = new Response.Listener<String>() {
                         @Override
@@ -130,10 +131,10 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                                                 boolean success = jsonObject.getBoolean("success");
                                                 if(success){
                                                     Toast.makeText(getApplicationContext(), refName + "manageTBL 추가되었습니다.", Toast.LENGTH_LONG).show();
-                                                    finish();
+                                                    //ArrayList에 저장
+                                                    ShowFoodsFragment.refrigeratorList.add(new RefrigeratorData(randomCode, refName, type));
                                                 }else{
                                                     Toast.makeText(getApplicationContext(), refName + " 추가 실패", Toast.LENGTH_LONG).show();
-                                                    finish();
                                                 }
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -172,8 +173,7 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
 //                    sqLiteDatabase.execSQL(str);
 //                    sqLiteDatabase.close();
 
-                    //ArrayList에 저장
-                    ShowFoodsFragment.refrigeratorList.add(new RefrigeratorData(randomCode, refName, type));
+
 
                 }
             }
