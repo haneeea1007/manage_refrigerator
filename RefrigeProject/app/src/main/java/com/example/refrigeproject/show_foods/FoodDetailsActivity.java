@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -96,15 +97,12 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private int dateSetting;
     private int alarmID;
     private boolean switchSetting;
-    private String notiContent;
     private String rdoClick;
 
-//    private int getYearPur;
-//    private int getMonthPur;
-//    private int getDayPur;
     private int getYearEx;
     private int getMonthEx;
     private int getDayEx;
+    private final String PREFERENCE = "com.example.refrigeproject";
 
     private Long millis;
     private Long millisTemp;
@@ -360,10 +358,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                             return;
                         }
 
-//                        getYearPur = year;
-//                        getMonthPur = month;
-//                        getDayPur = dayOfMonth;
-
                         millisTemp = calendarTemp.getTimeInMillis();
 
                         // 날짜 표시
@@ -384,11 +378,13 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        // 알림 날짜 설정, 0시 0분
+                        // 알림 날짜 설정 ( 설정된 년, 월, 일 4시 0분 0초 )
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.MONTH, month);
                         calendar.set(Calendar.DATE, dayOfMonth);
-                        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0);
+                        calendar.set(Calendar.HOUR_OF_DAY, 16);
+                        calendar.set(Calendar.MINUTE, 0);
+                        calendar.set(Calendar.SECOND, 0);
 
                         // 현재 날짜, 0시 0분
                         today = Calendar.getInstance();
@@ -404,8 +400,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                         getYearEx = year;
                         getMonthEx = month;
                         getDayEx = dayOfMonth;
-
-                        millis = calendar.getTimeInMillis();
 
                         // 날짜 표시
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -642,23 +636,21 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         return alarmId;
     }
 
-    //==============================================================================================//
-
-    // 인텐트로 category, section, code 받기
-
     // 알람 연결
     private void notificationSetting(int requestCode) {
 
-        //=========================================================================================//
+        // 쉐어드프레퍼런스 체크값 가져와서 셋팅하기
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
 
-        // 인텐트로 셋팅값 가져오기
-        Intent settingIntent = getIntent();
-        dateSetting = settingIntent.getIntExtra("dateSetting", dateSetting);
-        switchSetting = settingIntent.getBooleanExtra("switchSetting", switchSetting);
+        dateSetting = sharedPreferences.getInt("radioPref", 0);
+        switchSetting = sharedPreferences.getBoolean("switchPref", false);
 
-        // 설정탭에서 인텐트를통해 여기로 체크값을 보냄 (1일전 = 1, 3일전 = 3, 7일전 = 7)
-        // 여기서 인텐트를통해 리시버로 1일전, 3일전, 5일전의 날짜를 보냄
-        // 리시버에서 스위치값을 감지해서 if else 문으로 서비스로 전달
+        Log.d("switchPref", sharedPreferences.getBoolean("switchPref", false) + "");
+        Log.d("radioPref", sharedPreferences.getInt("radioPref", 0) + "");
+
+        //============================================================================//
+
+        millis = calendar.getTimeInMillis();
 
         // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
         if (dateSetting == 1) {
@@ -671,33 +663,57 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             // 7일전에 체크되었을때 소비만료 일자에서 7일을 빼줌
         } else if (dateSetting == 7) {
             millis -= 86400000 * 7;
+
+
+            //============================================================================//
+
+//        // 테스트용 calendarTemp
+//        Calendar calendarTemp = Calendar.getInstance();
+//
+//        // (선택한 년월일 - 오늘로 직접 설정하기 , 현재 시간)
+//        calendarTemp.set(Calendar.YEAR, getYearEx);
+//        calendarTemp.set(Calendar.MONTH, getMonthEx);
+//        calendarTemp.set(Calendar.DAY_OF_MONTH, getDayEx);
+//        calendarTemp.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+//        calendarTemp.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
+//        calendarTemp.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
+//
+//        millisTemp = calendarTemp.getTimeInMillis();
+
+//        // 테스트용
+//
+//        if (dateSetting == 1) {
+//            millisTemp += 300000;
+//
+//        } else if (dateSetting == 3) {
+//            millisTemp += 600000;
+//
+//        } else if (dateSetting == 7) {
+//            millisTemp += 900000;
+//        }
+//
+//        //======================================================================//
+
+            alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            intent.putExtra("foodName", edtName.getText().toString());
+            intent.putExtra("dateSetting", dateSetting);
+            intent.putExtra("switchSetting", switchSetting);
+            intent.putExtra("id", requestCode);
+            PendingIntent pender = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
+            Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
+
+            // 테스트용
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, millisTemp, pender);
+//        Log.d("알람셋팅완료", calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) +1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
         }
-
-        // 캘린더에 셋팅함 (시간은 오후 4시 0분 0초)
-        calendar.set(Calendar.YEAR, getYearEx);
-        calendar.set(Calendar.MONTH, getMonthEx);
-        calendar.set(Calendar.DAY_OF_MONTH, getDayEx);
-        calendar.set(Calendar.HOUR_OF_DAY, 16);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        // 구입일자가 소비만료일자보다 이상이면 안됨
-
-        // 미완성!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //=======================================================================================//4
-
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("foodName", edtName.getText().toString());
-        intent.putExtra("content", notiContent);
-        intent.putExtra("id", requestCode);
-        intent.putExtra("switch", switchSetting);
-        PendingIntent pender = PendingIntent.getBroadcast(context, alarmID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
     }
 
     //==============================================================================================//
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

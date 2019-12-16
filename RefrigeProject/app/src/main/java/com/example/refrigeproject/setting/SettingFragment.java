@@ -1,9 +1,11 @@
 package com.example.refrigeproject.setting;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -39,6 +42,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class SettingFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     View view;
 
@@ -46,9 +51,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
     TextView tvUserName;
     LinearLayout llManage, llAlarm, llShare, llReport, llLogout;
     RadioGroup rdoGroup;
+    RadioButton rdo1Day, rdo3Day, rdo7Day;
     Switch switchAlarm;
     String strNickname, strProfile, strId;
     Bitmap bitmap;
+    private final String PREFERENCE = "com.example.refrigeproject";
 
     @Nullable
     @Override
@@ -64,6 +71,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         imgProfile = view.findViewById(R.id.imgProfile);
 
         rdoGroup = view.findViewById(R.id.rdoGroup);
+        rdo1Day = view.findViewById(R.id.rdo1Day);
+        rdo3Day = view.findViewById(R.id.rdo3Day);
+        rdo7Day = view.findViewById(R.id.rdo7Day);
         switchAlarm = view.findViewById(R.id.switchAlarm);
 
         llManage.setOnClickListener(this);
@@ -72,7 +82,25 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         llReport.setOnClickListener(this);
 
         rdoGroup.setOnCheckedChangeListener(this);
+
+        // 쉐어드프레퍼런스 체크값 가져와서 셋팅하기
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREFERENCE, MODE_PRIVATE);
+
         switchAlarm.setOnCheckedChangeListener(this);
+
+        if (sharedPreferences.getBoolean("switchPref", false) == true) {
+            switchAlarm.setChecked(true);
+        } else if (sharedPreferences.getBoolean("switchPref", false) == false) {
+            switchAlarm.setChecked(false);
+        }
+
+        if (sharedPreferences.getInt("radioPref", 0) == 1) {
+            rdo1Day.setChecked(true);
+        } else if (sharedPreferences.getInt("radioPref",0) == 3) {
+            rdo3Day.setChecked(true);
+        } else if (sharedPreferences.getInt("radioPref",0) == 7) {
+            rdo7Day.setChecked(true);
+        }
 
         // 인텐트로 유저 닉네임, 프로필사진, 고유아이디 받아오기
         Intent intent = this.getActivity().getIntent();
@@ -175,34 +203,47 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         }
     }
 
-    // 라디오버튼 체크를 감지해서 인텐트로 보냄
+    // 라디오버튼 체크 감지
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-        Intent radioIntent = new Intent(getContext(), FoodDetailsActivity.class);
+        // 라디오버튼 체크값을 쉐어드프레퍼런스에 저장
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREFERENCE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (radioGroup.getCheckedRadioButtonId() == R.id.rdo1Day) {
-            radioIntent.putExtra("dateSetting", 1);
+            editor.putInt("radioPref", 1);
+            editor.commit();
             Toast.makeText(getContext(), "알림이 소비 만료일자 1일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
 
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.rdo3Day) {
-            radioIntent.putExtra("dateSetting", 3);
+            editor.putInt("radioPref", 3);
+            editor.commit();
             Toast.makeText(getContext(), "알림이 소비 만료일자 3일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
 
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.rdo7Day) {
-            radioIntent.putExtra("dateSetting", 7);
+            editor.putInt("radioPref", 7);
+            editor.commit();
             Toast.makeText(getContext(), "알림이 소비 만료일자 7일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
-
         }
     }
 
-    // 스위치 체크를 감지해서 인텐트로 보냄
+    // 스위치 체크 감지
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
-        Intent switchIntent = new Intent(getContext(), FoodDetailsActivity.class);
-        switchIntent.putExtra("switchSetting", isChecked);
+        // 스위치 체크값을 쉐어드프레퍼런스에 저장
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREFERENCE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        if (isChecked == true) {
+            editor.putBoolean("switchPref", true);
+            editor.commit();
+
+        } else if (isChecked == false) {
+            editor.putBoolean("switchPref", false);
+            editor.commit();
+        }
         Toast.makeText(getContext(), "알람 설정 : " + isChecked, Toast.LENGTH_SHORT).show();
     }
 

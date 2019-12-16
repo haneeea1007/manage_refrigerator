@@ -19,39 +19,38 @@ import static android.app.Notification.VISIBILITY_PUBLIC;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private Boolean switchSetting;
-    private String notiContent;
-    private String foodName;
     private int alarmID;
+    private int dateSetting;
+    private Boolean switchSetting;
+    private String foodName;
 
     //    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressLint("InvalidWakeLockTag")
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent rIntent = new Intent(context, AlarmService.class);
-        PendingIntent pend = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        Intent intentActivity = new Intent(context, FoodAndDateActivity.class);
-//        PendingIntent activityPending = PendingIntent.getActivity(context, 0, intentActivity, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        notiContent = intent.getStringExtra("content");
+        // 메인에서 인텐트로 받아오기
         foodName = intent.getStringExtra("foodName");
+        dateSetting = intent.getIntExtra("dateSetting", 0);
         alarmID = intent.getIntExtra("id", 0);
-        switchSetting = intent.getBooleanExtra("switch", false);
+        switchSetting = intent.getBooleanExtra("switchSetting", false);
 
+        // 서비스로 넘기는 인텐트 (알림을 클릭하면 메인창이 뜨도록 함)
+        Intent rIntent = new Intent(context, AlarmService.class);
+        PendingIntent pend = PendingIntent.getActivity(context, alarmID, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // 알람 설정이 켜져 있을 때
         if (switchSetting == true) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(rIntent);
-                String text = intent.getStringExtra("text");
-                int id = intent.getIntExtra("id", 0);
                 //NotificationManager 안드로이드 상태바에 메세지를 던지기위한 서비스 불러오고
                 NotificationManager notificationmanager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 //            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
                 Notification.Builder builder = new Notification.Builder(context);
                 builder.setSmallIcon(R.drawable.ic_launcher_background)
                         .setWhen(System.currentTimeMillis())
-                        .setContentTitle(text)
-                        .setContentText(text)
+                        .setContentTitle("소비 만료기한 알림")
+                        .setContentText("'" + foodName + "'" + " 소비 만료기한이 " + dateSetting + " 일 남았습니다.")
                         .setChannelId("Alarm")
                         .setCategory(NotificationCompat.CATEGORY_REMINDER)
                         .setFullScreenIntent(pend, true)
@@ -61,19 +60,17 @@ public class AlarmReceiver extends BroadcastReceiver {
                         .setVisibility(VISIBILITY_PUBLIC)
                         .setAutoCancel(true);
                 WakeLocker.acquire(context);
-                notificationmanager.notify(id, builder.build());
+                notificationmanager.notify(alarmID, builder.build());
 
             } else {
                 context.startService(rIntent);
-                String text = intent.getStringExtra("text");
-                int id = intent.getIntExtra("id", 0);
                 NotificationManager mNotificationManager =
                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(context)
                                 .setSmallIcon(R.drawable.ic_launcher_background)
-                                .setContentTitle(text)
-                                .setContentText(text)
+                                .setContentTitle("소비 만료기한 알림")
+                                .setContentText("'" + foodName + "'" + " 소비 만료기한이 " + dateSetting + " 일 남았습니다.")
                                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
                                 .setFullScreenIntent(pend, true)
@@ -84,11 +81,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
                 WakeLocker.acquire(context);
-                mNotificationManager.notify(id, mBuilder.build());
+                mNotificationManager.notify(alarmID, mBuilder.build());
             }
             Log.d("리시버", "on");
             WakeLocker.release();
 
+            // 알람 설정이 꺼져 있을 때
         } else {
             Log.d("리시버", "off");
             context.stopService(intent);
