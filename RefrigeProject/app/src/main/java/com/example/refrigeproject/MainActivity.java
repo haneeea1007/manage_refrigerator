@@ -13,14 +13,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.example.refrigeproject.calendar.CalendarFragment;
 import com.example.refrigeproject.checklist.CheckListFragment;
+import com.example.refrigeproject.database.ManageRequest;
+import com.example.refrigeproject.database.UserRequest;
 import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
+import com.example.refrigeproject.setting.AddFridgeActivity;
 import com.example.refrigeproject.setting.SettingFragment;
+import com.example.refrigeproject.show_foods.RefrigeratorData;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.facebook.stetho.Stetho;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements ShowFoodsFragment.OnFragmentInteractionListener{
 
@@ -72,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         strNickname = intent.getStringExtra("name");
         strProfile = intent.getStringExtra("profile");
         strId = String.valueOf(intent.getLongExtra("id", 0));
-        strId = "1"; // to test
+        // 사용자 정보 DB에 저장
+        insertUserData();
+//        strId = "1"; // to test
 
         // 인텐트로 셋팅 프래그먼트에 전달
         Intent putIntent = new Intent(this, SettingFragment.class);
@@ -80,6 +93,30 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         putIntent.putExtra("profile", strProfile); // 카카오톡 프로필 이미지
         putIntent.putExtra("id", strProfile); // 유저 고유 아이디
 
+    }
+
+    private void insertUserData() {
+        // insert into userTBL
+        Response.Listener<String> responseListener2 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if(success){
+                        Toast.makeText(getApplicationContext(), strId + " userTBL 추가되었습니다.", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(getApplicationContext(), strId + " 추가 실패", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        UserRequest userRequest = new UserRequest(strId, strProfile, strNickname, responseListener2); // 자료 다 들어있음. 상대방주소,데이터,데이터랩방식 등
+        RequestQueue requestQueue2 = Volley.newRequestQueue(MainActivity.this);
+        requestQueue2.add(userRequest);
     }
 
     private void changeFragment(int position) {

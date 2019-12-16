@@ -7,28 +7,28 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetRefrigerator extends StringRequest {
+public class UserRequest extends StringRequest {
 
-    final static private String URL = "http://soproject.dothome.co.kr/Food.php";
+    final static private String URL = "http://jms1132.dothome.co.kr/user.php";
     private Map<String, String> map;
-    private String code;
+    private String id;
+    private String profile;
     private String name;
-    private String type;
 
-    public GetRefrigerator(String code, String name, String type, Response.Listener<String> listener) {
+    public UserRequest(String id, String profile, String name, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null); // getParams()를 부름
         map = new HashMap<>();
-        this.code = code;
+        this.id = id;
+        this.profile = profile;
         this.name = name;
-        this.type = type;
     }
 
     // 반드시 Map으로 리턴!
     @Override
     protected Map<String, String> getParams() throws AuthFailureError {
-        map.put("code", this.code);
+        map.put("id", this.id);
+        map.put("profile", this.profile);
         map.put("name", this.name);
-        map.put("type", this.type);
 
         return map;
     }

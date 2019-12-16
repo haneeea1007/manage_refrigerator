@@ -1,17 +1,14 @@
 package com.example.refrigeproject.show_foods;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,13 +16,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +36,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -50,13 +44,8 @@ import com.dinuscxj.progressbar.CircleProgressBar;
 import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
-import com.example.refrigeproject.calendar.SeasonalFood;
-import com.example.refrigeproject.database.GetRefrigerator;
-import com.example.refrigeproject.database.ManageRequest;
-import com.example.refrigeproject.search_recipe.Recipe;
 import com.example.refrigeproject.setting.AddFridgeActivity;
 import com.example.refrigeproject.setting.ManageFridgeActivity;
-import com.google.android.material.snackbar.Snackbar;
 import com.shuhart.stickyheader.StickyAdapter;
 import com.shuhart.stickyheader.StickyHeaderItemDecorator;
 
@@ -74,7 +63,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -98,16 +86,19 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     // 냉장고 리스트
     public static ArrayList<RefrigeratorData> refrigeratorList = new ArrayList<RefrigeratorData>();
 
+    // Widget
+    private RecyclerView rvFoods;
+    private ConstraintLayout loading;
+    private LinearLayout llRefrigerator;
+
     // Widget in ViewHolder
-    public TextView tvFridgeName, tvName;
+    public TextView tvFridgeName;
 
     // 체크박스 값 저장
     public boolean removeMode;
     int i = 0;
     Set<FoodData> removed = new HashSet<>(); // 현재 체크된 체크박스의 MainData 모음 - delete 시 사용
     Menu menu;
-    private RecyclerView rvFoods;
-    private LinearLayout llRefrigerator;
 
     private OnFragmentInteractionListener mListener;// 객체참조변수
 
@@ -120,6 +111,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_show_foods, container, false);
 
+        loading = view.findViewById(R.id.loading);
         rvFoods = view.findViewById(R.id.rvFoods);
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
@@ -161,6 +153,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
         placeList.add("실온");
 
         for (final String place: placeList) {
+            Log.d("DONE?", place + " " + requestsCounter);
             requestsCounter.incrementAndGet();
 
             queue.add(new StringRequest(
@@ -252,9 +245,12 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 public void onRequestFinished(Request<Object> request) {
                     requestsCounter.decrementAndGet();
 
-                    Log.d(TAG, "SOMETHING DONE!");
+                    Log.d(TAG, "SOMETHING DONE!" + requestsCounter.get());
                     if(requestsCounter.get() == 0){
-                        Log.d(TAG, "ALL DONE!");
+                        Log.d(TAG, "ALL DONE!" + requestsCounter.get());
+                        loading.setVisibility(View.GONE);
+                    } else if(requestsCounter.get() < 0){
+                        return;
                     }
                     adapter.items = items;
                     adapter.notifyDataSetChanged();
@@ -384,12 +380,17 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                             }
 
                             // 첫 냉장고 값 세팅
-                            selectedFridge = refrigeratorList.get(0);
-                            tvFridgeName.setText(selectedFridge.getName());
+                            if(refrigeratorList.size() == 0 ){
+                                Intent intent = new Intent(getContext(), AddFridgeActivity.class);
+                                startActivity(intent);
+                                Toast.makeText(getContext(), "등록된 냉장고가 없습니다.\n냉장고를 등록해주세요", Toast.LENGTH_SHORT).show();
+                            }else{
+                                selectedFridge = refrigeratorList.get(0);
+                                tvFridgeName.setText(selectedFridge.getName());
 //                            setFoodsData(adapter);
 
-                            ////// 헤더는 빨리 추가되고 selectItems()가 늦게 작동해서 순서 안 맞음
-                            selectItems();// test
+                                ////// 헤더는 빨리 추가되고 selectItems()가 늦게 작동해서 순서 안 맞음
+                                selectItems();// test
 //                            items.clear();
 //                            items.add(new SectionHeader(1));
 //                            selectItems("냉장");
@@ -398,8 +399,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 //                            items.add(new SectionHeader(3));
 //                            selectItems("실온");
 
-                            adapter.items = items;
-                            adapter.notifyDataSetChanged();
+                                adapter.items = items;
+                                adapter.notifyDataSetChanged();
+                            }
 
                         }catch (JSONException e){
                             Log.e(TAG,e.toString());

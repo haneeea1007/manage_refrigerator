@@ -1,9 +1,12 @@
 package com.example.refrigeproject.calendar;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -34,6 +41,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.join;
+
 public class CalendarAdapter extends BaseAdapter {
     private final static String TAG = "CalendarAdapter";
     private final static int TOTAL_COUNT = 6 * 7;
@@ -55,7 +64,8 @@ public class CalendarAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
     View view;
-    TextView tvEvent;
+    LinearLayout monthItem;
+    TextView tvEvent, tvDayValue;
     ImageView ivMark;
     ArrayList<FoodData> list = new ArrayList<FoodData>();
     String date;
@@ -90,16 +100,22 @@ public class CalendarAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(R.layout.month_item, null);
 
         ivMark = view.findViewById(R.id.ivMark);
-        TextView tvDayValue = view.findViewById(R.id.tvDayValue);
-        tvEvent  = view.findViewById(R.id.tvEvent);
+        tvEvent = view.findViewById(R.id.tvEvent);
+        monthItem = view.findViewById(R.id.monthItem);
+        tvDayValue = view.findViewById(R.id.tvDayValue);
 
         int day = items[position].getDayValue();
-        if(day != 0) tvDayValue.setText(String.valueOf(day));
+        if(day != 0){
+            tvDayValue.setText(String.valueOf(day));
+        }else{
+            view.setVisibility(View.GONE);
+            return view;
+        }
         int columnIndex = position % 7;
         switch (columnIndex){
             case 0:
@@ -142,15 +158,56 @@ public class CalendarAdapter extends BaseAdapter {
         date = currentYear + "-" + (currentMonth + 1) + "-" + day;
         Log.d(TAG, date);
         for(int i = 0 ; i < list.size() ; i++){
+            final ArrayList<String> nameAndPlace = new ArrayList<String>();
             if(Arrays.asList(list.get(i).getExpirationDate()).contains(date)){
-                Log.d(TAG, list.get(i).getName() + "를 달력에 추가하라 !!!!");
-                tvEvent.setText(list.get(i).getName());
+                final int index = i;
+
+                // 해당 아이템
+                FoodData food = list.get(i);
+                Log.d(TAG, food.getName() + "를 달력에 추가하라 !!!!");
+
+                // 해당 아이템 이름을 달력에 표시
+                String tempForSetText = tvEvent.getText().toString(); // 원래 들어 있던 값
+                tvEvent.setText(tempForSetText.concat("- " + food.getName()+"\n")); // 새로 추가해서 setText
                 ivMark.setImageResource(R.drawable.circle);
+
+                final String tempForDialog = "- " + food.getName()+" ("+ food.getPlace() + ")"; // 추가한 값 + 장소정보
+                Log.d(TAG, "음식+장소 " + tempForDialog);
+                nameAndPlace.add(tempForDialog);
+
+
+                final String totalInfo;
+
+                // 클릭 시 다이얼로그로 이름과 장소 알려줌
+                monthItem.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                        dialog.setTitle("⚠️ 폐기 요망 ⚠️");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Log.d("음식+장소", arrayJoin("\n", nameAndPlace));
+                            dialog.setMessage(arrayJoin("\n", nameAndPlace));
+                        }
+                        dialog.show();
+//                        Toast.makeText(context, list.get(index).getName(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
 
 
         return view;
+    }
+
+    public static String arrayJoin(String glue, ArrayList<String> array){
+        String result = "";
+        for(int i = 0 ; i < array.size() ; i++){
+            result += array.get(i);
+            if( i < array.size() - 1){
+                result += glue;
+            }
+        }
+        return result;
     }
 
     private void setCurrentMonthData() {
@@ -213,6 +270,12 @@ public class CalendarAdapter extends BaseAdapter {
                 return params;
             }
         };
+            @Override
+            public void onRequestFinished(Request<Object> request) {
+                notifyDataSetChanged();
+//                loading.setVisibility(View.GONE);
+            }
+        });
 
         // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);

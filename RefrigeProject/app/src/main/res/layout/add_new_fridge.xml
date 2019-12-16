@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp">
 
     <LinearLayout
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal|top"
         android:layout_marginBottom="160dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <ImageButton
             android:id="@+id/ibtBack"
@@ -32,100 +36,109 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="30dp"
-        android:text="냉장고 유형을 선택해 주세요."
-        android:textSize="16sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/fridge1" />
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/fridge2" />
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/fridge3" />
-    </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="20dp"
-        android:paddingBottom="70dp">
+        android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:layout_editor_absoluteX="15dp">
 
-        <RadioGroup
-            android:id="@+id/radioGroup"
+        <TextView
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:text="냉장고 유형을 선택해 주세요."
+            android:layout_marginBottom="20dp"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/rbRef1"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="기본형" />
+                android:layout_weight="1"
+                app:srcCompat="@drawable/fridge1" />
 
-            <RadioButton
-                android:id="@+id/rbRef2"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="45dp"
-                android:layout_marginRight="45dp"
-                android:text="양문형" />
+                android:layout_weight="1"
+                app:srcCompat="@drawable/fridge2" />
 
-            <RadioButton
-                android:id="@+id/rbRef3"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/fridge3" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:paddingBottom="70dp">
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="김치냉장고" />
-        </RadioGroup>
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <RadioButton
+                    android:id="@+id/rbRef1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="기본형" />
+
+                <RadioButton
+                    android:id="@+id/rbRef2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="45dp"
+                    android:layout_marginRight="45dp"
+                    android:text="양문형" />
+
+                <RadioButton
+                    android:id="@+id/rbRef3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="김치냉장고" />
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="냉장고 이름을 입력해 주세요."
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edtTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnRefAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_border"
+            android:onClick="onClick"
+            android:text="등록하기" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:text="냉장고 이름을 입력해 주세요."
-        android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/edtTxt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="30dp" />
-
-    <Button
-        android:id="@+id/btnRefAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/rounded_border"
-        android:onClick="onClick"
-        android:text="등록하기" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
