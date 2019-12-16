@@ -2,6 +2,8 @@ package com.example.refrigeproject.show_foods;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -75,6 +77,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static android.content.Context.ALARM_SERVICE;
 
 public class ShowFoodsFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "ShowFoodsFragment";
@@ -146,52 +151,19 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
     }
 
-    private void setFoodsData(SectionAdapter adapter) {
-        items.add(new SectionHeader(1));
-//        Log.d("ThreadName", Thread.currentThread().getName()+"");
-//        FoodData foodData = new FoodData();
-//        foodData.setPostion(1);
-//        foodData.setName("왕감자");
-//        foodData.setCategory("야채");
-//        foodData.setSection("감자");
-//        foodData.setMemo("베란다에 있음");
-//        foodData.setPlace("실온");
-//
-//
-//        items.add(foodData);
-//        items.addAll(selectItems("냉장"));
-        Log.d("setFoodsData 1", items.size()+"");
-//        items.add(new FoodData(1, "냉장템2 "));
-//        items.add(new FoodData(1, "냉장템3 "));
-//        items.add(new FoodData(1, "냉장템4 "));
+    private void selectItems(){
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        final AtomicInteger requestsCounter = new AtomicInteger(0);
 
-        items.add(new SectionHeader(2));
-//        selectItems(items,"냉동");
-//        items.addAll(selectItems("냉동"));
-        Log.d("setFoodsData 2", items.size()+"");
-//        items.add(new FoodData(2, "냉동템1 "));
-//        items.add(new FoodData(2, "냉동템2 "));
-//        items.add(new FoodData(2, "냉동템3 "));
-//        items.add(new FoodData(2, "냉동템4 "));
+        ArrayList<String> placeList = new ArrayList<String>();
+        placeList.add("냉장");
+        placeList.add("냉동");
+        placeList.add("실온");
 
-//        selectItems(items,"실온");
-//        selectItems("실온");
-        items.add(new SectionHeader(3));
-        Log.d("setFoodsData 3", items.size()+"");
-//        items.add(new FoodData(3, "실온템1 "));
-//        items.add(new FoodData(3, "실온템2 "));
-//        items.add(new FoodData(3, "실온템3 "));
-//        items.add(new FoodData(3, "실온템4 "));
-//        items.add(new FoodData(3, "실온템5 "));
-//        items.add(new FoodData(3, "실온템6 "));
+        for (final String place: placeList) {
+            requestsCounter.incrementAndGet();
 
-        adapter.items = items;
-        adapter.notifyDataSetChanged();
-    }
-
-    private void selectItems(final String place) {
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        StringRequest jsonArrayRequest = new StringRequest(
+            queue.add(new StringRequest(
                 Request.Method.POST,
                 "http://jms1132.dothome.co.kr/getFoodByPlace.php",
                 new Response.Listener<String>() {
@@ -204,6 +176,14 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 
                             Log.d("selectItems " + place,jsonArray.length()+"");
                             Log.d("ThreadName", Thread.currentThread().getName()+"");
+
+                            if(place.equals("냉장")){
+                                items.add(new SectionHeader(1));
+                            } else if(place.equals("냉동")){
+                                items.add(new SectionHeader(2));
+                            } else if(place.equals("실온")){
+                                items.add(new SectionHeader(3));
+                            }
 
                             for(int i = 0 ; i < jsonArray.length() ; i++) {
                                 JSONObject object = jsonArray.getJSONObject(i);
@@ -241,11 +221,10 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                 Log.d(TAG, foodData.getAlarmID()+"");
                                 Log.d(TAG, foodData.getPurchaseDate());
 
-                                Log.d("setFoodsData 1", items.size()+"");
                             }
 
                         }catch (JSONException e){
-                            Log.d("testest","catch");
+                            Log.d(TAG, e.toString());
                         }
                     }
                 },
@@ -254,6 +233,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                     public void onErrorResponse(VolleyError error){
                         // Do something when error occurred
                         Log.d(TAG, error.toString());
+                        Toast.makeText(getContext(), "음식 데이터를 불러오지 못했습니다. \n다시 시도해주세요", Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -266,12 +246,107 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 params.put("place", place);
                 return params;
             }
-        };
+        });
+            queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+                @Override
+                public void onRequestFinished(Request<Object> request) {
+                    requestsCounter.decrementAndGet();
 
-        // Add JsonArrayRequest to the RequestQueue
-        requestQueue.add(jsonArrayRequest);
+                    Log.d(TAG, "SOMETHING DONE!");
+                    if(requestsCounter.get() == 0){
+                        Log.d(TAG, "ALL DONE!");
+                    }
+                    adapter.items = items;
+                    adapter.notifyDataSetChanged();
 
+                }
+            });
+        }
     }
+
+//    private void selectItems(final String place) {
+//        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+//        StringRequest jsonArrayRequest = new StringRequest(
+//                Request.Method.POST,
+//                "http://jms1132.dothome.co.kr/getFoodByPlace.php",
+//                new Response.Listener<String>() {
+//
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try{
+//                            JSONObject jsonObject = new JSONObject(response);
+//                            JSONArray jsonArray = jsonObject.getJSONArray("food");
+//
+//                            Log.d("selectItems " + place,jsonArray.length()+"");
+//                            Log.d("ThreadName", Thread.currentThread().getName()+"");
+//
+//                            for(int i = 0 ; i < jsonArray.length() ; i++) {
+//                                JSONObject object = jsonArray.getJSONObject(i);
+//                                FoodData foodData = new FoodData();
+//
+//                                if(place.equals("냉장")){
+//                                    foodData.setPostion(1);
+//                                } else if(place.equals("냉동")){
+//                                    foodData.setPostion(2);
+//                                } else if(place.equals("실온")){
+//                                    foodData.setPostion(3);
+//                                }
+//
+//                                foodData.setId(object.getInt("id"));
+//                                foodData.setCategory(object.getString("category"));
+//                                foodData.setSection(object.getString("section"));
+//                                foodData.setName(object.getString("name"));
+//                                foodData.setImagePath(object.getString("imagePath"));
+//                                foodData.setMemo(object.getString("memo"));
+//                                foodData.setPurchaseDate(object.getString("purchaseDate"));
+//                                foodData.setExpirationDate(object.getString("expirationDate"));
+//                                foodData.setCode(object.getString("code"));
+//                                foodData.setPlace(object.getString("place"));
+//                                foodData.setAlarmID(object.getInt("alarmID"));
+//
+//                                items.add(foodData);
+//
+//                                //debug
+//                                Log.d(TAG, items.size()+"");
+//                                Log.d(TAG, foodData.getName());
+//                                Log.d(TAG, foodData.getPlace());
+//                                Log.d(TAG, foodData.getImagePath());
+//                                Log.d(TAG, foodData.getId()+"");
+//                                Log.d(TAG, foodData.getCategory());
+//                                Log.d(TAG, foodData.getAlarmID()+"");
+//                                Log.d(TAG, foodData.getPurchaseDate());
+//
+//                                Log.d("setFoodsData 1", items.size()+"");
+//                            }
+//
+//                        }catch (JSONException e){
+//                            Log.d(TAG, e.toString());
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error){
+//                        // Do something when error occurred
+//                        Log.d(TAG, error.toString());
+//                    }
+//                }
+//
+//        ){
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                // 보내줄 인자
+//                params.put("code", selectedFridge.getCode());
+//                params.put("place", place);
+//                return params;
+//            }
+//        };
+//
+//        // Add JsonArrayRequest to the RequestQueue
+//        requestQueue.add(jsonArrayRequest);
+//
+//    }
 
     // 냉장고 정보 가져오기
     private void getRefrigeratorData() {
@@ -314,13 +389,14 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
 //                            setFoodsData(adapter);
 
                             ////// 헤더는 빨리 추가되고 selectItems()가 늦게 작동해서 순서 안 맞음
-                            items.clear();
-                            items.add(new SectionHeader(1));
-                            selectItems("냉장");
-                            items.add(new SectionHeader(2));
-                            selectItems("냉동");
-                            items.add(new SectionHeader(3));
-                            selectItems("실온");
+                            selectItems();// test
+//                            items.clear();
+//                            items.add(new SectionHeader(1));
+//                            selectItems("냉장");
+//                            items.add(new SectionHeader(2));
+//                            selectItems("냉동");
+//                            items.add(new SectionHeader(3));
+//                            selectItems("실온");
 
                             adapter.items = items;
                             adapter.notifyDataSetChanged();
@@ -517,13 +593,17 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                 // 이미지 세팅
                 if(item.getImagePath() != null){
                     Glide.with(getContext()).load(item.getImagePath()).into(((ItemViewHolder) holder).imageView);
+                    // 아이콘일 경우 scaleType //////////////////// 파라미터 수정 요망
+                    if(item.getImagePath().contains("icon")){
+                        ((ItemViewHolder) holder).imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    }
                 }
 
                 // 프로그레스바 세팅
                 // 최대값 = 만료일 - 구입일
                 // 현재 프로그레스 = 만료일 - 오늘
-                int max = calculateDday(item.getPurchaseDate(), item.getExpirationDate()) - 1;
-                int value = calculateDday(null, item.getExpirationDate()) - 1;
+                int max = calculateDday(item.getPurchaseDate(), item.getExpirationDate());
+                int value = calculateDday(null, item.getExpirationDate());
                 Log.d("프로그레스바 최대", max+" "+item.getName());
                 Log.d("프로그레스바 최대", value+" "+item.getName());
                 if(max == 0){
@@ -593,6 +673,12 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener 
                                             if(success){
                                                 // 삭제 확인
                                                 ManageFridgeActivity.simpleCookieBar(item.getName() + "을(를) 삭제하였습니다.", getActivity());
+
+                                                // 알람도 같이 삭제
+                                                AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+                                                Intent intent = new Intent(getContext(), AlarmReceiver.class);
+                                                PendingIntent pender = PendingIntent.getBroadcast(getContext(), item.getAlarmID(), intent, 0);
+                                                alarmManager.cancel(pender);
 
                                                 // 데이터 변경 알림
                                                 Log.d("onClick", item.getName() + position +" "+ item.sectionPosition());
