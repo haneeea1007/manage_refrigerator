@@ -51,8 +51,11 @@ public class ListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 if(tvFridgeName != null){
+                    // 선택한 냉장고 이름 세팅
                     tvFridgeName.setText(ShowFoodsFragment.refrigeratorList.get(position).getName());
-                    Log.d("log", ShowFoodsFragment.refrigeratorList.get(position).getName());
+                    // 선택한 냉장고 정보 저장
+                    ShowFoodsFragment.selectedFridge = ShowFoodsFragment.refrigeratorList.get(position);
+                    Log.d("선택 냉장고 이름", ShowFoodsFragment.refrigeratorList.get(position).getName());
                 } else {
                     // 공유하기에서 눌렀을 때
                     Intent sharedMessage = new Intent(Intent.ACTION_SEND);

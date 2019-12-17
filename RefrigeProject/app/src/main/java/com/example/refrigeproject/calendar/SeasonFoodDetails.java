@@ -11,12 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.refrigeproject.R;
 import com.r0adkll.slidr.Slidr;
 
 public class SeasonFoodDetails extends AppCompatActivity implements View.OnClickListener {
     LinearLayout url;
     TextView tvFoodName, tvCategory, tvRegion, tvEffect, tvPurchaseTip, tvTrimmingTip;
+    ImageView imageView;
     SeasonalFood food;
 
     @Override
@@ -26,6 +28,7 @@ public class SeasonFoodDetails extends AppCompatActivity implements View.OnClick
 
         Intent intent = getIntent();
         food = intent.getParcelableExtra("food");
+        imageView = findViewById(R.id.imageView);
         tvFoodName = findViewById(R.id.tvFoodName);
         tvCategory = findViewById(R.id.tvCategory);
         tvRegion = findViewById(R.id.tvRegion);
@@ -43,9 +46,11 @@ public class SeasonFoodDetails extends AppCompatActivity implements View.OnClick
 
     }
     public void setData(){
-        String effect;
-        effect = food.getEffect().replace("-", "\n");
+        String effect = food.getEffect().substring(1).replace("-", "\n");
 
+        // 공공데이터포털 제공 URL 경로가 잘못돼서 대체
+        Glide.with(this).load("https://www.foodnuri.go.kr/cmmn/file/getImage.do?atchFileId=94ae4a12d4c5d4b9a91f05709d97551b4eb172ae7b1dcbffb79573f27b54c2aa&fileSn=1").into(imageView);
+        Log.d("parsing URL", food.getImageUrl());
         tvFoodName.setText(food.getFoodName());
         tvCategory.setText(food.getClassification());
         tvRegion.setText(food.getProductionRegion());

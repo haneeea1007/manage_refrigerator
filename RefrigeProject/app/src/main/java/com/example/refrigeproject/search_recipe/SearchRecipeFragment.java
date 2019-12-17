@@ -92,20 +92,23 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         adapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(adapter);
 
-        if(keyword != null) {
-            Log.d("tetest", "onCreateView - keyword not null");
-            autoCompleteTextView.setText(keyword);
-            if(recipeChecked) chkRecipe.setChecked(true);
-            if(inredientChecked) chkIngredient.setChecked(true);
-
-            btnSearch.callOnClick();
-        }
-
         Bundle bundle = getArguments();
+
         if(bundle != null){
             String name = bundle.getString("name");
             autoCompleteTextView.setText(name);
+            Log.d(TAG, "name" + name);
+            Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
             btnSearch.callOnClick();
+        }else{
+            if(keyword != null) {
+                Log.d(TAG, "onCreateView - keyword not null");
+                autoCompleteTextView.setText(keyword);
+                if(recipeChecked) chkRecipe.setChecked(true);
+                if(inredientChecked) chkIngredient.setChecked(true);
+
+                btnSearch.callOnClick();
+            }
         }
 
         return view;

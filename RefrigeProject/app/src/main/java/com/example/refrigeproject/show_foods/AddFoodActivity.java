@@ -1,6 +1,8 @@
 package com.example.refrigeproject.show_foods;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,6 +23,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.google.android.material.tabs.TabLayout;
 import com.r0adkll.slidr.Slidr;

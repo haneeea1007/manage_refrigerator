@@ -72,6 +72,10 @@ public class FoodData implements Section, Parcelable {
         this.postion = postion;
     }
 
+    public int getPostion() {
+        return postion;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
