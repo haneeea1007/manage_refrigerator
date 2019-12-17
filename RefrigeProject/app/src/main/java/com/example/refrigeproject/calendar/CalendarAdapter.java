@@ -158,10 +158,8 @@ public class CalendarAdapter extends BaseAdapter {
         date = currentYear + "-" + (currentMonth + 1) + "-" + day;
         Log.d(TAG, date);
         for(int i = 0 ; i < list.size() ; i++){
-            final ArrayList<String> nameAndPlace = new ArrayList<String>();
             if(Arrays.asList(list.get(i).getExpirationDate()).contains(date)){
-                final int index = i;
-
+                final String realDate = date;
                 // 해당 아이템
                 FoodData food = list.get(i);
                 Log.d(TAG, food.getName() + "를 달력에 추가하라 !!!!");
@@ -171,22 +169,17 @@ public class CalendarAdapter extends BaseAdapter {
                 tvEvent.setText(tempForSetText.concat("- " + food.getName()+"\n")); // 새로 추가해서 setText
                 ivMark.setImageResource(R.drawable.circle);
 
-//                final String tempForDialog = "- " + food.getName()+" ("+ food.getPlace() + ")"; // 추가한 값 + 장소정보
-//                Log.d(TAG, "음식+장소 " + tempForDialog);
-//                nameAndPlace.add(tempForDialog);
-
-
                 final String totalInfo = tvEvent.getText().toString();
 
                 // 클릭 시 다이얼로그로 이름과 장소 알려줌
                 monthItem.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                        dialog.setTitle("⚠️ 폐기 요망 ⚠️");
+                        dialog.setTitle("⚠️ " + realDate + " 폐기 요망 ⚠️");
                         dialog.setMessage(totalInfo);
                         dialog.show();
-//                        Toast.makeText(context, list.get(index).getName(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -271,7 +264,6 @@ public class CalendarAdapter extends BaseAdapter {
             @Override
             public void onRequestFinished(Request<Object> request) {
                 notifyDataSetChanged();
-//                loading.setVisibility(View.GONE);
             }
         });
 
