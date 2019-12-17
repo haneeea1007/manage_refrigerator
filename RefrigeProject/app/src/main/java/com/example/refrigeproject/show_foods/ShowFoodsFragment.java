@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
@@ -53,6 +54,7 @@ import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.setting.AddFridgeActivity;
 import com.example.refrigeproject.setting.ManageFridgeActivity;
+import com.example.refrigeproject.setting.SettingFragment;
 import com.shuhart.stickyheader.StickyAdapter;
 import com.shuhart.stickyheader.StickyHeaderItemDecorator;
 
@@ -76,9 +78,11 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.content.Context.ALARM_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 public class ShowFoodsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "ShowFoodsFragment";
+    private final String PREFERENCE = "com.example.refrigeproject";
     private View view;
 
     // Widget
@@ -97,6 +101,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
 
     // 냉장고 리스트
     public static ArrayList<RefrigeratorData> refrigeratorList = new ArrayList<RefrigeratorData>();
+
+    // 알람 리스트
+    public static ArrayList<FoodData> alarmList = new ArrayList<FoodData>();
 
     // Widget in ViewHolder
     public TextView tvFridgeName;
@@ -433,6 +440,158 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // 로그아웃하고 다시 로그인했을 때 모든 알람 아이디 가져오기
+    public void getAlarmId() {
+        // 로그인한 사용자의 모든 알람정보 가져오기
+        alarmList.clear();
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+
+        StringRequest jsonArrayRequest = new StringRequest(
+                Request.Method.POST,
+                "http://jms1132.dothome.co.kr/getAlarmIdByUser.php",
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        try{
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("alarmID");
+
+                            Log.d(TAG,"alarmID list length" + jsonArray.length()+"");
+
+                            for(int i = 0 ; i < jsonArray.length() ; i++) {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                FoodData foodData = new FoodData();
+                                foodData.setName(object.getString("name"));
+                                foodData.setAlarmID(object.getInt("alarmId"));
+                                foodData.setExpirationDate(object.getString("expirationDate"));
+                                alarmList.add(foodData);
+                            }
+
+                        }catch (JSONException e){
+                            Log.e(TAG,e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Log.e(TAG, error.toString());
+                    }
+                }
+
+        ){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // 보내줄 인자
+                params.put("id", MainActivity.strId);
+                return params;
+            }
+        };
+
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
+
+        // 로그아웃을 했는지 확인
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREFERENCE, MODE_PRIVATE);
+        boolean logout = sharedPreferences.getBoolean("logout", false);
+        // 로그아웃을 했었다면 알람을 재등록
+        if(logout){
+            // alarmList에 받아온 알람 다시 등록
+            allNotificationSetting();
+            // 불리언값 바꾸기
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("logout", false);
+            editor.commit();
+        }
+    }
+
+    private void allNotificationSetting() {
+        // 쉐어드프레퍼런스 체크값 가져와서 셋팅하기
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREFERENCE, MODE_PRIVATE);
+
+        int dateSetting = sharedPreferences.getInt("radioPref", 0);
+        boolean switchSetting = sharedPreferences.getBoolean("switchPref", false);
+
+        Log.d("switchPref", sharedPreferences.getBoolean("switchPref", false) + "");
+        Log.d("radioPref", sharedPreferences.getInt("radioPref", 0) + "");
+
+        //============================================================================//
+
+//        millis = calendar.getTimeInMillis();
+//
+//        // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
+//        if (dateSetting == 1) {
+//            millis -= 86400000;
+//
+//            // 3일전에 체크되었을때 소비만료 일자에서 3일을 빼줌
+//        } else if (dateSetting == 3) {
+//            millis -= 86400000 * 3;
+//
+//            // 7일전에 체크되었을때 소비만료 일자에서 7일을 빼줌
+//        } else if (dateSetting == 7) {
+//            millis -= 86400000 * 7;
+
+
+        //============================================================================//
+
+        // 테스트용 calendarTemp
+        Calendar calendarTemp = Calendar.getInstance();
+        for(int i = 0 ; i < alarmList.size() ; i++){
+            FoodData foodData = alarmList.get(i);
+            //expirationDate를 밀리초로 환산
+            int year = Integer.parseInt(foodData.getExpirationDate().substring(0, 3));
+            int month = Integer.parseInt(foodData.getExpirationDate().substring(5, 6));
+            int day = Integer.parseInt(foodData.getExpirationDate().substring(8, 9));
+            Log.d("밀리초환산테스트 ", year +""+ month +""+ day);
+
+            calendarTemp.set(year, month, day);
+            long millisTemp = calendarTemp.getTimeInMillis();
+
+            // 테스트용
+
+            if (dateSetting == 1) {
+                millisTemp += 40000;
+
+            } else if (dateSetting == 3) {
+                millisTemp += 600000;
+
+            } else if (dateSetting == 7) {
+                millisTemp += 900000;
+            }
+
+            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+
+            Intent intent = new Intent(getContext(), AlarmReceiver.class);
+            intent.putExtra("foodName", foodData.getName());
+            intent.putExtra("dateSetting", dateSetting);
+            intent.putExtra("switchSetting", switchSetting);
+            intent.putExtra("id", foodData.getAlarmID());
+            PendingIntent pender = PendingIntent.getBroadcast(getContext(), foodData.getAlarmID(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            alarmManager.set(AlarmManager.RTC_WAKEUP, millisTemp, pender);
+            Log.d("알람셋팅완료", calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) + 1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
+
+        }
+
+        // (선택한 년월일 - 오늘로 직접 설정하기 , 현재 시간)
+//        calendarTemp.set(Calendar.YEAR, getYearEx);
+//        calendarTemp.set(Calendar.MONTH, getMonthEx);
+//        calendarTemp.set(Calendar.DAY_OF_MONTH, getDayEx);
+//        calendarTemp.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+//        calendarTemp.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
+//        calendarTemp.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
+
+
+        //======================================================================//
+
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
+//            Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
+
     }
 
     private void searchFoodItems() {

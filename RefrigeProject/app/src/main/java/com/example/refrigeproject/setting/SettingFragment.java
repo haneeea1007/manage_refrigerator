@@ -2,6 +2,7 @@ package com.example.refrigeproject.setting;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.SplashActivity;
+import com.example.refrigeproject.show_foods.AlarmReceiver;
 import com.example.refrigeproject.show_foods.FoodDetailsActivity;
 import com.example.refrigeproject.show_foods.ListViewAdapter;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
@@ -42,6 +44,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class SettingFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
@@ -75,6 +78,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         rdo3Day = view.findViewById(R.id.rdo3Day);
         rdo7Day = view.findViewById(R.id.rdo7Day);
         switchAlarm = view.findViewById(R.id.switchAlarm);
+
+        // 라디오버튼 체크값 기본 셋팅
+        rdo1Day.setChecked(true);
+        rdo1Day.setBackgroundResource(R.drawable.btnon);
+        rdo3Day.setBackgroundResource(R.drawable.btnoff);
+        rdo7Day.setBackgroundResource(R.drawable.btnoff);
 
         llManage.setOnClickListener(this);
         llShare.setOnClickListener(this);
@@ -275,6 +284,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         UserManagement.getInstance().requestLogout(new LogoutResponseCallback() {
             @Override
             public void onCompleteLogout() {
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREFERENCE, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("logout", true);
+                editor.commit();
+
+                // 알람 다 지우기
+                deleteAlarm();
 
                 Intent intent = new Intent(view.getContext(), SplashActivity.class);
                 startActivity(intent);
@@ -293,6 +309,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
 //                        }).show();
             }
         });
+    }
+
+    private void deleteAlarm() {
+        // 알람도 같이 삭제
+        for(int i = 0 ; i < ShowFoodsFragment.alarmList.size() ; i++){
+            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+            Intent intent = new Intent(getContext(), AlarmReceiver.class);
+            PendingIntent pender = PendingIntent.getBroadcast(getContext(), ShowFoodsFragment.alarmList.get(i).getAlarmID(), intent, 0);
+            alarmManager.cancel(pender);
+        }
     }
 }
 
