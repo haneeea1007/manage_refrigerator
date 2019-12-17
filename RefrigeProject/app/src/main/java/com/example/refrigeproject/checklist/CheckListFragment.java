@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,7 @@ public class CheckListFragment extends Fragment {
     private RecyclerView recyclerView;
     private EditText edtText;
     private ImageButton btnAdd;
+    private ConstraintLayout empty_text;
 
     private ArrayList<CheckListData> list = new ArrayList<CheckListData>();
     private LinearLayoutManager linearLayoutManager;
@@ -53,6 +55,7 @@ public class CheckListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         btnAdd = view.findViewById(R.id.btnRefAdd);
         edtText = view.findViewById(R.id.edtText);
+        empty_text = view.findViewById(R.id.empty_text);
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -226,7 +229,16 @@ public class CheckListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return (list != null) ? list.size() : 0;
+
+            int count = list.size();
+
+            if(count == 0){
+                empty_text.setVisibility(View.VISIBLE);
+            }else {
+                empty_text.setVisibility(View.GONE);
+            }
+
+            return count;
         }
 
         public class CustomViewHolder extends RecyclerView.ViewHolder {

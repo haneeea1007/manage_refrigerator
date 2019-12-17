@@ -90,16 +90,27 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
 
         if (sharedPreferences.getBoolean("switchPref", false) == true) {
             switchAlarm.setChecked(true);
+            switchAlarm.setText("on");
         } else if (sharedPreferences.getBoolean("switchPref", false) == false) {
             switchAlarm.setChecked(false);
+            switchAlarm.setText("off");
         }
 
         if (sharedPreferences.getInt("radioPref", 0) == 1) {
             rdo1Day.setChecked(true);
+            rdo1Day.setBackgroundResource(R.drawable.btnon);
+            rdo3Day.setBackgroundResource(R.drawable.btnoff);
+            rdo7Day.setBackgroundResource(R.drawable.btnoff);
         } else if (sharedPreferences.getInt("radioPref",0) == 3) {
             rdo3Day.setChecked(true);
+            rdo1Day.setBackgroundResource(R.drawable.btnoff);
+            rdo3Day.setBackgroundResource(R.drawable.btnon);
+            rdo7Day.setBackgroundResource(R.drawable.btnoff);
         } else if (sharedPreferences.getInt("radioPref",0) == 7) {
             rdo7Day.setChecked(true);
+            rdo1Day.setBackgroundResource(R.drawable.btnoff);
+            rdo3Day.setBackgroundResource(R.drawable.btnoff);
+            rdo7Day.setBackgroundResource(R.drawable.btnon);
         }
 
         // 인텐트로 유저 닉네임, 프로필사진, 고유아이디 받아오기
@@ -214,16 +225,25 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         if (radioGroup.getCheckedRadioButtonId() == R.id.rdo1Day) {
             editor.putInt("radioPref", 1);
             editor.commit();
+            rdo1Day.setBackgroundResource(R.drawable.btnon);
+            rdo3Day.setBackgroundResource(R.drawable.btnoff);
+            rdo7Day.setBackgroundResource(R.drawable.btnoff);
             Toast.makeText(getContext(), "알림이 소비 만료일자 1일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
 
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.rdo3Day) {
             editor.putInt("radioPref", 3);
             editor.commit();
+            rdo1Day.setBackgroundResource(R.drawable.btnoff);
+            rdo3Day.setBackgroundResource(R.drawable.btnon);
+            rdo7Day.setBackgroundResource(R.drawable.btnoff);
             Toast.makeText(getContext(), "알림이 소비 만료일자 3일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
 
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.rdo7Day) {
             editor.putInt("radioPref", 7);
             editor.commit();
+            rdo1Day.setBackgroundResource(R.drawable.btnoff);
+            rdo3Day.setBackgroundResource(R.drawable.btnoff);
+            rdo7Day.setBackgroundResource(R.drawable.btnon);
             Toast.makeText(getContext(), "알림이 소비 만료일자 7일 전으로 설정되었습니다.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -237,10 +257,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (isChecked == true) {
+            switchAlarm.setText("on");
             editor.putBoolean("switchPref", true);
             editor.commit();
 
         } else if (isChecked == false) {
+            switchAlarm.setText("off");
             editor.putBoolean("switchPref", false);
             editor.commit();
         }
