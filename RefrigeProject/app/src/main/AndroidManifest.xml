@@ -61,7 +61,8 @@
         <activity android:name=".show_foods.AddFoodActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".setting.ManageFridgeActivity"/>
-        <activity android:name=".setting.AddFridgeActivity"/>
+        <activity android:name=".setting.AddFridgeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity android:name=".show_foods.FoodDetailsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
