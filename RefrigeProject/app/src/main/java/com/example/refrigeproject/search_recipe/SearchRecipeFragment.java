@@ -113,7 +113,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
                 Log.d(TAG, "onCreateView - keyword not null");
                 autoCompleteTextView.setText(keyword);
                 if (recipeChecked) chkRecipe.setChecked(true);
-                if (inredientChecked) chkIngredient.setChecked(true);
+                if (ingredientChecked) chkIngredient.setChecked(true);
 
                 btnSearch.callOnClick();
             }
