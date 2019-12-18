@@ -3,14 +3,14 @@
     package="com.example.refrigeproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name=".KakaoLogin"
@@ -18,9 +18,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
@@ -36,7 +36,8 @@
                 android:resource="@xml/app_widget_info" />
         </receiver>
 
-        <activity android:name=".SplashActivity"
+        <activity
+            android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,33 +46,39 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".search_recipe.RecipeDetails"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".show_foods.AddFoodActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".show_foods.AddFoodActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".setting.ManageFridgeActivity"/>
+        <activity android:name=".setting.ManageFridgeActivity" />
 
-        <activity android:name=".setting.AddFridgeActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".setting.AddFridgeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".show_foods.FoodDetailsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".show_foods.FoodDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".calendar.SeasonFoodDetails"/>
-        
-        <activity android:name=".calendar.DetailsURLActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".calendar.SeasonFoodDetails" />
 
-        <activity android:name=".KakaoLoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".calendar.DetailsURLActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".show_foods.SearchFoodActivity"/>
+        <activity
+            android:name=".KakaoLoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".show_foods.SearchFoodActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -87,12 +94,10 @@
         <receiver
             android:name=".show_foods.AlarmReceiver"
             android:enabled="true"
-            android:exported="false"
-            />
+            android:exported="false" />
         <service
             android:name=".show_foods.AlarmService"
-            android:enabled="true"
-            />
+            android:enabled="true" />
 
     </application>
 

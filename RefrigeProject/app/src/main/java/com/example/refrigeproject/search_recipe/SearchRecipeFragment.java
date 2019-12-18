@@ -103,13 +103,15 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         if (bundle != null) {
             String name = bundle.getString("name");
+
             autoCompleteTextView.setText(name);
             Log.d(TAG, "name" + name);
             Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
 
             btnSearch.callOnClick();
-        } else {
-            if (keyword != null) {
+
+        } else if(keyword != null){
+
                 Log.d(TAG, "onCreateView - keyword not null");
                 autoCompleteTextView.setText(keyword);
                 if (recipeChecked) chkRecipe.setChecked(true);
@@ -117,7 +119,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
                 btnSearch.callOnClick();
             }
-        }
+
 
         return view;
     }
@@ -155,6 +157,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         Log.d(TAG, "size after added " + recipes.size());
 
         imm.hideSoftInputFromWindow(autoCompleteTextView.getWindowToken(),0);
+
         Toast.makeText(getContext(), autoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
