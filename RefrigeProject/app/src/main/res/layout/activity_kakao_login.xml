@@ -17,6 +17,7 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="68dp"
             android:background="#FFEB00"
             android:drawableLeft="@drawable/kat"
@@ -28,13 +29,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
         <com.kakao.usermgmt.LoginButton
             android:id="@+id/kakaoLogin"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/btnLogin"
             app:layout_constraintEnd_toEndOf="@+id/btnLogin"
             app:layout_constraintStart_toStartOf="@+id/btnLogin"
             app:layout_constraintTop_toTopOf="@+id/btnLogin"></com.kakao.usermgmt.LoginButton>
@@ -43,7 +46,7 @@
             android:id="@+id/imageView3"
             android:layout_width="300dp"
             android:layout_height="440dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6"
