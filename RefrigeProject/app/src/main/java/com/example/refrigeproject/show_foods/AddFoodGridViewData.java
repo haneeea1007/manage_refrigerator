@@ -1,20 +1,14 @@
 package com.example.refrigeproject.show_foods;
 
 public class AddFoodGridViewData {
+    private String category;
+    private String section;
     private Integer imageID;
-    private String foodName;
 
-    public AddFoodGridViewData(Integer imageID, String foodName) {
+    public AddFoodGridViewData(String category, String section, Integer imageID) {
+        this.category = category;
+        this.section = section;
         this.imageID = imageID;
-        this.foodName = foodName;
-    }
-
-    public AddFoodGridViewData(Integer imageID) {
-        this.imageID = imageID;
-    }
-
-    public AddFoodGridViewData(String foodName) {
-        this.foodName = foodName;
     }
 
     public Integer getImageID() {
@@ -25,11 +19,19 @@ public class AddFoodGridViewData {
         this.imageID = imageID;
     }
 
-    public String getFoodName() {
-        return foodName;
+    public String getSection() {
+        return section;
     }
 
-    public void setFoodName(String foodName) {
-        this.foodName = foodName;
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

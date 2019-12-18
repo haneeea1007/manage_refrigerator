@@ -65,7 +65,7 @@ public class GridViewAdapter extends BaseAdapter {
         final AddFoodGridViewData addFoodGridViewData = list.get(position);
 
         foodImageView.setImageResource(addFoodGridViewData.getImageID());
-        tvFoodName.setText(addFoodGridViewData.getFoodName());
+        tvFoodName.setText(addFoodGridViewData.getSection());
 
 
         foodImageView.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +73,7 @@ public class GridViewAdapter extends BaseAdapter {
             public void onClick(View view) {
                 Intent intent = new Intent(context, FoodDetailsActivity.class);
                 intent.putExtra("category", AddFoodActivity.category);
-                intent.putExtra("section", addFoodGridViewData.getFoodName());
+                intent.putExtra("section", addFoodGridViewData.getSection());
                 intent.putExtra("image", addFoodGridViewData.getImageID());
                 intent.setAction("add");
                 context.startActivity(intent);

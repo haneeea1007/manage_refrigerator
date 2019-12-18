@@ -19,6 +19,9 @@ public class AddSeasoning extends Fragment {
     private GridView gridView;
     public static ArrayList<AddFoodGridViewData> seasoningList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
+   public static Integer[] seasoningID = new Integer[]{R.drawable.seasoning_flour, R.drawable.seasoning_salt, R.drawable.seasoning_pepper,R.drawable.seasoning_sugar,
+            R.drawable.seasoning_buchim, R.drawable.seasoning_currypowder,R.drawable.seaoning_powder};
+    public static String[] seasoningName = new String[]{"밀가루", "소금", "후추", "설탕", "부침가루", "카레가루", "조미료_직접입력"};
 
     public static AddSeasoning newInstance() {
         AddSeasoning addSeasoning = new AddSeasoning(); //싱글톤과 같은 기능
@@ -42,11 +45,10 @@ public class AddSeasoning extends Fragment {
 
     private void listInsertFoodData() {
         seasoningList.clear();
-        Integer[] seasoningID = {R.drawable.seasoning_flour, R.drawable.seasoning_salt, R.drawable.seasoning_pepper,R.drawable.seasoning_sugar,
-                R.drawable.seasoning_buchim, R.drawable.seasoning_currypowder,R.drawable.seaoning_powder};
+
 
         for (int i = 0; i < 7; i++) {
-            seasoningList.add(new AddFoodGridViewData(seasoningID[i], AddFoodActivity.seasoningName[i]));
+            seasoningList.add(new AddFoodGridViewData("조미료",seasoningName[i], seasoningID[i]));
         }
 
 

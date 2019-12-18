@@ -19,6 +19,9 @@ public class AddDairyProduct extends Fragment {
     private GridView gridView;
     public static ArrayList<AddFoodGridViewData> dairyList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
+    public static Integer[] dairyID = new Integer[]{R.drawable.dairy_butter, R.drawable.dairy_cream, R.drawable.dairy_milk, R.drawable.dairy_whipping,
+            R.drawable.dairy_yogurt};
+    public  static String[] dairyName = new String[]{"버터", "생크림", "우유", "휘핑크림", "요거트"};
 
     public static AddDairyProduct newInstance() {
         AddDairyProduct addDairyProduct = new AddDairyProduct(); //싱글톤과 같은 기능
@@ -42,11 +45,10 @@ public class AddDairyProduct extends Fragment {
 
     private void listInsertFoodData() {
         dairyList.clear();
-        Integer[] dairyID = {R.drawable.dairy_butter, R.drawable.dairy_cream, R.drawable.dairy_milk,R.drawable.dairy_whipping,
-                R.drawable.dairy_yogurt};
+
 
         for (int i = 0; i < 5; i++) {
-            dairyList.add(new AddFoodGridViewData(dairyID[i], AddFoodActivity.dairyName[i]));
+            dairyList.add(new AddFoodGridViewData("유제품", dairyName[i], dairyID[i]));
         }
 
     }

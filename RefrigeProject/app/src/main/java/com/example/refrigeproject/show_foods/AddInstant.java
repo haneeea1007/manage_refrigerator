@@ -19,6 +19,9 @@ public class AddInstant extends Fragment {
     private GridView gridView;
     public static ArrayList<AddFoodGridViewData> instantList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
+   public static Integer[] instantID = new Integer[]{R.drawable.instant_pizza,R.drawable.instant_burger,R.drawable.instant_dimsum, R.drawable.instant_friedchicken,
+            R.drawable.instant_fries,R.drawable.instant_noodles, R.drawable.instant_sausage, R.drawable.instant_spam};
+    public  static String[] instantName = new String[]{"피자", "햄버거", "만두", "치킨", "튀김", "라면", "소세지", "스팸"};
 
     public static AddInstant newInstance() {
         AddInstant addInstant = new AddInstant(); //싱글톤과 같은 기능
@@ -42,11 +45,10 @@ public class AddInstant extends Fragment {
 
     private void listInsertFoodData() {
         instantList.clear();
-        Integer[] instantID = {R.drawable.instant_pizza,R.drawable.instant_burger,R.drawable.instant_dimsum, R.drawable.instant_friedchicken,
-                R.drawable.instant_fries,R.drawable.instant_noodles, R.drawable.instant_sausage, R.drawable.instant_spam};
+
 
         for (int i = 0; i < 8; i++) {
-            instantList.add(new AddFoodGridViewData(instantID[i], AddFoodActivity.instantName[i]));
+            instantList.add(new AddFoodGridViewData("인스턴트", instantName[i], instantID[i]));
         }
 
     }

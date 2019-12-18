@@ -1,8 +1,10 @@
 package com.example.refrigeproject.show_foods;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,14 +27,18 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.checklist.CheckListDBHelper;
 import com.google.android.material.tabs.TabLayout;
 import com.r0adkll.slidr.Slidr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class AddFoodActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
+
 
 
     private InputMethodManager imm;
@@ -43,18 +49,12 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
     private EditText edtSearchFood;
     public static String searchFood;
     private boolean find = false;
+    private AddFoodDBHelper addFoodDBHelper;
+    private SQLiteDatabase sqLiteDatabase1;
 
-    public static HashMap<Integer, String[]> list = new HashMap<Integer, String[]>();
-    public static String[] vegeName = {"오이", "브로콜리", "당근", "고추", "옥수수", "가지", "마늘", "무", "양파", "나물", "상추", "배추", "청경채", "버섯", "파프리카", "감자", "호박", "콩", "콩나물"};
-    public static String[] fruitName = {"사과", "바나나", "블루베리", "체리", "포도", "키위", "레몬", "멜론", "오렌지", "복숭아", "배", "파인애플", "자두", "토마토", "수박"};
-    public static String[] meatName = {"달걀", "닭고기", "닭가슴살", "닭다리", "닭날개", "돼지고기_직접입력", "소등심","소고기_직접입력"};
-    public static String[] seafoodName = {"미역", "멸치", "게", "회", "조개", "새우", "오징어", "생선_직접입력"};
-    public static String[] dairyName = {"버터", "생크림", "우유", "휘핑크림", "요거트"};
-    public static String[] sideName = {"달걀말이","두부", "밥", "카레", "피클", "찌개", "국", "반찬_직접입력"};
-    public static String[] instantName = {"피자","햄버거","만두", "치킨", "튀김", "라면", "소세지", "스팸"};
-    public static String[] drinkName = {"주류_직접입력", "음료_직접입력", "과일주스", "탄산음료", "소주", "물", "와인"};
-    public static String[] sauceName = {"드레싱","쌈장", "된장","고추장","간장","식초","돈까스소스", "꿀", "딸기잼", "케첩", "마요네즈", "머스타드", "소스_직접입력"};
-    public static String[] seasoningName = {"밀가루", "소금", "후추", "설탕", "부침가루","카레가루", "조미료_직접입력"};
+
+
+
 
 
     public static int category;
@@ -66,6 +66,9 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
 
 
         imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        addFoodDBHelper = new AddFoodDBHelper(getApplicationContext());
+        sqLiteDatabase1 = addFoodDBHelper.getWritableDatabase();
+
 
 
         ibtBack = findViewById(R.id.ibtBack);
@@ -94,7 +97,7 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         viewPager.setAdapter(fragmentPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        setList();
+        insertFoodData();
 
         ibtBack.setOnClickListener(this);
         ibtSearchToAddFood.setOnClickListener(this);
@@ -103,19 +106,57 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         edtSearchFood.setOnKeyListener(this);
     }
 
+    private void insertFoodData() {
 
-    private void setList() {
-        AddFoodActivity.list.put(0, vegeName);
-        AddFoodActivity.list.put(1, fruitName);
-        AddFoodActivity.list.put(2, meatName);
-        AddFoodActivity.list.put(3, seafoodName);
-        AddFoodActivity.list.put(4, dairyName);
-        AddFoodActivity.list.put(5, sideName);
-        AddFoodActivity.list.put(6, instantName);
-        AddFoodActivity.list.put(7, drinkName);
-        AddFoodActivity.list.put(8, sauceName);
-        AddFoodActivity.list.put(9, seasoningName);
+
+        for (int i = 0; i < AddVegetable.vegeList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('야채' , '" + AddVegetable.vegeName[i] + "', '" + AddVegetable.vegeID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+
+        for (int i = 0; i < AddFruits.fruitList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('과일' , '" + AddFruits.fruitName[i] + "', '" + AddFruits.fruitID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        for (int i = 0; i < AddMeat.meatList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('고기' , '" + AddMeat.meatName[i] + "', '" + AddMeat.meatID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        for (int i = 0; i < AddSeafood.seafoodList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('해산물' , '" + AddSeafood.seafoodName[i] + "', '" + AddSeafood.seafoodID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        for (int i = 0; i < AddDairyProduct.dairyList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('유제품' , '" + AddDairyProduct.dairyName[i] + "', '" + AddDairyProduct.dairyID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+
+        for (int i = 0; i < AddSideDishes.sideList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('반찬' , '" + AddSideDishes.sideName[i] + "', '" + AddSideDishes.sideID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        for (int i = 0; i < AddInstant.instantList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('인스턴트' , '" + AddInstant.instantName[i] + "', '" + AddInstant.instantID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        for (int i = 0; i < AddDrinks.drinksList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('음료' , '" + AddDrinks.drinkName[i] + "', '" + AddDrinks.drinkID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        for (int i = 0; i < AddSauce.sauceList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('소스' , '" + AddSauce.sauceName[i] + "', '" + AddSauce.sauceID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        for (int i = 0; i < AddSeasoning.seasoningList.size(); i++) {
+            String str = "INSERT INTO AddFoodTBL values('조미료' , '" + AddSeasoning.seasoningName[i] + "', '" + AddSeasoning.seasoningID[i] +"');";
+            sqLiteDatabase1.execSQL(str);
+        }
+        sqLiteDatabase1.close();
+
+        sqLiteDatabase1 = addFoodDBHelper.getReadableDatabase();
+
     }
+
 
     @Override
     public void onClick(View view) {
@@ -125,37 +166,14 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.ibtSearchToAddFood:
-                
-                searchFood = edtSearchFood.getText().toString().trim();
 
-                for (int i = 0; i < tabLayout.getTabCount(); i++) {
-                    if (Arrays.asList(list.get(i)).contains(searchFood)) {
-                        String[] selectList = list.get(i);
-                        for (int j = 0; j < selectList.length; j++) {
-                            if (selectList[j].equals(searchFood)) {
-                                GridViewAdapter.select = j;
-                                break;
-                            }
-                        }
-                        TabLayout.Tab tab = tabLayout.getTabAt(i);
-                        tab.select();
-                        find = true;
-                        break;
-                    }
 
-                }
-                if (!find) {
-                    Toast.makeText(this, "검색한 식재료가 없습니다. \n직접 입력해서 추가해 주세요.", Toast.LENGTH_LONG).show();
-                }
-
-                hideKeyboard();
-                break;
-
-            case R.id.edtSearchFood :
+            case R.id.edtSearchFood:
                 edtSearchFood.setText(null);
                 break;
         }
     }
+
 
     private void hideKeyboard() {
         imm.hideSoftInputFromWindow(edtSearchFood.getWindowToken(), 0);
@@ -242,3 +260,4 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 }
+

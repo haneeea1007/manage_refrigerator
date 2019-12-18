@@ -19,6 +19,9 @@ public class AddMeat extends Fragment {
     private GridView gridView;
     public static ArrayList<AddFoodGridViewData> meatList = new ArrayList<>();
     private GridViewAdapter gridViewAdapter;
+    public static Integer[] meatID = new Integer[]{R.drawable.meat_eggs, R.drawable.meat_chicken, R.drawable.meat_chickenbreast, R.drawable.meat_chickenleg,
+            R.drawable.meat_chickenwings, R.drawable.meat_pork, R.drawable.meat_sirloinsteak, R.drawable.meat_beef};
+    public static String[] meatName = new String[]{"달걀", "닭고기", "닭가슴살", "닭다리", "닭날개", "돼지고기_직접입력", "소등심", "소고기_직접입력"};
 
     public static AddMeat newInstance() {
         AddMeat addMeat = new AddMeat(); //싱글톤과 같은 기능
@@ -42,11 +45,10 @@ public class AddMeat extends Fragment {
 
     private void listInsertFoodData() {
         meatList.clear();
-        Integer[] meatID = {R.drawable.meat_eggs, R.drawable.meat_chicken, R.drawable.meat_chickenbreast, R.drawable.meat_chickenleg,
-                R.drawable.meat_chickenwings, R.drawable.meat_pork, R.drawable.meat_sirloinsteak, R.drawable.meat_beef};
+
 
         for (int i = 0; i < 8; i++) {
-            meatList.add(new AddFoodGridViewData(meatID[i], AddFoodActivity.meatName[i]));
+            meatList.add(new AddFoodGridViewData("고기", meatName[i], meatID[i]));
         }
 
     }
