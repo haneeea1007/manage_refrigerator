@@ -211,7 +211,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                 tvGroup.setText(food.getSection());
                 edtName.setText(food.getSection());
-                tvRefrige.setText(ShowFoodsFragment.selectedFridge.getName());
                 foodImage.setImageResource(food.getImageID());
 
                 // 웹 크롤링
