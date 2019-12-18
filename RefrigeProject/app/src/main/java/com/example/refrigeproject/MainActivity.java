@@ -37,8 +37,10 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private Bundle bundle;
-    String strNickname, strProfile;
-    public static String strId = "1";
+    private String strNickname, strProfile;
+    public static String strId;
+    private long backButtonTime = 0L;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         strId = String.valueOf(intent.getLongExtra("id", -1));
         // 사용자 정보 DB에 저장
         insertUserData();
-//        strId = "1"; // to test
 
         // 인텐트로 셋팅 프래그먼트에 전달
         Intent putIntent = new Intent(this, SettingFragment.class);
@@ -89,6 +90,18 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         putIntent.putExtra("profile", strProfile); // 카카오톡 프로필 이미지
         putIntent.putExtra("id", strProfile); // 유저 고유 아이디
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        long getTime = currentTime - backButtonTime;
+
+        if (getTime >= 0 && getTime <= 2000) {
+            super.onBackPressed();
+        } else {
+            backButtonTime = currentTime;
+        }
     }
 
     private void insertUserData() {
@@ -100,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if(success){
-                        Toast.makeText(getApplicationContext(), strId + " 로그인 성공", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), strNickname + "님 안녕하세요", Toast.LENGTH_LONG).show();
                     }else{
-                        Toast.makeText(getApplicationContext(), strId + " userTBL 추가 실패", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),  "로그인 실패", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
