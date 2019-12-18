@@ -71,7 +71,6 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         view = inflater.inflate(R.layout.fragment_search_recipe, null, false);
         this.context = container.getContext();
 
-
         imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         recyclerView = view.findViewById(R.id.recyclerView);
         autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView);
@@ -82,9 +81,6 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         chkRecipe.setChecked(true);
         chkIngredient.setChecked(true);
-
-
-        Log.d(TAG, "onCreateView " + keyword);
 
         btnSearch.setOnClickListener(this);
         chkRecipe.setOnCheckedChangeListener(this);
@@ -98,45 +94,27 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         recyclerView.setAdapter(adapter);
 
         bundle = getArguments();
-        setKeyword();
-
-        Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
-
-//        if (bundle != null) {
-//            String name = bundle.getString("name");
-//
-//            autoCompleteTextView.setText(name);
-//            Log.d(TAG, "name" + name);
-//            Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
-//
-//            btnSearch.callOnClick();
-//
-//        } else if(keyword != null){
-//
-//                Log.d(TAG, "onCreateView - keyword not null");
-//                autoCompleteTextView.setText(keyword);
-//                if (recipeChecked) chkRecipe.setChecked(true);
-//                if (ingredientChecked) chkIngredient.setChecked(true);
-//
-//                btnSearch.callOnClick();
-//            }
-
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setKeyword();
     }
 
     private void setKeyword() {
         try{
             if(bundle.getString("name") != null){
                 // 번들에 값이 있으면 = 냉장고 음식리스트에서 검색했으면
-//                autoCompleteTextView.setText("");
                 keyword = bundle.getString("name");
-                Log.d(TAG, "bundle not null");
             }
 
             autoCompleteTextView.setText(keyword);
             if (recipeChecked) chkRecipe.setChecked(true);
             if (ingredientChecked) chkIngredient.setChecked(true);
+            Log.d(TAG, "bundle not null - " + autoCompleteTextView.getText().toString());
             bundle.remove("name");
             btnSearch.callOnClick();
 
@@ -148,7 +126,6 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop" + autoCompleteTextView.getText().toString());
         // 다른 프래그먼트가 켜질 때
         // 현재 검색어 저장
         keyword = autoCompleteTextView.getText().toString();
@@ -156,8 +133,6 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         // 요리명/재료명 체크박스 저장
         if (chkRecipe.isChecked()) recipeChecked = true;
         if (chkIngredient.isChecked()) ingredientChecked = true;
-
-        autoCompleteTextView.setText("");
     }
 
 
@@ -178,7 +153,6 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         searchRecipe(keyword);
 
         imm.hideSoftInputFromWindow(autoCompleteTextView.getWindowToken(),0); // 키보드 내리기
-        Toast.makeText(getContext(), autoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
 
