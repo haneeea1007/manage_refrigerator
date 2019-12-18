@@ -87,13 +87,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private AlarmManager alarmManager;
 
     private int dateSetting;
-    private int alarmID;
     private boolean switchSetting;
     private String rdoClick;
 
-    private int getYearEx;
-    private int getMonthEx;
-    private int getDayEx;
     private final String PREFERENCE = "com.example.refrigeproject";
     private Long millis;
     Calendar today;
@@ -132,7 +128,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         tvTitle = findViewById(R.id.tvTitle);
         tvPurchaseDate = findViewById(R.id.tvPurchaseDate);
         tvExpirationDate = findViewById(R.id.tvExpirationDate);
-        tvRefrige = findViewById(R.id.tvRefrige);
         edtName = findViewById(R.id.edtName);
         edtMemo = findViewById(R.id.edtMemo);
         rdoGroup = findViewById(R.id.rdoGroup);
@@ -141,7 +136,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         rdoPantry = findViewById(R.id.rdoPantry);
         datePicker = findViewById(R.id.datePicker);
         foodImage = findViewById(R.id.foodImage);
-        llRefrige = findViewById(R.id.llRefrige);
         tvRecommend = findViewById(R.id.tvRecommend);
 
         tvDone.setOnClickListener(this);
@@ -353,9 +347,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                             return;
                         }
 
-                        getYearEx = year;
-                        getMonthEx = month;
-                        getDayEx = dayOfMonth;
 
                         // 날짜 표시
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -364,34 +355,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dialog2.show();
-
-                break;
-
-            case R.id.tvRefrige:
-                // 냉장고 선택
-
-                CookieBar.build(FoodDetailsActivity.this)
-                        .setCustomView(R.layout.cookiebar_select_fridge)
-                        .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
-                            @Override
-                            public void initView(View view) {
-
-                                ListView listView = view.findViewById(R.id.listView);
-                                ListViewAdapter listViewAdapter = new ListViewAdapter(FoodDetailsActivity.this, tvRefrige);
-                                listView.setAdapter(listViewAdapter);
-                            }
-                        })
-                        .setAction("Close", new OnActionClickListener() {
-                            @Override
-                            public void onClick() {
-                                CookieBar.dismiss(FoodDetailsActivity.this);
-                            }
-                        })
-                        .setSwipeToDismiss(true)
-                        .setEnableAutoDismiss(true)
-                        .setDuration(5000)
-                        .setCookiePosition(CookieBar.BOTTOM)
-                        .show();
 
                 break;
 
