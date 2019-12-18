@@ -199,9 +199,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     case "실온":
                         rdoPantry.setChecked(true);
                         break;
-
                 }
-                llRefrige.setVisibility(View.GONE);
 
                 break;
             case "add":

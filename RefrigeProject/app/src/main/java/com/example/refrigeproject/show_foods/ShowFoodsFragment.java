@@ -77,6 +77,7 @@ import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ShowFoodsFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+
     private static final String TAG = "ShowFoodsFragment";
     private final String PREFERENCE = "com.example.refrigeproject";
     private View view;
@@ -106,7 +107,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
 
     // 체크박스 값 저장
     public boolean removeMode;
-//    int i = 0;
+
     Set<FoodData> removed = new HashSet<>(); // 현재 체크된 체크박스의 MainData 모음 - delete 시 사용
     Menu menu;
 
@@ -223,6 +224,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         if(getActivity() == null){
             return;
         }
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
         final AtomicInteger requestsCounter = new AtomicInteger(0);
 
