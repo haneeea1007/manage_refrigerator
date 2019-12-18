@@ -62,7 +62,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     ArrayList<BasicRecipe> recipeList = new ArrayList<BasicRecipe>();
     static String keyword = null;
     boolean recipeChecked = false;
-    boolean inredientChecked = false;
+    boolean ingredientChecked = false;
 
     @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     @Nullable
@@ -132,7 +132,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         // 요리명/재료명 체크박스 저장
         if (chkRecipe.isChecked()) recipeChecked = true;
-        if (chkIngredient.isChecked()) inredientChecked = true;
+        if (chkIngredient.isChecked()) ingredientChecked = true;
 
 //        autoCompleteTextView.setText("");
     }

@@ -62,7 +62,7 @@ public class GridViewAdapter extends BaseAdapter {
 
         foodImageView = view.findViewById(R.id.foodImageView);
         tvFoodName = view.findViewById(R.id.tvFoodName);
-        final ImageView ivFound = view.findViewById(R.id.ivFound);
+
         final AddFoodGridViewData addFoodGridViewData = list.get(position);
 
         foodImageView.setImageResource(addFoodGridViewData.getImageID());
@@ -80,21 +80,6 @@ public class GridViewAdapter extends BaseAdapter {
                 context.startActivity(intent);
             }
         });
-
-        if ((select != -1) && (position == select)) {
-            ivFound.setVisibility(View.VISIBLE);
-
-
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    ivFound.setVisibility(View.GONE);
-                }
-            }, 3000);
-        }
 
         return view;
     }
