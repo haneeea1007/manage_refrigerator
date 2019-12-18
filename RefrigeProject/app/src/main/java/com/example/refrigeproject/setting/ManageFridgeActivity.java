@@ -131,8 +131,6 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                         Intent intent = new Intent(ManageFridgeActivity.this, AddFridgeActivity.class);
                                         startActivity(intent);
                                         CookieBar.dismiss(ManageFridgeActivity.this);
-
-
                                     }
                                 });
 
@@ -161,10 +159,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                                                     if(success){
                                                                         //해당 코드의 냉장고 정보 불러오기
                                                                         selectFridgeByCode(edtCode.getText().toString());
-                                                                        // 수정 확인
-                                                                        simpleCookieBar("냉장고를 불러옵니다.", ManageFridgeActivity.this);
                                                                     }else{
-                                                                        // 잘못된 코드일 경우
                                                                         Toast.makeText(getApplicationContext(), " 추가 실패", Toast.LENGTH_LONG).show();
                                                                         finish();
                                                                     }
@@ -261,7 +256,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                                                         new RefrigeratorData(ref.getCode(), edtName.getText().toString(), ref.getType()));
                                                                 dialog.dismiss();
                                                             } else {
-                                                                simpleCookieBar("수정에 실패하였습니다.", ManageFridgeActivity.this);
+                                                                Toast.makeText(getApplicationContext(), "수정 실패", Toast.LENGTH_LONG).show();
                                                             }
                                                         } catch (JSONException e) {
                                                             e.printStackTrace();
@@ -325,7 +320,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
 
                                                                                 dialog.dismiss();
                                                                             }else{
-                                                                                simpleCookieBar("삭제에 실패하였습니다.", ManageFridgeActivity.this);
+                                                                                Toast.makeText(getApplicationContext(), "삭제 실패", Toast.LENGTH_LONG).show();
                                                                             }
                                                                         } catch (JSONException e) {
                                                                             e.printStackTrace();
@@ -394,12 +389,17 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                 JSONObject jsonObject = new JSONObject(response);
                                 JSONArray jsonArray = jsonObject.getJSONArray("food");
 
-                                Log.d(TAG,jsonArray.length()+"");
+                                // 잘못된 코드일 경우
+                                if(jsonArray.length() == 0) {
+                                    Toast.makeText(getApplicationContext(), "해당 냉장고를 찾을 수 없습니다", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
 
                                 for(int i = 0 ; i < jsonArray.length() ; i++) {
                                     JSONObject object = jsonArray.getJSONObject(i);
                                     RefrigeratorData refrigerator = new RefrigeratorData();
 
+                                    simpleCookieBar("냉장고를 불러왔습니다.", ManageFridgeActivity.this);
                                     refrigerator.setCode(object.getString("code"));
                                     refrigerator.setName(object.getString("name"));
                                     refrigerator.setType(object.getString("type"));
@@ -413,7 +413,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
 
                             }catch (JSONException e){
                                 Log.e(TAG, e.toString());
-                                simpleCookieBar("냉장고를 불러오는 데 실패했습니다.", ManageFridgeActivity.this);
+                                Toast.makeText(getApplicationContext(), "냉장고 불러오기 실패", Toast.LENGTH_LONG).show();
                             }
                         }
                     },
@@ -422,7 +422,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                         public void onErrorResponse(VolleyError error){
                             // Do something when error occurred
                             Log.e(TAG, error.toString());
-                            simpleCookieBar("냉장고를 불러오는 데 실패했습니다.", ManageFridgeActivity.this);
+                            Toast.makeText(getApplicationContext(), "에러 발생" , Toast.LENGTH_LONG).show();
                         }
 
                     }

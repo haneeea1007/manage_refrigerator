@@ -148,10 +148,82 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (removeMode) {
+            this.menu = menu;
+            inflater.inflate(R.menu.remove_mode_menu, menu);
+        } else {
+            inflater.inflate(R.menu.manage_food_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {// 아이템 추가 인텐트
+            case R.id.action_add:
+                Log.d(TAG, "action_add");
+                Intent intent = new Intent(getContext(), AddFoodActivity.class);
+                intent.putExtra("refrigerator", tvFridgeName.getText().toString()); // 냉장고 정보 전달
+                startActivity(intent);
+
+                break;
+
+            case R.id.action_remove:// 삭제 모드로 전환
+                Log.d(TAG, "action_remove");
+                removeMode = true;
+                getActivity().invalidateOptionsMenu(); // 삭제모드 메뉴로 바꿈
+                adapter.notifyDataSetChanged(); // 체크박스 띄우기
+
+                break;
+
+            case R.id.action_search:// 해당 냉장고속 재료 검색
+                Log.d(TAG, "action_search");
+                searchFoodItems();
+
+                break;
+
+            case R.id.action_delete:// 선택한 목록 삭제
+                Log.d(TAG, "action_delete");
+
+                // 삭제 모드 중에 냉장고 바꿀 수 없음
+                llRefrigerator.setEnabled(false);
+
+                // 데이터 제거
+                items.removeAll(removed);
+
+                removed.clear();
+                rvFoods.removeAllViews();
+                adapter.notifyDataSetChanged();
+
+                // 자동으로 완료 상태로
+                menu.performIdentifierAction(R.id.action_done, 0);
+                break;
+
+            case R.id.action_done:// 삭제 모드 해제
+                Log.d(TAG, "action_done");
+
+                llRefrigerator.setEnabled(true);
+
+                removeMode = false;
+                getActivity().invalidateOptionsMenu();
+
+                adapter.notifyDataSetChanged(); // 체크박스 재설정을 위함
+                removed.clear();
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     // 냉장고 코드와 보관유형에 따른 데이터 불러오기
     private void selectItems(){
         items.clear();
         rvFoods.removeAllViews();
+        if(getActivity() == null){
+            return;
+        }
         RequestQueue queue = Volley.newRequestQueue(getContext());
         final AtomicInteger requestsCounter = new AtomicInteger(0);
 
@@ -242,10 +314,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                // 보내줄 인자
-//                if(selectedFridge == null){
-//                    selectedFridge = refrigeratorList.get(0);
-//                }
+
                 params.put("code", selectedFridge.getCode());
                 params.put("place", place);
                 return params;
@@ -273,11 +342,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     private void getRefrigeratorData() {
         refrigeratorList.clear();
 
-        // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         Log.d(TAG, "사용자 아이디 " + MainActivity.strId);
 
-        // Initialize a new JsonArrayRequest instance
         StringRequest jsonArrayRequest = new StringRequest(
                 Request.Method.POST,
                 "http://jms1132.dothome.co.kr/getFridgeByUser.php",
@@ -326,12 +393,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                 new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error){
-                        // Do something when error occurred
                         Log.d(TAG, error.toString());
                     }
-
                 }
-
         ){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -342,98 +406,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             }
         };
 
-        // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
-
-
-//        Log.d(TAG, "getRefrigeratorData");
-//        sqLite = foodDBHelper.getReadableDatabase();
-//
-//        String sql = "SELECT * FROM refrigeratorTBL;";
-//        Cursor cursor = sqLite.rawQuery(sql,null);
-//
-//        RefrigeratorData data = null;
-//        while (cursor.moveToNext()) {
-//            data = new RefrigeratorData(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
-//            refrigeratorList.add(data);
-//        }
-//        cursor.close();
-//        sqLite.close();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (removeMode) {
-            this.menu = menu;
-            inflater.inflate(R.menu.remove_mode_menu, menu);
-        } else {
-            inflater.inflate(R.menu.manage_food_menu, menu);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add:
-                // 아이템 추가 인텐트
-                Log.d(TAG, "action_add");
-                Intent intent = new Intent(getContext(), AddFoodActivity.class);
-                intent.putExtra("refrigerator", tvFridgeName.getText().toString()); // 냉장고 정보 전달
-                startActivity(intent);
-
-                break;
-
-            case R.id.action_remove:
-                // 삭제 모드로 전환
-                Log.d(TAG, "action_remove");
-                removeMode = true;
-                getActivity().invalidateOptionsMenu();
-
-                adapter.notifyDataSetChanged();
-
-                break;
-
-            case R.id.action_search:
-                // 해당 냉장고속 재료 검색
-                Log.d(TAG, "action_search");
-                searchFoodItems();
-
-                break;
-
-            case R.id.action_delete:
-                // 선택한 목록 삭제
-                Log.d(TAG, "action_delete");
-
-                // 삭제 모드 중에 냉장고 바꿀 수 없음
-                llRefrigerator.setEnabled(false);
-
-                // 데이터 제거
-                items.removeAll(removed);
-
-                removed.clear();
-                rvFoods.removeAllViews();
-                adapter.notifyDataSetChanged();
-
-                // 자동으로 완료
-                menu.performIdentifierAction(R.id.action_done, 0);
-                break;
-
-            case R.id.action_done:
-                // 삭제 모드 해제
-                Log.d(TAG, "action_done");
-
-                llRefrigerator.setEnabled(true);
-
-                removeMode = false;
-                getActivity().invalidateOptionsMenu();
-
-                adapter.notifyDataSetChanged(); // 체크박스 재설정을 위함
-                removed.clear();
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // 로그아웃하고 다시 로그인했을 때 모든 알람 아이디 가져오기
@@ -492,6 +465,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         // 로그아웃을 했는지 확인
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(PREFERENCE, MODE_PRIVATE);
         boolean logout = sharedPreferences.getBoolean("logout", false);
+
         // 로그아웃을 했었다면 알람을 재등록
         if(logout){
             // alarmList에 받아온 알람 다시 등록
@@ -546,7 +520,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             PendingIntent pender = PendingIntent.getBroadcast(getContext(), foodData.getAlarmID(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             alarmManager.set(AlarmManager.RTC_WAKEUP, millisTemp, pender);
-            Log.d("알람셋팅완료", calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) + 1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
+            Log.d(TAG, "알람세팅" + calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) + 1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
 
         }
     }
@@ -913,6 +887,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    // 냉장고 리스트 어댑터
     public class ListViewAdapter extends BaseAdapter {
         private Activity activity;
         private TextView tvFridgeName;

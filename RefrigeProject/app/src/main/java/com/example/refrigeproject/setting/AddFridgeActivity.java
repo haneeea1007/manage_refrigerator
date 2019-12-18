@@ -1,5 +1,6 @@
 package com.example.refrigeproject.setting;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -137,7 +138,14 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                                     requestQueue2.add(manageRequest);
 
                                     Toast.makeText(getApplicationContext(), refName + " 추가되었습니다.", Toast.LENGTH_LONG).show();
-                                    finish();
+                                    if(ShowFoodsFragment.refrigeratorList.size() <= 1){
+                                        //첫 등록이었을 경우
+                                        Log.d("첫 등록이었을 경우", "여기");
+                                        Intent intent = new Intent(AddFridgeActivity.this, ManageFridgeActivity.class);
+                                        startActivity(intent);
+                                    }else{
+                                        finish();
+                                    }
                                 }else{
                                     Toast.makeText(getApplicationContext(), refName + " 추가 실패", Toast.LENGTH_LONG).show();
                                     finish();

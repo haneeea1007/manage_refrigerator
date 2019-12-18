@@ -17,7 +17,6 @@ public class AddFoodDBHelper extends SQLiteOpenHelper {
     // 테이블 생성
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
         String str = "CREATE TABLE foodTBL ("+
                 "category VARCHAR(10) ," +
                 "section VARCHAR(10)," +

@@ -227,31 +227,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_margin="5dp"
+                android:padding="10dp"
                 android:inputType="textMultiLine"
                 android:background="@drawable/rounded_border"
                 app:layout_constraintTop_toBottomOf="@id/textView4"/>
-
-            <LinearLayout
-                android:id="@+id/llRefrige"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/edtMemo"
-                app:layout_constraintBottom_toBottomOf="parent">
-
-                <TextView
-                    android:id="@+id/tvRefrige"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="냉장고를 선택해 주세요." />
-                <ImageButton
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:src="@drawable/arrow_drop_down"/>
-            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

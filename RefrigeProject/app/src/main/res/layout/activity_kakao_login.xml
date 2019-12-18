@@ -22,7 +22,7 @@
             android:background="#FFEB00"
             android:drawableLeft="@drawable/kat"
             android:paddingLeft="15dp"
-            android:text="카카오톡으로 시작하기"
+            android:text="@string/kakao_login"
             android:textColor="#3E2723"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -40,7 +40,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/btnLogin"
             app:layout_constraintEnd_toEndOf="@+id/btnLogin"
             app:layout_constraintStart_toStartOf="@+id/btnLogin"
-            app:layout_constraintTop_toTopOf="@+id/btnLogin"></com.kakao.usermgmt.LoginButton>
+            app:layout_constraintTop_toTopOf="@+id/btnLogin"/>
 
         <ImageView
             android:id="@+id/imageView3"
