@@ -142,7 +142,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         ibtBack.setOnClickListener(this);
         tvPurchaseDate.setOnClickListener(this);
         tvExpirationDate.setOnClickListener(this);
-        tvRefrige.setOnClickListener(this);
         foodImage.setOnClickListener(this);
         rdoGroup.setOnCheckedChangeListener(this);
 
