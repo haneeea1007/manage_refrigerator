@@ -96,7 +96,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private int getDayEx;
     private final String PREFERENCE = "com.example.refrigeproject";
     private Long millis;
-    private Long millisTemp;
     Calendar today;
 
     // 리퀘스트코드
@@ -319,8 +318,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                             return;
                         }
 
-                        millisTemp = calendarTemp.getTimeInMillis();
-
                         // 날짜 표시
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                         tvPurchaseDate.setText(String.valueOf(format.format(calendarTemp.getTime())));
@@ -352,7 +349,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                         // 현재 날짜보다 이전이면 등록 못하도록 함
                         if (calendar.before(today)) {
-//                        if (calendar.getTimeInMillis() < today.getTimeInMillis()) {
                             Toast.makeText(context, "현재 날짜 이전으로 설정할 수 없습니다.", Toast.LENGTH_LONG).show();
                             return;
                         }
@@ -624,54 +620,25 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         Log.d("switchPref", sharedPreferences.getBoolean("switchPref", false) + "");
         Log.d("radioPref", sharedPreferences.getInt("radioPref", 0) + "");
 
-        //============================================================================//
+        // 소비만료 설정 일자를 millis 로 변환
+        millis = calendar.getTimeInMillis();
 
-//        millis = calendar.getTimeInMillis();
-//
-//        // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
-//        if (dateSetting == 1) {
-//            millis -= 86400000;
-//
-//            // 3일전에 체크되었을때 소비만료 일자에서 3일을 빼줌
-//        } else if (dateSetting == 3) {
-//            millis -= 86400000 * 3;
-//
-//            // 7일전에 체크되었을때 소비만료 일자에서 7일을 빼줌
-//        } else if (dateSetting == 7) {
-//            millis -= 86400000 * 7;
-
-
-        //============================================================================//
-
-        // 테스트용 calendarTemp
-        Calendar calendarTemp = Calendar.getInstance();
-
-        // (선택한 년월일 - 오늘로 직접 설정하기 , 현재 시간)
-        calendarTemp.set(Calendar.YEAR, getYearEx);
-        calendarTemp.set(Calendar.MONTH, getMonthEx);
-        calendarTemp.set(Calendar.DAY_OF_MONTH, getDayEx);
-        calendarTemp.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-        calendarTemp.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
-        calendarTemp.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
-
-        millisTemp = calendarTemp.getTimeInMillis();
-
-        // 테스트용
-
+        // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
         if (dateSetting == 1) {
-            millisTemp += 20000;
+            millis -= 86400000;
 
+            // 3일전에 체크되었을때 소비만료 일자에서 3일을 빼줌
         } else if (dateSetting == 3) {
-            millisTemp += 600000;
+            millis -= 86400000 * 3;
 
+            // 7일전에 체크되었을때 소비만료 일자에서 7일을 빼줌
         } else if (dateSetting == 7) {
-            millisTemp += 900000;
+            millis -= 86400000 * 7;
         }
-
-        //======================================================================//
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+        // 인텐트를 통해 알람리시버로 전달
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("foodName", edtName.getText().toString());
         intent.putExtra("dateSetting", dateSetting);
@@ -679,17 +646,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         intent.putExtra("id", requestCode);
         PendingIntent pender = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
-//            Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
-
-
-//         테스트용
-        alarmManager.set(AlarmManager.RTC_WAKEUP, millisTemp, pender);
-        Log.d("알람셋팅완료", calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) + 1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
-
+        alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
+        Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
     }
-
-    //==============================================================================================//
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
