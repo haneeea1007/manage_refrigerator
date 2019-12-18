@@ -275,7 +275,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
             editor.putBoolean("switchPref", false);
             editor.commit();
         }
-        Toast.makeText(getContext(), "알람 설정 : " + isChecked, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "알람 설정 : " + isChecked, Toast.LENGTH_SHORT).show();
     }
 
     // 로그아웃 버튼 클릭 이벤트

@@ -94,14 +94,12 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                     }
 
                     randomCode = bufCode.toString().trim();
-                    Log.d(TAG, "랜덤코드" + randomCode);
 
                     // 냉장고 이름 가져오기
                     refName = edtTxt.getText().toString().trim();
-                    Log.d(TAG, "냉장고 이름" + refName);
 
                     final String type = ((RadioButton) findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
-                    Log.d(TAG , type);
+                    Log.d(TAG , refName + " "  + randomCode + " " + type);
 
 
                     // DB에 저장
@@ -121,7 +119,7 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                                                 JSONObject jsonObject = new JSONObject(response);
                                                 boolean success = jsonObject.getBoolean("success");
                                                 if(success){
-                                                    Toast.makeText(getApplicationContext(), refName + "manageTBL 추가되었습니다.", Toast.LENGTH_LONG).show();
+                                                    Log.d(TAG, "manageTBL 추가되었습니다");
                                                     //ArrayList에 저장
                                                     ShowFoodsFragment.refrigeratorList.add(new RefrigeratorData(randomCode, refName, type));
                                                 }else{
@@ -140,7 +138,6 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                                     Toast.makeText(getApplicationContext(), refName + " 추가되었습니다.", Toast.LENGTH_LONG).show();
                                     if(ShowFoodsFragment.refrigeratorList.size() <= 1){
                                         //첫 등록이었을 경우
-                                        Log.d("첫 등록이었을 경우", "여기");
                                         Intent intent = new Intent(AddFridgeActivity.this, ManageFridgeActivity.class);
                                         startActivity(intent);
                                     }else{
@@ -159,8 +156,6 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                     RefrigeratorRequest registerRequest = new RefrigeratorRequest(randomCode, refName, type, responseListener); // 자료 다 들어있음. 상대방주소,데이터,데이터랩방식 등
                     RequestQueue requestQueue = Volley.newRequestQueue(AddFridgeActivity.this);
                     requestQueue.add(registerRequest);
-
-
                 }
             }
         });

@@ -451,7 +451,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if(success){
-                        Toast.makeText(getApplicationContext(), "manageTBL 삭제되었습니다.", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "manageTBL 삭제되었습니다.");
                         ShowFoodsFragment.refrigeratorList.remove(refrigerator);
                         adapter.notifyDataSetChanged();
                     }else{

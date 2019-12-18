@@ -221,30 +221,27 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     private void selectItems(){
         items.clear();
         rvFoods.removeAllViews();
-        if(getActivity() == null){
-            return;
-        }
+        try {
+            RequestQueue queue = Volley.newRequestQueue(getContext());
+            final AtomicInteger requestsCounter = new AtomicInteger(0);
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        final AtomicInteger requestsCounter = new AtomicInteger(0);
+            ArrayList<String> placeList = new ArrayList<String>();
+            placeList.add("냉장");
+            placeList.add("냉동");
+            placeList.add("실온");
 
-        ArrayList<String> placeList = new ArrayList<String>();
-        placeList.add("냉장");
-        placeList.add("냉동");
-        placeList.add("실온");
+            for (final String place: placeList) {
+                Log.d("DONE?", place + " " + requestsCounter);
+                requestsCounter.incrementAndGet();
 
-        for (final String place: placeList) {
-            Log.d("DONE?", place + " " + requestsCounter);
-            requestsCounter.incrementAndGet();
+                queue.add(new StringRequest(
+                        Request.Method.POST,
+                        "http://jms1132.dothome.co.kr/getFoodByPlace.php",
+                        new Response.Listener<String>() {
 
-            queue.add(new StringRequest(
-                Request.Method.POST,
-                "http://jms1132.dothome.co.kr/getFoodByPlace.php",
-                new Response.Listener<String>() {
-
-                    @Override
-                    public void onResponse(String response) {
-                        try{
+                            @Override
+                            public void onResponse(String response) {
+                                try{
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("food");
 
@@ -311,31 +308,34 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                     }
                 }
 
-        ){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("code", selectedFridge.getCode());
-                params.put("place", place);
-                return params;
-            }
-        });
-            queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+            ){
                 @Override
-                public void onRequestFinished(Request<Object> request) {
-                    requestsCounter.decrementAndGet();
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
 
-                    Log.d(TAG, "SOMETHING DONE!" + requestsCounter.get());
-                    if(requestsCounter.get() < 0){
-                        adapter.items = items;
-                        adapter.notifyDataSetChanged();
-                        loading.setVisibility(View.GONE);
-                        swipeRefreshLayout.setRefreshing(false);
-                        return;
-                    }
+                    params.put("code", selectedFridge.getCode());
+                    params.put("place", place);
+                    return params;
                 }
             });
+                queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
+                    @Override
+                    public void onRequestFinished(Request<Object> request) {
+                        requestsCounter.decrementAndGet();
+
+                        Log.d(TAG, "SOMETHING DONE!" + requestsCounter.get());
+                        if(requestsCounter.get() < 0){
+                            adapter.items = items;
+                            adapter.notifyDataSetChanged();
+                            loading.setVisibility(View.GONE);
+                            swipeRefreshLayout.setRefreshing(false);
+                            return;
+                        }
+                    }
+                });
+            }
+        }catch (NullPointerException e){
+            Log.e(TAG, e.toString());
         }
     }
 
