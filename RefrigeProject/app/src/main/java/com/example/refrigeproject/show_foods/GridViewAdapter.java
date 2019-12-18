@@ -3,6 +3,7 @@ package com.example.refrigeproject.show_foods;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,14 +68,14 @@ public class GridViewAdapter extends BaseAdapter {
         foodImageView.setImageResource(addFoodGridViewData.getImageID());
         tvFoodName.setText(addFoodGridViewData.getSection());
 
-
         foodImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FoodDetailsActivity.class);
-                intent.putExtra("category", AddFoodActivity.category);
-                intent.putExtra("section", addFoodGridViewData.getSection());
-                intent.putExtra("image", addFoodGridViewData.getImageID());
+                intent.putExtra("foodData", addFoodGridViewData);
+//                intent.putExtra("category", addFoodGridViewData.getCategory());
+//                intent.putExtra("section", addFoodGridViewData.getSection());
+//                intent.putExtra("image", addFoodGridViewData.getImageID());
                 intent.setAction("add");
                 context.startActivity(intent);
             }
@@ -94,10 +95,7 @@ public class GridViewAdapter extends BaseAdapter {
                 }
             }, 3000);
         }
-//        } else {
-//            // edt 지울 때, 완료 누를 때
-//            ivFound.setVisibility(View.INVISIBLE);
-//        }
+
         return view;
     }
 

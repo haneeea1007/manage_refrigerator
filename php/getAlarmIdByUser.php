@@ -2,8 +2,8 @@
     //mysqli_connect([아이피], [아이디], [비밀번호], [DB명]);
     require_once('dbConnect.php');
 
-    $id = "1";
-    // $id = $_POST["id"];
+    // $id = "1";
+    $id = $_POST["id"];
 
     $statement = mysqli_prepare($con, "SELECT name, alarmID, expirationDate FROM foodTBL WHERE code in (SELECT manageTBL.code FROM manageTBL WHERE manageTBL.id = ?)");
 

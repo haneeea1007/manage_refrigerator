@@ -50,7 +50,7 @@ public class AddVegetable extends Fragment {
         vegeList.clear();
 
         for (int i = 0; i < 19; i++) {
-            vegeList.add(new AddFoodGridViewData("vegetable", vegeName[i], vegeID[i]));
+            vegeList.add(new AddFoodGridViewData(getResources().getString(R.string.vegetable), vegeName[i], vegeID[i]));
         }
 
 

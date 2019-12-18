@@ -30,12 +30,12 @@
 
                 <TextView
                     android:id="@+id/tvFridgeName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="냉장고 선택"/>
+                    android:text="@string/select_refrigerator"/>
 
                 <ImageView
                     android:layout_width="wrap_content"

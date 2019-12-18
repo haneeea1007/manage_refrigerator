@@ -38,18 +38,18 @@
 
         <activity android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
 
 
 
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
 
@@ -72,6 +72,8 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity android:name=".KakaoLoginActivity"/>
+
+        <activity android:name=".show_foods.SearchFoodActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -59,8 +60,6 @@ public class CalendarAdapter extends BaseAdapter {
     public int lastDay; // 현재 달 마지막 날의 날짜
 
     public int selectedPosition = -1; // ????????????
-
-//    SQLiteDatabase sqLiteDatabase;
 
     LayoutInflater layoutInflater;
     View view;
@@ -119,42 +118,18 @@ public class CalendarAdapter extends BaseAdapter {
         int columnIndex = position % 7;
         switch (columnIndex){
             case 0:
-                tvDayValue.setTextColor(Color.RED);
+                tvDayValue.setTextColor(ContextCompat.getColor(context, R.color.red));
                 break;
             case 6:
-                tvDayValue.setTextColor(Color.BLUE);
+                tvDayValue.setTextColor(ContextCompat.getColor(context, R.color.blue));
                 break;
-            default: tvDayValue.setTextColor(Color.BLACK);
+            default: tvDayValue.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
                 break;
         }
 
         String event = null;
         Log.d("12/20", items[19].isMark()+"");
 
-//            tvEvent.setText(items[position].getEvent());
-        // DB에서 가져오기 /////////////////////////////////////////////////////
-//        dbHelper = new DBHelper(context);
-//        sqLiteDatabase = dbHelper.getReadableDatabase();
-//        Cursor cursor; // record set
-//        cursor = sqLiteDatabase.rawQuery("SELECT event FROM calendarTBL WHERE year = " + currentYear +
-//                " AND month = " + (currentMonth + 1) +
-//                " AND day = " + day +
-//                ";", null);
-//
-//
-//        Log.d("selectAllItems", "1");
-//
-//        while (cursor.getCount() != 0 && cursor.moveToNext()) {
-//            event = cursor.getString(0);
-//            ivMark.setImageResource(R.drawable.circle);
-//            tvEvent.setText(event);
-//            //tvEvent.append(event);
-//        }
-//
-//        cursor.close();
-//        sqLiteDatabase.close();
-
-        ////////////////////////////////////////////////////////////////////////////
         date = currentYear + "-" + (currentMonth + 1) + "-" + day;
         Log.d(TAG, date);
         for(int i = 0 ; i < list.size() ; i++){
@@ -187,17 +162,6 @@ public class CalendarAdapter extends BaseAdapter {
 
 
         return view;
-    }
-
-    public static String arrayJoin(String glue, ArrayList<String> array){
-        String result = "";
-        for(int i = 0 ; i < array.size() ; i++){
-            result += array.get(i);
-            if( i < array.size() - 1){
-                result += glue;
-            }
-        }
-        return result;
     }
 
     private void setCurrentMonthData() {

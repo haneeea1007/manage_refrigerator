@@ -48,7 +48,7 @@ public class AddDairyProduct extends Fragment {
 
 
         for (int i = 0; i < 5; i++) {
-            dairyList.add(new AddFoodGridViewData("유제품", dairyName[i], dairyID[i]));
+            dairyList.add(new AddFoodGridViewData(getResources().getString(R.string.dairy_product), dairyName[i], dairyID[i]));
         }
 
     }

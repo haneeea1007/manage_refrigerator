@@ -5,11 +5,6 @@ public class DayItem {
     private boolean mark;
     private String event;
 
-    public DayItem(){
-
-    }
-
-
     public DayItem(int dayValue){
         this.dayValue = dayValue;
         mark = false;

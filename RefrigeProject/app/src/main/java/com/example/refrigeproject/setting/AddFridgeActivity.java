@@ -1,8 +1,5 @@
 package com.example.refrigeproject.setting;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.database.ManageRequest;
@@ -30,7 +26,6 @@ import com.r0adkll.slidr.Slidr;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mozilla.javascript.tools.jsc.Main;
 
 import java.util.Random;
 
@@ -45,18 +40,13 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
     private EditText edtTxt;
 
     // DB
-    private DBHelper fridgeDBHelper;
-    SQLiteDatabase sqLiteDatabase;
     String refName;
-    int imgSource;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_new_fridge);
         Slidr.attach(this);
-
-        fridgeDBHelper = new DBHelper(this);
 
         radioGroup = findViewById(R.id.radioGroup);
         rbRef1 = findViewById(R.id.rbRef1);
@@ -142,7 +132,7 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                                         }
                                     };
 
-                                    ManageRequest manageRequest = new ManageRequest(MainActivity.strId, randomCode, responseListener2); // 자료 다 들어있음. 상대방주소,데이터,데이터랩방식 등
+                                    ManageRequest manageRequest = new ManageRequest(MainActivity.strId, randomCode, responseListener2);
                                     RequestQueue requestQueue2 = Volley.newRequestQueue(AddFridgeActivity.this);
                                     requestQueue2.add(manageRequest);
 
@@ -161,18 +151,6 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                     RefrigeratorRequest registerRequest = new RefrigeratorRequest(randomCode, refName, type, responseListener); // 자료 다 들어있음. 상대방주소,데이터,데이터랩방식 등
                     RequestQueue requestQueue = Volley.newRequestQueue(AddFridgeActivity.this);
                     requestQueue.add(registerRequest);
-
-
-//                    sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-//
-//                    String str = "INSERT INTO refrigeratorTBL values('" +
-//                            randomCode + "', '" +
-//                            refName + "', " +
-//                            imgSource + ");";
-//
-//                    sqLiteDatabase.execSQL(str);
-//                    sqLiteDatabase.close();
-
 
 
                 }

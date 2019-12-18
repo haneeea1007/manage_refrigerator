@@ -314,6 +314,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
     private void deleteAlarm() {
         // 알람도 같이 삭제
         for(int i = 0 ; i < ShowFoodsFragment.alarmList.size() ; i++){
+            Log.d("delete alarm", ShowFoodsFragment.alarmList.get(i).getAlarmID()+" 알람");
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
             Intent intent = new Intent(getContext(), AlarmReceiver.class);
             PendingIntent pender = PendingIntent.getBroadcast(getContext(), ShowFoodsFragment.alarmList.get(i).getAlarmID(), intent, 0);

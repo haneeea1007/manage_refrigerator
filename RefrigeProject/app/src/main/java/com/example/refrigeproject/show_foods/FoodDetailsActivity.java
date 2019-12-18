@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -37,7 +36,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -45,7 +43,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.setting.ManageFridgeActivity;
@@ -55,8 +52,6 @@ import com.r0adkll.slidr.Slidr;
 
 import org.aviran.cookiebar2.CookieBar;
 import org.aviran.cookiebar2.OnActionClickListener;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -84,14 +79,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private RadioButton rdoFridge, rdoFreezer, rdoPantry;
     private DatePicker datePicker;
     private ImageView foodImage;
-    private String foodName;
     private LinearLayout llRefrige;
 
     private File tempFile;
     private Calendar calendar;
     private Calendar calendarTemp;
-    private DBHelper dBHelper;
-    private SQLiteDatabase sqLiteDatabase;
     private AlarmManager alarmManager;
 
     private int dateSetting;
@@ -103,7 +95,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private int getMonthEx;
     private int getDayEx;
     private final String PREFERENCE = "com.example.refrigeproject";
-    private ArrayList<PendingIntent> intentArray = new ArrayList<>();
     private Long millis;
     private Long millisTemp;
     Calendar today;
@@ -113,7 +104,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
     // 어디서 불렀는지 리퀘스트 코드를 넣고 INSERT 가 필요한지 UPDATE 가 필요한지 구분하기
     // 추가할때는 1로 인텐트, 수정할때는 2로 인텐트!!!!!
-    private static final int FROM_ADD_OR_EDIT = 0;
     Intent intent;
     String action; // 이 액티비티를 부르면서 설정한 액션을 받는 변수 (수정 or 추가)
     FoodData food; // 인텐트로 받은 FoodData
@@ -133,7 +123,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         Slidr.attach(this);
 
         context = getApplicationContext();
-        dBHelper = new DBHelper(context);
         calendar = Calendar.getInstance();
         calendarTemp = Calendar.getInstance();
 
@@ -224,21 +213,18 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                 break;
             case "add":
-                tvTitle.setText("음식 추가하기");
-                int category = intent.getIntExtra("category", 0);
-                tvCategory.setText(getCategory(category)); // 타이틀로 바꾸기
+                tvTitle.setText(R.string.add_food);
+                AddFoodGridViewData food = intent.getParcelableExtra("foodData");
+                tvCategory.setText(food.getCategory()); // 타이틀로 바꾸기
 
-                String section = intent.getStringExtra("section");
-                tvGroup.setText(section);
-                edtName.setText(section);
+                tvGroup.setText(food.getSection());
+                edtName.setText(food.getSection());
                 tvRefrige.setText(ShowFoodsFragment.selectedFridge.getName());
+                foodImage.setImageResource(food.getImageID());
 
                 // 웹 크롤링
                 crawlingDays();
-//                tvRecommend.setText();
 
-                int image = intent.getIntExtra("image", 0);
-                foodImage.setImageResource(image);
                 break;
         }
     }
@@ -260,14 +246,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                Log.d("CRAWLING TEST", "doInBackground " + food);
                 Document doc = Jsoup.connect(htmlPageUrl).get(); // 해당 페이지의 html 저
 
                 //body > div:nth-child(4) > div.right_wrap > div.wrap_recipe > div > dl:nth-child(3) > dt
                 Elements titles = doc.select(".result_area em.v");
-                System.out.println("-------------------------------------------------------------");
                 for (Element e : titles) {
-                    System.out.println("title: " + e.text());
                     htmlContentInStringFormat = "* 추천 보관일은 " + e.text().trim() + " 입니다.";
                     Log.d("CRAWLING TEST", e.text().trim());
                 }
@@ -280,36 +263,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
         @Override
         protected void onPostExecute(Void result) {
-            Log.d("CRAWLING TEST", "onPostExecute");
             tvRecommend.setVisibility(View.VISIBLE);
             tvRecommend.setText(htmlContentInStringFormat);
         }
-    }
-
-    private String getCategory(int category) {
-        switch (category) {
-            case 0:
-                return "야채";
-            case 1:
-                return "과일";
-            case 2:
-                return "육류";
-            case 3:
-                return "해산물";
-            case 4:
-                return "유제품";
-            case 5:
-                return "반찬";
-            case 6:
-                return "인스턴트";
-            case 7:
-                return "음료";
-            case 8:
-                return "양념";
-            case 9:
-                return "조미료";
-        }
-        return null;
     }
 
     @Override
@@ -319,7 +275,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 // 입력 값이 없을 경우
                 if (edtName.getText().toString().equals("") || tvPurchaseDate.getText().toString().equals("")
                         || rdoClick == null) {
-                    ManageFridgeActivity.simpleCookieBar("정보를 입력해주세요", FoodDetailsActivity.this);
+                    Toast.makeText(context, "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -333,9 +289,8 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     case "add":
                         makeEncodedString(); // 이미지 처리
                         uploadData();
-                        Toast.makeText(context, edtName.getText().toString() + " 추가되었습니다.", Toast.LENGTH_SHORT).show();
-                        // 소비만료 날짜 확인
-//                Toast.makeText(context, calendar.get(Calendar.YEAR) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.DAY_OF_MONTH), Toast.LENGTH_SHORT).show();
+                        ManageFridgeActivity.simpleCookieBar(edtName.getText().toString() + "가 추가되었습니다.", FoodDetailsActivity.this);
+
                         finish();
 
                         break;
@@ -373,7 +328,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     }
                 }, calendarTemp.get(Calendar.YEAR), calendarTemp.get(Calendar.MONTH), calendarTemp.get(Calendar.DAY_OF_MONTH));
                 dialog.show();
-
 
                 break;
 
@@ -537,6 +491,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 params.put("purchaseDate", tvPurchaseDate.getText().toString());
                 params.put("expirationDate", tvExpirationDate.getText().toString());
 
+                //debug
                 Log.d("DATA FOR UPDATE", tvCategory.getText().toString());
                 Log.d("DATA FOR UPDATE", tvGroup.getText().toString());
                 Log.d("DATA FOR UPDATE", edtName.getText().toString());
@@ -594,6 +549,13 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     // 만들어진 알람 아이디로 알람 세팅
                     notificationSetting(requestCode);
 
+                    // 로그인한 사용자 알람 리스트에 추가 (로그아웃 시 사용)
+                    FoodData foodData = new FoodData();
+                    foodData.setName(edtName.getText().toString());
+                    foodData.setAlarmID(requestCode);
+                    foodData.setExpirationDate(tvExpirationDate.getText().toString());
+                    ShowFoodsFragment.alarmList.add(foodData);
+
                     Toast.makeText(getBaseContext(),
                             "The image is upload", Toast.LENGTH_SHORT)
                             .show();
@@ -646,7 +608,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         SimpleDateFormat format = new SimpleDateFormat("MMddHHmmSS", Locale.getDefault());
         date = format.format(calendar.getTime());
         int alarmId = Integer.parseInt(date) - Integer.parseInt(MainActivity.strId);
-        Log.d("alarmId", alarmId + "");
 
         return alarmId;
     }
@@ -698,7 +659,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         // 테스트용
 
         if (dateSetting == 1) {
-            millisTemp += 40000;
+            millisTemp += 20000;
 
         } else if (dateSetting == 3) {
             millisTemp += 600000;
@@ -828,11 +789,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
         if (rdoGroup.getCheckedRadioButtonId() == R.id.rdoFridge) {
-            rdoClick = "냉장";
+            rdoClick = getResources().getString(R.string.fridge);
         } else if (rdoGroup.getCheckedRadioButtonId() == R.id.rdoFreezer) {
-            rdoClick = "냉동";
+            rdoClick = getResources().getString(R.string.freezer);
         } else if (rdoGroup.getCheckedRadioButtonId() == R.id.rdoPantry) {
-            rdoClick = "실온";
+            rdoClick = getResources().getString(R.string.pantry);
         }
     }
 }

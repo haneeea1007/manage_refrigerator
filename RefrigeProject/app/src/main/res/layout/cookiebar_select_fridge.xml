@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:text="냉장고 선택"
+        android:text="@string/select_refrigerator"
         android:textColor="#ffffff"
         android:textSize="20sp"
         android:textStyle="bold" />

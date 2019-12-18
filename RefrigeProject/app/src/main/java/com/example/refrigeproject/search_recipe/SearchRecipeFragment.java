@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -94,11 +95,14 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         Bundle bundle = getArguments();
 
+        Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
+
         if(bundle != null){
             String name = bundle.getString("name");
             autoCompleteTextView.setText(name);
             Log.d(TAG, "name" + name);
             Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
+
             btnSearch.callOnClick();
         }else{
             if(keyword != null) {
@@ -125,6 +129,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         // 요리명/재료명 체크박스 저장
         if(chkRecipe.isChecked()) recipeChecked = true;
         if(chkIngredient.isChecked()) inredientChecked = true;
+
+//        autoCompleteTextView.setText("");
     }
 
 
@@ -147,6 +153,8 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     }
 
     private void searchRecipe(String keyword) {
+        Toast.makeText(getContext(), autoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), keyword, Toast.LENGTH_SHORT).show();
         // 검색하여 Hashmap에 저장
         if(chkRecipe.isChecked()) {
             searchRecipeName(getJsonString("BasicRecipe", context), recipes, keyword);

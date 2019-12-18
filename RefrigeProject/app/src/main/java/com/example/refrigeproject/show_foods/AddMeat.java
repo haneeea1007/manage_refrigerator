@@ -48,7 +48,7 @@ public class AddMeat extends Fragment {
 
 
         for (int i = 0; i < 8; i++) {
-            meatList.add(new AddFoodGridViewData("고기", meatName[i], meatID[i]));
+            meatList.add(new AddFoodGridViewData(getResources().getString(R.string.meat), meatName[i], meatID[i]));
         }
 
     }

@@ -49,7 +49,7 @@ public class AddSideDishes extends Fragment {
 
 
         for (int i = 0; i < 8; i++) {
-            sideList.add(new AddFoodGridViewData("반찬", sideName[i], sideID[i]));
+            sideList.add(new AddFoodGridViewData(getResources().getString(R.string.side_dish), sideName[i], sideID[i]));
 
         }
 

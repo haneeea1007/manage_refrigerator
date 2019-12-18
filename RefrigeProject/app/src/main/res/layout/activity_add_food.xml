@@ -4,21 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    >
+    tools:context=".MainActivity">
+
 <LinearLayout
     android:id="@+id/llTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="15dp"
+    android:padding="10dp"
     android:gravity="center"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     android:focusable="true"
     android:focusableInTouchMode="true">
-
 
     <ImageButton
         android:id="@+id/ibtBack"
@@ -31,7 +30,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="음식 추가하기"
+        android:text="@string/add_food"
         android:layout_weight="1"
         android:textStyle="bold"
         android:textSize="20sp"/>
@@ -64,52 +63,52 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="야채" />
+            android:text="@string/vegetable" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="과일" />
+            android:text="@string/fruit" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="육류" />
+            android:text="@string/meat" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="해산물" />
+            android:text="@string/seafood" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="유제품" />
+            android:text="@string/dairy_product" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="반찬" />
+            android:text="@string/side_dish" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="인스턴트" />
+            android:text="@string/instant" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="음료" />
+            android:text="@string/beverage" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="양념" />
+            android:text="@string/sauce" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="조미료 " />
+            android:text="@string/seasoning" />
 
     </com.google.android.material.tabs.TabLayout>
 

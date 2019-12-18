@@ -48,7 +48,7 @@ public class AddSeasoning extends Fragment {
 
 
         for (int i = 0; i < 7; i++) {
-            seasoningList.add(new AddFoodGridViewData("조미료",seasoningName[i], seasoningID[i]));
+            seasoningList.add(new AddFoodGridViewData(getResources().getString(R.string.seasoning), seasoningName[i], seasoningID[i]));
         }
 
 

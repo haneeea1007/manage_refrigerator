@@ -48,7 +48,7 @@ public class AddDrinks extends Fragment {
 
 
         for (int i = 0; i < 7; i++) {
-            drinksList.add(new AddFoodGridViewData("음료", drinkName[i], drinkID[i]));
+            drinksList.add(new AddFoodGridViewData(getResources().getString(R.string.beverage), drinkName[i], drinkID[i]));
         }
 
     }

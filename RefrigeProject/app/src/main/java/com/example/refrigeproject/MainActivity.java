@@ -7,8 +7,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -20,12 +18,9 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.example.refrigeproject.calendar.CalendarFragment;
 import com.example.refrigeproject.checklist.CheckListFragment;
-import com.example.refrigeproject.database.ManageRequest;
 import com.example.refrigeproject.database.UserRequest;
 import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
-import com.example.refrigeproject.setting.AddFridgeActivity;
 import com.example.refrigeproject.setting.SettingFragment;
-import com.example.refrigeproject.show_foods.RefrigeratorData;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.facebook.stetho.Stetho;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -34,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements ShowFoodsFragment.OnFragmentInteractionListener{
+    private static final String TAG = "MainActivity";
 
     private BottomNavigationView bottomMenu;
     private FrameLayout frameLayout;
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("testest 메인 아이디", strId);
+        Log.d(TAG, "메인 아이디 " + strId);
 
         Stetho.initializeWithDefaults(this);
 
@@ -82,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
         Intent intent = getIntent();
         strNickname = intent.getStringExtra("name");
         strProfile = intent.getStringExtra("profile");
-        strId = String.valueOf(intent.getLongExtra("id", 0));
+        strId = String.valueOf(intent.getLongExtra("id", -1));
         // 사용자 정보 DB에 저장
         insertUserData();
 //        strId = "1"; // to test
@@ -104,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements ShowFoodsFragment
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if(success){
-                        Toast.makeText(getApplicationContext(), strId + " userTBL 추가되었습니다.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), strId + " 로그인 성공", Toast.LENGTH_LONG).show();
                     }else{
-                        Toast.makeText(getApplicationContext(), strId + " 추가 실패", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), strId + " userTBL 추가 실패", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

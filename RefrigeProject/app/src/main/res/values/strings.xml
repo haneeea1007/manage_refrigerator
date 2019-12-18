@@ -1,6 +1,32 @@
 <resources>
-    <string name="app_name">냉장고 관리</string>
+    <string name="app_name">니냉내냉</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="kakao_login">카카오톡으로 시작하기</string>
+
+    <string name="register">등록하기</string>
+
+    <string name="select_refrigerator">냉장고 선택</string>
+    <string name="add_refrigerator">냉장고 추가하기</string>
+    <string name="add_food">음식 추가하기</string>
+    <string name="fridge">냉장</string>
+    <string name="freezer">냉동</string>
+    <string name="pantry">실온</string>
+
+    <string name="vegetable">야채</string>
+    <string name="fruit">과일</string>
+    <string name="meat">고기</string>
+    <string name="seafood">해산물</string>
+    <string name="dairy_product">유제품</string>
+    <string name="side_dish">반찬</string>
+    <string name="instant">인스턴트</string>
+    <string name="beverage">음료</string>
+    <string name="sauce">양념</string>
+    <string name="seasoning">조미료</string>
+
+    <string name="basic_type">기본형</string>
+    <string name="double_doors_type">양문형</string>
+    <string name="kimchi_type">김치냉장고</string>
+
 
 </resources>

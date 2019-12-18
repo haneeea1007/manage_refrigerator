@@ -54,7 +54,7 @@ public class AddFruits extends Fragment {
         fruitList.clear();
 
         for (int i = 0; i < 15; i++) {
-            fruitList.add(new AddFoodGridViewData("fruits", fruitName[i], fruitID[i]));
+            fruitList.add(new AddFoodGridViewData(getResources().getString(R.string.fruit), fruitName[i], fruitID[i]));
 
         }
 

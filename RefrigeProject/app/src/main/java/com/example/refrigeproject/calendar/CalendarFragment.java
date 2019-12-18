@@ -1,6 +1,5 @@
 package com.example.refrigeproject.calendar;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,31 +17,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.search_recipe.SearchRecipeFragment;
-import com.example.refrigeproject.show_foods.FoodData;
-import com.example.refrigeproject.show_foods.RefrigeratorData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CalendarFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     View view;
@@ -62,12 +48,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
     private final static String TAG = "CalendarFragment";
 
     GridView gvCalendar;
-    Button btnPrevious, btnNext;
     TextView tvYearMonth, tvDateSelected;
-    EditText edtEvent;
     private CalendarAdapter calendarAdapter;
-
-    SQLiteDatabase sqLiteDatabase;
 
     @Nullable
     @Override
@@ -164,7 +146,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         DayItem item = calendarAdapter.items[position];
         final int day = item.getDayValue();
         if(day == 0) return;
-        final String currentDate = calendarAdapter.currentYear+"년 " + (calendarAdapter.currentMonth+1) + "월 " + day + "일";
+//        final String currentDate = calendarAdapter.currentYear+"년 " + (calendarAdapter.currentMonth+1) + "월 " + day + "일";
     }
 
     // 제철음식 리사이클러뷰

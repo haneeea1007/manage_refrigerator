@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,12 +48,10 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.daimajia.swipe.SwipeLayout;
 import com.dinuscxj.progressbar.CircleProgressBar;
-import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.setting.AddFridgeActivity;
 import com.example.refrigeproject.setting.ManageFridgeActivity;
-import com.example.refrigeproject.setting.SettingFragment;
 import com.shuhart.stickyheader.StickyAdapter;
 import com.shuhart.stickyheader.StickyHeaderItemDecorator;
 
@@ -89,7 +86,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     private RecyclerView rvFoods;
     private ConstraintLayout loading;
     private LinearLayout llRefrigerator;
-    private SwipeRefreshLayout swipeLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     // for adapter
     ArrayList<Section> items = new ArrayList<>();
@@ -117,10 +114,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     // 내부인터페이스 객체참조변수
     private OnFragmentInteractionListener mListener;
 
-    // DB
-    private DBHelper foodDBHelper;
-    private SQLiteDatabase sqLite;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -128,12 +121,13 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
 
         loading = view.findViewById(R.id.loading);
         rvFoods = view.findViewById(R.id.rvFoods);
-        swipeLayout = view.findViewById(R.id.swipeLayout);
+        swipeRefreshLayout = view.findViewById(R.id.swipeLayout);
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
 
+        getAlarmIdByUser();
+
         // 테이블 생성 및 냉장고 세팅
-        foodDBHelper = new DBHelper(getContext());
         llRefrigerator.setOnClickListener(this);
         getRefrigeratorData();
 
@@ -147,7 +141,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
 
         Log.d(TAG, "온크리에이트 실행?");
 
-        swipeLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         // 옵션메뉴 설정
         setHasOptionsMenu(true);
@@ -267,7 +261,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                         adapter.items = items;
                         adapter.notifyDataSetChanged();
                         loading.setVisibility(View.GONE);
-                        swipeLayout.setRefreshing(false);
+                        swipeRefreshLayout.setRefreshing(false);
                         return;
                     }
                 }
@@ -443,7 +437,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     }
 
     // 로그아웃하고 다시 로그인했을 때 모든 알람 아이디 가져오기
-    public void getAlarmId() {
+    public void getAlarmIdByUser() {
         // 로그인한 사용자의 모든 알람정보 가져오기
         alarmList.clear();
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -457,7 +451,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                     public void onResponse(String response) {
                         try{
                             JSONObject jsonObject = new JSONObject(response);
-                            JSONArray jsonArray = jsonObject.getJSONArray("alarmID");
+                            JSONArray jsonArray = jsonObject.getJSONArray("food");
 
                             Log.d(TAG,"alarmID list length" + jsonArray.length()+"");
 
@@ -465,7 +459,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                                 JSONObject object = jsonArray.getJSONObject(i);
                                 FoodData foodData = new FoodData();
                                 foodData.setName(object.getString("name"));
-                                foodData.setAlarmID(object.getInt("alarmId"));
+                                foodData.setAlarmID(object.getInt("alarmID"));
                                 foodData.setExpirationDate(object.getString("expirationDate"));
                                 alarmList.add(foodData);
                             }
@@ -493,7 +487,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             }
         };
 
-        // Add JsonArrayRequest to the RequestQueue
         requestQueue.add(jsonArrayRequest);
 
         // 로그아웃을 했는지 확인
@@ -520,25 +513,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         Log.d("switchPref", sharedPreferences.getBoolean("switchPref", false) + "");
         Log.d("radioPref", sharedPreferences.getInt("radioPref", 0) + "");
 
-        //============================================================================//
-
-//        millis = calendar.getTimeInMillis();
-//
-//        // 1일전에 체크되었을때 소비만료 일자에서 1일을 빼줌
-//        if (dateSetting == 1) {
-//            millis -= 86400000;
-//
-//            // 3일전에 체크되었을때 소비만료 일자에서 3일을 빼줌
-//        } else if (dateSetting == 3) {
-//            millis -= 86400000 * 3;
-//
-//            // 7일전에 체크되었을때 소비만료 일자에서 7일을 빼줌
-//        } else if (dateSetting == 7) {
-//            millis -= 86400000 * 7;
-
-
-        //============================================================================//
-
         // 테스트용 calendarTemp
         Calendar calendarTemp = Calendar.getInstance();
         for(int i = 0 ; i < alarmList.size() ; i++){
@@ -552,16 +526,14 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             calendarTemp.set(year, month, day);
             long millisTemp = calendarTemp.getTimeInMillis();
 
-            // 테스트용
-
             if (dateSetting == 1) {
-                millisTemp += 40000;
+                millisTemp -= 86400000;
 
             } else if (dateSetting == 3) {
-                millisTemp += 600000;
+                millisTemp -= 86400000 * 3;
 
             } else if (dateSetting == 7) {
-                millisTemp += 900000;
+                millisTemp -= 86400000 * 7;
             }
 
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
@@ -577,21 +549,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             Log.d("알람셋팅완료", calendarTemp.get(Calendar.YEAR) + "년 " + (calendarTemp.get(Calendar.MONTH) + 1) + "월 " + calendarTemp.get(Calendar.DAY_OF_MONTH) + "일 " + calendarTemp.get(Calendar.HOUR_OF_DAY) + "시 " + calendarTemp.get(Calendar.MINUTE) + "분 " + calendarTemp.get(Calendar.SECOND) + "초 " + calendarTemp.getTimeInMillis() + "원래 millis " + millisTemp + "수정 millis");
 
         }
-
-        // (선택한 년월일 - 오늘로 직접 설정하기 , 현재 시간)
-//        calendarTemp.set(Calendar.YEAR, getYearEx);
-//        calendarTemp.set(Calendar.MONTH, getMonthEx);
-//        calendarTemp.set(Calendar.DAY_OF_MONTH, getDayEx);
-//        calendarTemp.set(Calendar.HOUR_OF_DAY, Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
-//        calendarTemp.set(Calendar.MINUTE, Calendar.getInstance().get(Calendar.MINUTE));
-//        calendarTemp.set(Calendar.SECOND, Calendar.getInstance().get(Calendar.SECOND));
-
-
-        //======================================================================//
-
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
-//            Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
-
     }
 
     private void searchFoodItems() {
@@ -718,10 +675,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                 // 이미지 세팅
                 if(item.getImagePath() != null){
                     Glide.with(getContext()).load(item.getImagePath()).into(((ItemViewHolder) holder).imageView);
-                    // 아이콘일 경우 scaleType //////////////////// 파라미터 수정 요망
-                    if(item.getImagePath().contains("icon")){
-                        ((ItemViewHolder) holder).imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    }
                 }
 
                 // 프로그레스바 세팅
@@ -743,15 +696,17 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                 // D-day 값 세팅
                 if(value == 0){
                     ((ItemViewHolder) holder).tvDday.setText("D-day!");
-                    ((ItemViewHolder) holder).tvDday.setTextColor(Color.parseColor("#EE7A5D"));
+                    ((ItemViewHolder) holder).tvDday.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                    ((ItemViewHolder) holder).swipeLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent));
                 }else if(value < 0){
                     ((ItemViewHolder) holder).tvDday.setText("기간만료");
-                    ((ItemViewHolder) holder).tvFoodName.setTextColor(Color.parseColor("#EE7A5D"));
-                    ((ItemViewHolder) holder).tvDday.setTextColor(Color.parseColor("#EE7A5D"));
-                    ((ItemViewHolder) holder).swipeLayout.setBackgroundColor(Color.parseColor("#60cacaca"));
+                    ((ItemViewHolder) holder).tvFoodName.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                    ((ItemViewHolder) holder).tvDday.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                    ((ItemViewHolder) holder).swipeLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.dark_gray));
                 }else{
                     ((ItemViewHolder) holder).tvDday.setText("D-" + value);
-                    ((ItemViewHolder) holder).tvDday.setTextColor(Color.parseColor("#777777"));
+                    ((ItemViewHolder) holder).tvDday.setTextColor(ContextCompat.getColor(getContext(), R.color.light_gray));
+                    ((ItemViewHolder) holder).swipeLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent));
                 }
 
                 // 체크박스 리스너
@@ -774,7 +729,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                         Bundle bundle = new Bundle(1);
                         bundle.putString("name", item.getSection());
                         mListener.onFragmentInteraction(bundle);
-                        // 로딩이 길다 ..
                     }
                 });
 
@@ -786,7 +740,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                         Log.d(TAG, MainActivity.strId);
 
-                        // Initialize a new JsonArrayRequest instance
                         StringRequest jsonArrayRequest = new StringRequest(
                                 Request.Method.POST,
                                 "http://jms1132.dothome.co.kr/deleteFood.php",
@@ -798,7 +751,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                                             JSONObject jsonObject = new JSONObject(response);
                                             boolean success = jsonObject.getBoolean("success");
                                             if(success){
-                                                // 삭제 확인
+                                                // 삭제 확인 메세지
                                                 ManageFridgeActivity.simpleCookieBar(item.getName() + "을(를) 삭제하였습니다.", getActivity());
 
                                                 // 알람도 같이 삭제
@@ -822,12 +775,10 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                                 new Response.ErrorListener(){
                                     @Override
                                     public void onErrorResponse(VolleyError error){
-                                        // Do something when error occurred
                                         Log.d(TAG, error.toString());
+                                        Toast.makeText(getContext(), "아이템 삭제중 오류 발생", Toast.LENGTH_SHORT).show();
                                     }
-
                                 }
-
                         ){
                             @Override
                             protected Map<String, String> getParams() throws AuthFailureError {
@@ -857,6 +808,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             }
         }
 
+        // d-day 계산
         private int calculateDday(String purchaseDate, String expirationDate) {
             try {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -997,7 +949,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             tvName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    CookieBar.dismiss(activity);
                     if(tvFridgeName != null){
                         // 선택한 냉장고 이름 세팅
                         tvFridgeName.setText(ShowFoodsFragment.refrigeratorList.get(position).getName());
@@ -1014,8 +966,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                         sharedMessage.setType("text/plain");
                         parent.getContext().startActivity(Intent.createChooser(sharedMessage, "냉장고 공유하기"));
                     }
-
-                    CookieBar.dismiss(activity);
                 }
             });
 

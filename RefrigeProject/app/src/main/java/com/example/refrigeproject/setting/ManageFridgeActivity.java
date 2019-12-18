@@ -2,10 +2,8 @@ package com.example.refrigeproject.setting;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,17 +28,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.refrigeproject.DBHelper;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.database.DeleteManage;
 import com.example.refrigeproject.database.ManageRequest;
-import com.example.refrigeproject.show_foods.FoodData;
 import com.example.refrigeproject.show_foods.RefrigeratorData;
 import com.example.refrigeproject.show_foods.ShowFoodsFragment;
 import com.r0adkll.slidr.Slidr;
 
 import org.aviran.cookiebar2.CookieBar;
-import org.aviran.cookiebar2.OnActionClickListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,13 +44,11 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ManageFridgeActivity extends AppCompatActivity {
+public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "ManageFridgeActivity";
     private ListView lvFridgeList;
     private ListViewAdapter adapter;
-
-    private DBHelper fridgeDBHelper;
-    private SQLiteDatabase sqLiteDatabase;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,12 +56,18 @@ public class ManageFridgeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_fridge);
         Slidr.attach(this);
 
-        fridgeDBHelper = new DBHelper(this);
-
+        swipeRefreshLayout = findViewById(R.id.swipeLayout);
         lvFridgeList = findViewById(R.id.lvFridgeList);
+
         adapter = new ListViewAdapter();
         lvFridgeList.setAdapter(adapter);
 
+        swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        adapter.notifyDataSetChanged();
     }
 
     private class ListViewAdapter extends BaseAdapter{
@@ -140,11 +140,14 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                 tvExisting.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        CookieBar.dismiss(ManageFridgeActivity.this);
+
                                         View dialogView = View.inflate(v.getContext(), R.layout.add_existing_fridge, null);
                                         final EditText edtCode = dialogView.findViewById(R.id.edtCode);
 
                                         AlertDialog.Builder dialog = new AlertDialog.Builder(ManageFridgeActivity.this);
                                         dialog.setView(dialogView)
+                                                .setNegativeButton("취소", null)
                                                 .setNeutralButton("등록", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
@@ -156,10 +159,10 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                                     JSONObject jsonObject = new JSONObject(response);
                                                                     boolean success = jsonObject.getBoolean("success");
                                                                     if(success){
-                                                                        Toast.makeText(getApplicationContext(), "manageTBL 추가되었습니다.", Toast.LENGTH_LONG).show();
                                                                         //해당 코드의 냉장고 정보 불러오기
                                                                         selectFridgeByCode(edtCode.getText().toString());
-                                                                        finish();
+                                                                        // 수정 확인
+                                                                        simpleCookieBar("냉장고를 불러옵니다.", ManageFridgeActivity.this);
                                                                     }else{
                                                                         // 잘못된 코드일 경우
                                                                         Toast.makeText(getApplicationContext(), " 추가 실패", Toast.LENGTH_LONG).show();
@@ -174,26 +177,10 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                         ManageRequest manageRequest = new ManageRequest(MainActivity.strId, edtCode.getText().toString(), responseListener2); // 자료 다 들어있음. 상대방주소,데이터,데이터랩방식 등
                                                         RequestQueue requestQueue2 = Volley.newRequestQueue(ManageFridgeActivity.this);
                                                         requestQueue2.add(manageRequest);
-
-                                                        Toast.makeText(getApplicationContext()," 추가되었습니다.", Toast.LENGTH_LONG).show();
-                                                        finish();
-//                                                        // 코드로 냉장고 등록
-//                                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-//                                                        String sql = "SELECT * FROM refrigeratorTBL WHERE code = '" +
-//                                                                edtCode.getText().toString().trim() + "';";
-//                                                        sqLiteDatabase.execSQL(sql);
-//                                                        sqLiteDatabase.close();
-
-                                                        // 수정 확인
-                                                        simpleCookieBar("냉장고를 성공적으로 불러왔습니다.", ManageFridgeActivity.this);
-
-                                                        // 데이터 변경 알림
-                                                        adapter.notifyDataSetChanged();
                                                     }
                                                 });
 
                                         dialog.show();
-                                        CookieBar.dismiss(ManageFridgeActivity.this);
                                     }
                                 });
                             }
@@ -248,7 +235,7 @@ public class ManageFridgeActivity extends AppCompatActivity {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(ManageFridgeActivity.this);
                         dialog.setView(dialogView)
                                 .setTitle("냉장고 정보")
-                                .setNeutralButton("수정", new DialogInterface.OnClickListener() {
+                                .setPositiveButton("수정", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(final DialogInterface dialog, int which) {
                                         // DB 수정
@@ -300,14 +287,6 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                         };
                                         requestQueue.add(jsonArrayRequest);
 
-//                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-//                                        String sql = "UPDATE refrigeratorTBL SET name = '" +
-//                                                edtName.getText().toString().trim() +
-//                                                "' WHERE code = '" +
-//                                                ref.getCode() + "';";
-//                                        sqLiteDatabase.execSQL(sql);
-//                                        sqLiteDatabase.close();
-
                                     }
                                 })
                                 .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
@@ -337,6 +316,7 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                                             boolean success = jsonObject.getBoolean("success");
                                                                             if(success){
                                                                                 // 삭제 확인
+                                                                                deleteManage(ref);
                                                                                 simpleCookieBar(ref.getName() + "(이)가 삭제되었습니다.", ManageFridgeActivity.this);
 
                                                                                 // 데이터 변경 알림
@@ -358,7 +338,6 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                                         // Do something when error occurred
                                                                         Log.d(TAG, error.toString());
                                                                     }
-
                                                                 }
 
                                                         ){
@@ -372,19 +351,16 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                                         };
                                                         requestQueue.add(jsonArrayRequest);
 
-
-//                                                        sqLiteDatabase = fridgeDBHelper.getWritableDatabase();
-//                                                        String sql = "DELETE FROM refrigeratorTBL WHERE code = '" +
-//                                                                ref.getCode() + "';";
-//                                                        sqLiteDatabase.execSQL(sql);
-//                                                        sqLiteDatabase.close();
-
-
-
                                                     }
                                                 })
                                                 .setNegativeButton("취소", null)
                                                 .show();
+                                    }
+                                })
+                                .setNeutralButton("냉장고 목록에서 제거", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        deleteManage(ref);
                                     }
                                 })
                                 .show();
@@ -394,9 +370,14 @@ public class ManageFridgeActivity extends AppCompatActivity {
 
             }
 
+            if(swipeRefreshLayout.isRefreshing()){
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
             return convertView;
         }
 
+        // 코드로 냉장고 불러오는 쿼리문 실행
         private void selectFridgeByCode(final String code) {
             // Initialize a new RequestQueue instance
             RequestQueue requestQueue = Volley.newRequestQueue(ManageFridgeActivity.this);
@@ -411,7 +392,7 @@ public class ManageFridgeActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             try{
                                 JSONObject jsonObject = new JSONObject(response);
-                                JSONArray jsonArray = jsonObject.getJSONArray("refrigerator");
+                                JSONArray jsonArray = jsonObject.getJSONArray("food");
 
                                 Log.d(TAG,jsonArray.length()+"");
 
@@ -424,11 +405,15 @@ public class ManageFridgeActivity extends AppCompatActivity {
                                     refrigerator.setType(object.getString("type"));
 
                                     ShowFoodsFragment.refrigeratorList.add(refrigerator);
-                                    Log.d(TAG, refrigerator.getName());
+                                    Log.d(TAG, refrigerator.getName() + "추가");
+
+                                    // 데이터 변경 알림
+                                    adapter.notifyDataSetChanged();
                                 }
 
                             }catch (JSONException e){
                                 Log.e(TAG, e.toString());
+                                simpleCookieBar("냉장고를 불러오는 데 실패했습니다.", ManageFridgeActivity.this);
                             }
                         }
                     },
@@ -437,6 +422,7 @@ public class ManageFridgeActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error){
                             // Do something when error occurred
                             Log.e(TAG, error.toString());
+                            simpleCookieBar("냉장고를 불러오는 데 실패했습니다.", ManageFridgeActivity.this);
                         }
 
                     }
@@ -454,6 +440,34 @@ public class ManageFridgeActivity extends AppCompatActivity {
             // Add JsonArrayRequest to the RequestQueue
             requestQueue.add(jsonArrayRequest);
         }
+    }
+
+    // manageTBL에서 삭제하는 쿼리문 실행
+    private void deleteManage(final RefrigeratorData refrigerator){
+        Response.Listener<String> responseListener2 = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if(success){
+                        Toast.makeText(getApplicationContext(), "manageTBL 삭제되었습니다.", Toast.LENGTH_LONG).show();
+                        ShowFoodsFragment.refrigeratorList.remove(refrigerator);
+                        adapter.notifyDataSetChanged();
+                    }else{
+                        // 잘못된 코드일 경우
+                        Toast.makeText(getApplicationContext(), "삭제 실패", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        DeleteManage deleteManage = new DeleteManage(MainActivity.strId, refrigerator.getCode(), responseListener2);
+        RequestQueue requestQueue2 = Volley.newRequestQueue(ManageFridgeActivity.this);
+        requestQueue2.add(deleteManage);
     }
 
     @Override

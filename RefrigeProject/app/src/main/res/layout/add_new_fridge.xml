@@ -14,8 +14,7 @@
         android:layout_gravity="fill_horizontal|top"
         android:layout_marginBottom="160dp"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/ibtBack"
@@ -27,10 +26,10 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="냉장고 추가하기"
+            android:text="@string/add_refrigerator"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -99,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="기본형" />
+                    android:text="@string/basic_type" />
 
                 <RadioButton
                     android:id="@+id/rbRef2"
@@ -107,13 +106,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="45dp"
                     android:layout_marginRight="45dp"
-                    android:text="양문형" />
+                    android:text="@string/double_doors_type" />
 
                 <RadioButton
                     android:id="@+id/rbRef3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="김치냉장고" />
+                    android:text="@string/kimchi_type" />
             </RadioGroup>
 
         </LinearLayout>
@@ -137,7 +136,7 @@
             android:layout_gravity="center"
             android:background="@drawable/rounded_border"
             android:onClick="onClick"
-            android:text="등록하기" />
+            android:text="@string/register" />
     </LinearLayout>
 
 

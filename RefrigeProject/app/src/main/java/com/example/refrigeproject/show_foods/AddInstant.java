@@ -48,7 +48,7 @@ public class AddInstant extends Fragment {
 
 
         for (int i = 0; i < 8; i++) {
-            instantList.add(new AddFoodGridViewData("인스턴트", instantName[i], instantID[i]));
+            instantList.add(new AddFoodGridViewData(getResources().getString(R.string.instant), instantName[i], instantID[i]));
         }
 
     }

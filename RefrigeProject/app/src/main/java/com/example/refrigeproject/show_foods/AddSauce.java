@@ -35,7 +35,6 @@ public class AddSauce extends Fragment {
         view = inflater.inflate(R.layout.fragment_add_food, container, false);
         gridView = view.findViewById(R.id.gridView);
 
-
         gridViewAdapter = new GridViewAdapter(getContext(), R.layout.add_food_item, sauceList);
         gridView.setAdapter(gridViewAdapter);
 
@@ -47,12 +46,8 @@ public class AddSauce extends Fragment {
     private void listInsertFoodData() {
         sauceList.clear();
 
-
         for (int i = 0; i < 13; i++) {
-            sauceList.add(new AddFoodGridViewData("소스", sauceName[i], sauceID[i]));
+            sauceList.add(new AddFoodGridViewData(getResources().getString(R.string.sauce), sauceName[i], sauceID[i]));
         }
-
     }
-
-
 }

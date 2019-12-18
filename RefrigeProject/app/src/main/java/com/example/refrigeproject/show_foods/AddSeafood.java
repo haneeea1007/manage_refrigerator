@@ -48,7 +48,7 @@ public class AddSeafood extends Fragment {
 
 
         for (int i = 0; i < 8; i++) {
-            seafoodList.add(new AddFoodGridViewData("해산물", seafoodName[i], seafoodID[i]));
+            seafoodList.add(new AddFoodGridViewData(getResources().getString(R.string.seafood), seafoodName[i], seafoodID[i]));
         }
 
     }
