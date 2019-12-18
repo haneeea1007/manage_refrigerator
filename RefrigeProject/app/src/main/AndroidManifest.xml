@@ -71,7 +71,8 @@
         <activity android:name=".calendar.DetailsURLActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <activity android:name=".KakaoLoginActivity"/>
+        <activity android:name=".KakaoLoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity android:name=".show_foods.SearchFoodActivity"/>
 
