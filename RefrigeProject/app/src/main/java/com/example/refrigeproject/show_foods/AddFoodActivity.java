@@ -26,7 +26,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-public class AddFoodActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
+public class AddFoodActivity extends AppCompatActivity implements View.OnClickListener {
 
     private InputMethodManager imm;
     private FragmentPagerAdapter fragmentPagerAdapter;
@@ -34,9 +34,7 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
     private TabLayout tabLayout;
     private ImageButton ibtBack, ibtSearchToAddFood;
     private EditText edtSearchFood;
-    public static String searchFood;
-    private boolean find = false;
-
+    private int count;
     private AddFoodDBHelper addFoodDBHelper;
     private SQLiteDatabase sqLiteDatabase1;
 
@@ -60,23 +58,6 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-//                category = tabLayout.getSelectedTabPosition();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
         fragmentPagerAdapter = new AddFoodViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -86,75 +67,74 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         ibtBack.setOnClickListener(this);
         ibtSearchToAddFood.setOnClickListener(this);
 
-        edtSearchFood.setOnClickListener(this);
-        edtSearchFood.setOnKeyListener(this);
     }
 
     private void insertFoodData() {
-        // 테이블이 없을 때만 실행
-        if(selectAllFoods() == null){
+        // 테이블 안에 값이 없을 때만 실행
+        selectAllFoods();
+        if (count == 0) {
             sqLiteDatabase1 = addFoodDBHelper.getWritableDatabase();
 
             for (int i = 0; i < AddVegetable.vegeName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.vegetable)
-                        + "' , '" + AddVegetable.vegeName[i] + "', '" + AddVegetable.vegeID[i] +"');";
+                        + "' , '" + AddVegetable.vegeName[i] + "', '" + AddVegetable.vegeID[i] + "');";
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddFruits.fruitName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.fruit)
-                        + "' , '" + AddFruits.fruitName[i] + "', '" + AddFruits.fruitID[i] +"');";
+                        + "' , '" + AddFruits.fruitName[i] + "', '" + AddFruits.fruitID[i] + "');";
                 Log.d("insertFoodData", "과일" + AddFruits.fruitName[i] + AddFruits.fruitID[i]);
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddMeat.meatName.length; i++) {
-                String str = "INSERT INTO foodTBL values('"+ getResources().getString(R.string.meat)
-                        + "' , '" + AddMeat.meatName[i] + "', '" + AddMeat.meatID[i] +"');";
+                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.meat)
+                        + "' , '" + AddMeat.meatName[i] + "', '" + AddMeat.meatID[i] + "');";
                 Log.d("insertFoodData", "고기" + AddMeat.meatName[i] + AddMeat.meatID[i]);
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddSeafood.seafoodName.length; i++) {
-                String str = "INSERT INTO foodTBL values('"+ getResources().getString(R.string.seafood)
-                        + "' , '" + AddSeafood.seafoodName[i] + "', '" + AddSeafood.seafoodID[i] +"');";
+                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.seafood)
+                        + "' , '" + AddSeafood.seafoodName[i] + "', '" + AddSeafood.seafoodID[i] + "');";
                 Log.d("insertFoodData", "해산물" + AddSeafood.seafoodName[i] + AddSeafood.seafoodID[i]);
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddDairyProduct.dairyName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.dairy_product)
-                        + "' , '" + AddDairyProduct.dairyName[i] + "', '" + AddDairyProduct.dairyID[i] +"');";
+                        + "' , '" + AddDairyProduct.dairyName[i] + "', '" + AddDairyProduct.dairyID[i] + "');";
                 sqLiteDatabase1.execSQL(str);
             }
 
-            for (int i = 0; i < AddSideDishes.sideName.length ; i++) {
+            for (int i = 0; i < AddSideDishes.sideName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.side_dish)
-                        + "' , '" + AddSideDishes.sideName[i] + "', '" + AddSideDishes.sideID[i] +"');";
+                        + "' , '" + AddSideDishes.sideName[i] + "', '" + AddSideDishes.sideID[i] + "');";
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddInstant.instantList.size(); i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.instant)
-                        + "' , '" + AddInstant.instantName[i] + "', '" + AddInstant.instantID[i] +"');";
+                        + "' , '" + AddInstant.instantName[i] + "', '" + AddInstant.instantID[i] + "');";
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddDrinks.drinkName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.beverage)
-                        + "' , '" + AddDrinks.drinkName[i] + "', '" + AddDrinks.drinkID[i] +"');";
+                        + "' , '" + AddDrinks.drinkName[i] + "', '" + AddDrinks.drinkID[i] + "');";
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddSauce.sauceName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.sauce)
-                        + "' , '" + AddSauce.sauceName[i] + "', '" + AddSauce.sauceID[i] +"');";
+                        + "' , '" + AddSauce.sauceName[i] + "', '" + AddSauce.sauceID[i] + "');";
                 sqLiteDatabase1.execSQL(str);
             }
 
             for (int i = 0; i < AddSeasoning.seasoningName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.seasoning)
-                        + "' , '" + AddSeasoning.seasoningName[i] + "', '" + AddSeasoning.seasoningID[i] +"');";
+                        + "' , '" + AddSeasoning.seasoningName[i] + "', '" + AddSeasoning.seasoningID[i] + "');";
                 sqLiteDatabase1.execSQL(str);
             }
 
@@ -177,11 +157,6 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                 intent.putExtra("searchList", searchList);
                 startActivity(intent);
 
-
-
-            case R.id.edtSearchFood:
-                edtSearchFood.setText(null);
-                break;
         }
     }
 
@@ -207,8 +182,9 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         sqLiteDatabase1 = addFoodDBHelper.getReadableDatabase();
         Cursor cursor;
         cursor = sqLiteDatabase1.rawQuery("SELECT * FROM foodTBL;", null);
-        while(cursor.moveToNext()){
-            AddFoodGridViewData food = new AddFoodGridViewData(cursor.getString(0), cursor.getString(1), cursor.getInt(2) );
+        count = cursor.getCount();
+        while (cursor.moveToNext()) {
+            AddFoodGridViewData food = new AddFoodGridViewData(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
             tempList.add(food);
         }
 
@@ -216,20 +192,6 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
         sqLiteDatabase1.close();
 
         return tempList;
-    }
-
-
-    private void hideKeyboard() {
-        imm.hideSoftInputFromWindow(edtSearchFood.getWindowToken(), 0);
-
-    }
-
-    @Override
-    public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            ibtSearchToAddFood.callOnClick();
-        }
-        return true;
     }
 
     private class AddFoodViewPagerAdapter extends FragmentPagerAdapter {
