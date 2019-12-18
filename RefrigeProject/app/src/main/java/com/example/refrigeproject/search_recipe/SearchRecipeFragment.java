@@ -56,13 +56,13 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerViewAdapter adapter;
 
-    //    private ArrayList<BasicRecipe> recipes = new ArrayList<BasicRecipe>();
     private ArrayList<RecipeIngredient> ingredients = new ArrayList<RecipeIngredient>();
     private HashMap<String, BasicRecipe> recipes = new HashMap<String, BasicRecipe>();
-    ArrayList<BasicRecipe> recipeList = new ArrayList<BasicRecipe>();
-    static String keyword = null;
-    boolean recipeChecked = false;
-    boolean ingredientChecked = false;
+    private ArrayList<BasicRecipe> recipeList = new ArrayList<BasicRecipe>();
+    private static String keyword = null;
+    private boolean recipeChecked = false;
+    private boolean ingredientChecked = false;
+    private Bundle bundle;
 
     @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     @Nullable
@@ -97,31 +97,52 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         adapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(adapter);
 
-        Bundle bundle = getArguments();
+        bundle = getArguments();
+        setKeyword();
 
         Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
 
-        if (bundle != null) {
-            String name = bundle.getString("name");
-
-            autoCompleteTextView.setText(name);
-            Log.d(TAG, "name" + name);
-            Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
-
-            btnSearch.callOnClick();
-
-        } else if(keyword != null){
-
-                Log.d(TAG, "onCreateView - keyword not null");
-                autoCompleteTextView.setText(keyword);
-                if (recipeChecked) chkRecipe.setChecked(true);
-                if (ingredientChecked) chkIngredient.setChecked(true);
-
-                btnSearch.callOnClick();
-            }
+//        if (bundle != null) {
+//            String name = bundle.getString("name");
+//
+//            autoCompleteTextView.setText(name);
+//            Log.d(TAG, "name" + name);
+//            Log.d(TAG, "gettext" + autoCompleteTextView.getText().toString());
+//
+//            btnSearch.callOnClick();
+//
+//        } else if(keyword != null){
+//
+//                Log.d(TAG, "onCreateView - keyword not null");
+//                autoCompleteTextView.setText(keyword);
+//                if (recipeChecked) chkRecipe.setChecked(true);
+//                if (ingredientChecked) chkIngredient.setChecked(true);
+//
+//                btnSearch.callOnClick();
+//            }
 
 
         return view;
+    }
+
+    private void setKeyword() {
+        try{
+            if(bundle.getString("name") != null){
+                // 번들에 값이 있으면 = 냉장고 음식리스트에서 검색했으면
+//                autoCompleteTextView.setText("");
+                keyword = bundle.getString("name");
+                Log.d(TAG, "bundle not null");
+            }
+
+            autoCompleteTextView.setText(keyword);
+            if (recipeChecked) chkRecipe.setChecked(true);
+            if (ingredientChecked) chkIngredient.setChecked(true);
+            bundle.remove("name");
+            btnSearch.callOnClick();
+
+        }catch (NullPointerException e){
+            Log.e(TAG, e.toString());
+        }
     }
 
     @Override
@@ -136,7 +157,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
         if (chkRecipe.isChecked()) recipeChecked = true;
         if (chkIngredient.isChecked()) ingredientChecked = true;
 
-//        autoCompleteTextView.setText("");
+        autoCompleteTextView.setText("");
     }
 
 
@@ -153,18 +174,15 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
 
         String keyword = autoCompleteTextView.getText().toString().trim();
 
+        // 해당 키워드의 레시피 검색
         searchRecipe(keyword);
-        Log.d(TAG, "size after added " + recipes.size());
 
-        imm.hideSoftInputFromWindow(autoCompleteTextView.getWindowToken(),0);
-
+        imm.hideSoftInputFromWindow(autoCompleteTextView.getWindowToken(),0); // 키보드 내리기
         Toast.makeText(getContext(), autoCompleteTextView.getText().toString(), Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
 
     private void searchRecipe(String keyword) {
-
-//        Toast.makeText(getContext(), keyword, Toast.LENGTH_SHORT).show();
         // 검색하여 Hashmap에 저장
         if (chkRecipe.isChecked()) {
             searchRecipeName(getJsonString("BasicRecipe", context), recipes, keyword);
@@ -209,7 +227,6 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
                     Glide.with(context).load(imageUrl).into(ivRecipe);
                 }
             } while (!tvTitle.getText().toString().equals(recipe.getName()));
-            Log.d(TAG, "onBindViewHolder" + tvTitle.getText().toString());
         }
 
         @Override
@@ -310,9 +327,7 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
             JSONObject jsonObject = new JSONObject(json);
             JSONArray recipeArray = jsonObject.getJSONArray("data");
 
-//            Log.d("ByID, ingredients 몇 개?", ingredients.size()+"개");
             for (RecipeIngredient ingredient : ingredients) {
-//                Log.d("ingredients 저장 재료명", ingredient.getName() + ingredient.getRecipeID());
                 for (int i = 0; i < recipeArray.length(); i++) {
                     JSONObject recipeObject = recipeArray.getJSONObject(i);
                     BasicRecipe recipe = null;
@@ -340,8 +355,6 @@ public class SearchRecipeFragment extends Fragment implements View.OnClickListen
                     if (recipe != null && ingredients != null) {
                         // 중복 제거 되어 저장
                         recipes.put(recipe.getRecipeID(), recipe);
-                        Log.d("searchRecipeByID ADD중 ", recipe.getName());
-                        // for문에서 나가는 법 ????
                     } else if (recipe != null) {
                         recipes.put(idToFind, recipe);
                     }
