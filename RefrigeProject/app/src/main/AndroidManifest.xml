@@ -45,29 +45,26 @@
             </intent-filter>
         </activity>
 
-
-
-
-        <activity android:name=".MainActivity">
-
-        </activity>
-
-
-
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".search_recipe.RecipeDetails"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity android:name=".show_foods.AddFoodActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity android:name=".setting.ManageFridgeActivity"/>
+
         <activity android:name=".setting.AddFridgeActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity android:name=".show_foods.FoodDetailsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity android:name=".calendar.SeasonFoodDetails"/>
+        
         <activity android:name=".calendar.DetailsURLActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
