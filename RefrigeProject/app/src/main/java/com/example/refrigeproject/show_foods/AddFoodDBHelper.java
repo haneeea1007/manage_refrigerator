@@ -17,7 +17,7 @@ public class AddFoodDBHelper extends SQLiteOpenHelper {
     // 테이블 생성
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String str = "CREATE TABLE foodTBL ("+
+        String str = "CREATE TABLE addFoodTBL ("+
                 "category VARCHAR(10) ," +
                 "section VARCHAR(10)," +
                 "image INTEGER," +
@@ -28,7 +28,7 @@ public class AddFoodDBHelper extends SQLiteOpenHelper {
     // 테이블 삭제 후 다시 생성
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS AddFoodTBL");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS addFoodTBL");
         onCreate(sqLiteDatabase);
     }
 

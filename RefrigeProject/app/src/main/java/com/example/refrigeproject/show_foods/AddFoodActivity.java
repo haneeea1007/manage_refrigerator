@@ -76,64 +76,64 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
             sqLiteDatabase = addFoodDBHelper.getWritableDatabase();
 
             for (int i = 0; i < AddVegetable.vegeName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.vegetable)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.vegetable)
                         + "' , '" + AddVegetable.vegeName[i] + "', '" + AddVegetable.vegeID[i] + "');";
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddFruits.fruitName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.fruit)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.fruit)
                         + "' , '" + AddFruits.fruitName[i] + "', '" + AddFruits.fruitID[i] + "');";
                 Log.d("insertFoodData", "과일" + AddFruits.fruitName[i] + AddFruits.fruitID[i]);
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddMeat.meatName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.meat)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.meat)
                         + "' , '" + AddMeat.meatName[i] + "', '" + AddMeat.meatID[i] + "');";
                 Log.d("insertFoodData", "고기" + AddMeat.meatName[i] + AddMeat.meatID[i]);
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddSeafood.seafoodName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.seafood)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.seafood)
                         + "' , '" + AddSeafood.seafoodName[i] + "', '" + AddSeafood.seafoodID[i] + "');";
                 Log.d("insertFoodData", "해산물" + AddSeafood.seafoodName[i] + AddSeafood.seafoodID[i]);
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddDairyProduct.dairyName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.dairy_product)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.dairy_product)
                         + "' , '" + AddDairyProduct.dairyName[i] + "', '" + AddDairyProduct.dairyID[i] + "');";
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddSideDishes.sideName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.side_dish)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.side_dish)
                         + "' , '" + AddSideDishes.sideName[i] + "', '" + AddSideDishes.sideID[i] + "');";
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddInstant.instantName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.instant)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.instant)
                         + "' , '" + AddInstant.instantName[i] + "', '" + AddInstant.instantID[i] + "');";
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddDrinks.drinkName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.beverage)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.beverage)
                         + "' , '" + AddDrinks.drinkName[i] + "', '" + AddDrinks.drinkID[i] + "');";
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddSauce.sauceName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.sauce)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.sauce)
                         + "' , '" + AddSauce.sauceName[i] + "', '" + AddSauce.sauceID[i] + "');";
                 sqLiteDatabase.execSQL(str);
             }
 
             for (int i = 0; i < AddSeasoning.seasoningName.length; i++) {
-                String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.seasoning)
+                String str = "INSERT INTO addFoodTBL values('" + getResources().getString(R.string.seasoning)
                         + "' , '" + AddSeasoning.seasoningName[i] + "', '" + AddSeasoning.seasoningID[i] + "');";
                 sqLiteDatabase.execSQL(str);
             }
@@ -182,7 +182,7 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
 
         sqLiteDatabase = addFoodDBHelper.getReadableDatabase();
         Cursor cursor;
-        cursor = sqLiteDatabase.rawQuery("SELECT * FROM foodTBL;", null);
+        cursor = sqLiteDatabase.rawQuery("SELECT * FROM addFoodTBL;", null);
         count = cursor.getCount();
         while (cursor.moveToNext()) {
             AddFoodGridViewData food = new AddFoodGridViewData(cursor.getString(0), cursor.getString(1), cursor.getInt(2));
