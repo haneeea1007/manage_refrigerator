@@ -103,13 +103,12 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     public static ArrayList<FoodData> alarmList = new ArrayList<FoodData>();
 
     // Widget in ViewHolder
-    public TextView tvFridgeName;
+    private TextView tvFridgeName;
 
     // 체크박스 값 저장
-    public boolean removeMode;
-
-    Set<FoodData> removed = new HashSet<>(); // 현재 체크된 체크박스의 FoodData 모음 - delete 시 사용
-    Menu menu;
+    private boolean removeMode;
+    private Set<FoodData> removed = new HashSet<>(); // 현재 체크된 체크박스의 FoodData 모음 - delete 시 사용
+    private Menu menu;
 
     // 내부인터페이스 객체참조변수
     private OnFragmentInteractionListener mListener;
@@ -125,6 +124,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
 
+        // 로그인한 사용자의 알람을 설정
         getAlarmIdByUser();
 
         // 테이블 생성 및 냉장고 세팅
@@ -138,9 +138,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         rvFoods.setAdapter(adapter);
         StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(adapter);
         decorator.attachToRecyclerView(rvFoods);
-
-        Log.d(TAG, "온크리에이트 실행?");
-
+        
         swipeRefreshLayout.setOnRefreshListener(this);
 
         // 옵션메뉴 설정
@@ -383,7 +381,6 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                                         // 리스트 중 첫 번째 냉장고의 값을 리사이클러뷰에 세팅
                                         selectedFridge = refrigeratorList.get(0);
                                     }
-
                                     tvFridgeName.setText(selectedFridge.getName());
                                     selectItems(); // 냉장고 코드에 맞는 음식 데이터 불러오기
                                     adapter.items = items;
@@ -547,7 +544,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         dialog.setPositiveButton("검색", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                filter(editText.getText().toString());
+            filter(editText.getText().toString());
             }
         });
         dialog.show();
