@@ -124,6 +124,9 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         tvFridgeName = view.findViewById(R.id.tvFridgeName);
         llRefrigerator = view.findViewById(R.id.llRefrigerator);
 
+        // 옵션메뉴 설정
+        setHasOptionsMenu(true);
+
         // 로그인한 사용자의 알람을 설정
         getAlarmIdByUser();
 
@@ -138,13 +141,37 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
         rvFoods.setAdapter(adapter);
         StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(adapter);
         decorator.attachToRecyclerView(rvFoods);
-        
-        swipeRefreshLayout.setOnRefreshListener(this);
 
-        // 옵션메뉴 설정
-        setHasOptionsMenu(true);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        Log.d("onResume", "크리에이트 실행");
+
         return view;
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.d("onResume", "onResume 실행");
+//        Intent intent = getActivity().getIntent();
+//        String action = intent.getAction();
+//
+//        if(action != null && action.equals("refresh")){
+//            Log.d("onResume", "onResume 실행");
+//            Log.d("onResume", action);
+//            adapter.items.clear();
+//            getRefrigeratorData();
+//            // 어댑터 설정
+//            layoutManager = new LinearLayoutManager(getContext());
+//            rvFoods.setLayoutManager(layoutManager);
+//            adapter = new SectionAdapter();
+//            rvFoods.setAdapter(adapter);
+//            StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(adapter);
+//            decorator.attachToRecyclerView(rvFoods);
+//
+//            swipeRefreshLayout.setOnRefreshListener(this);
+//
+//        }
+//    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {

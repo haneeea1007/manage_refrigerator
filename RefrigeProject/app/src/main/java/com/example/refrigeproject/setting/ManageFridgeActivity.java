@@ -323,12 +323,14 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                                                             boolean success = jsonObject.getBoolean("success");
                                                                             if(success){
                                                                                 // 삭제 확인
-                                                                                deleteManage(ref);
+                                                                                deleteManage(ref); // manageTBL에서 삭제
+                                                                                deleteFood(ref); // foodTBL에서 삭제
                                                                                 simpleCookieBar(ref.getName() + "(이)가 삭제되었습니다.", ManageFridgeActivity.this);
 
                                                                                 // 데이터 변경 알림
                                                                                 ShowFoodsFragment.refrigeratorList.remove(ref);
                                                                                 adapter.notifyDataSetChanged();
+                                                                                ShowFoodsFragment.selectedFridge = ShowFoodsFragment.refrigeratorList.get(0);
 
                                                                                 dialog.dismiss();
                                                                             }else{
@@ -382,6 +384,30 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
             }
 
             return convertView;
+        }
+
+        // 코드로 음식을 삭제하는 쿼리문 실행
+        private void deleteFood(RefrigeratorData ref) {
+            Response.Listener<String> responseListener2 = new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        boolean success = jsonObject.getBoolean("success");
+                        if(success){
+                            Log.d(TAG, "연결 음식 삭제 완료");
+                        }else{
+                            Log.d(TAG, "연결 음식 삭제 실패");
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.toString());
+                    }
+                }
+            };
+
+            DeleteManage deleteManage = new DeleteManage(MainActivity.strId, ref.getCode(), responseListener2);
+            RequestQueue requestQueue2 = Volley.newRequestQueue(ManageFridgeActivity.this);
+            requestQueue2.add(deleteManage);
         }
 
         // 코드로 냉장고 불러오는 쿼리문 실행

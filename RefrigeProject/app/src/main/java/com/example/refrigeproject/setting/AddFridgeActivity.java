@@ -1,5 +1,6 @@
 package com.example.refrigeproject.setting;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.example.refrigeproject.KakaoLoginActivity;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 import com.example.refrigeproject.database.ManageRequest;
@@ -66,8 +68,6 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
         btnRefAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Log.d("BUTTON", "click");
 
                 // 이름 입력 안했을 때 저장X (정상작동)
                 if ((edtTxt.getText().toString()).equals("")) {
@@ -138,8 +138,9 @@ public class AddFridgeActivity extends AppCompatActivity implements View.OnClick
                                     Toast.makeText(getApplicationContext(), refName + " 추가되었습니다.", Toast.LENGTH_LONG).show();
                                     if(ShowFoodsFragment.refrigeratorList.size() <= 1){
                                         //첫 등록이었을 경우
-                                        Intent intent = new Intent(AddFridgeActivity.this, ManageFridgeActivity.class);
+                                        Intent intent = new Intent(AddFridgeActivity.this, KakaoLoginActivity.class);
                                         startActivity(intent);
+                                        finish();
                                     }else{
                                         finish();
                                     }
