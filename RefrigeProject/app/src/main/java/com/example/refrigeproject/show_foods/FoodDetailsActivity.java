@@ -335,7 +335,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
 
                         // 현재 날짜, 0시 0분
                         today = Calendar.getInstance();
-                        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH) - 1, 0, 0);
+                        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), 0, 0);
 
                         // 현재 날짜보다 이전이면 등록 못하도록 함
                         if (calendar.before(today)) {

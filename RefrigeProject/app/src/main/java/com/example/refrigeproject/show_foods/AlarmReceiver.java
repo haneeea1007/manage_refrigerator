@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.refrigeproject.KakaoLoginActivity;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
 
@@ -37,7 +38,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         // 서비스로 넘기는 인텐트 (알림을 클릭하면 메인창이 뜨도록 함)
         Intent rIntent = new Intent(context, AlarmService.class);
-        PendingIntent pend = PendingIntent.getActivity(context, alarmID, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pend = PendingIntent.getActivity(context, alarmID, new Intent(context, KakaoLoginActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
         // 알람 설정이 켜져 있을 때
         if (switchSetting == true) {
