@@ -30,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.refrigeproject.MainActivity;
 import com.example.refrigeproject.R;
+import com.example.refrigeproject.database.DeleteFood;
 import com.example.refrigeproject.database.DeleteManage;
 import com.example.refrigeproject.database.ManageRequest;
 import com.example.refrigeproject.show_foods.RefrigeratorData;
@@ -388,7 +389,7 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
 
         // 코드로 음식을 삭제하는 쿼리문 실행
         private void deleteFood(RefrigeratorData ref) {
-            Response.Listener<String> responseListener2 = new Response.Listener<String>() {
+            Response.Listener<String> responseListener = new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -405,9 +406,9 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                 }
             };
 
-            DeleteManage deleteManage = new DeleteManage(MainActivity.strId, ref.getCode(), responseListener2);
-            RequestQueue requestQueue2 = Volley.newRequestQueue(ManageFridgeActivity.this);
-            requestQueue2.add(deleteManage);
+            DeleteFood deleteFood = new DeleteFood(ref.getCode(), responseListener);
+            RequestQueue requestQueue = Volley.newRequestQueue(ManageFridgeActivity.this);
+            requestQueue.add(deleteFood);
         }
 
         // 코드로 냉장고 불러오는 쿼리문 실행
