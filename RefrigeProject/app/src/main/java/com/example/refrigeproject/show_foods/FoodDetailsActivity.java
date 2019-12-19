@@ -25,8 +25,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -50,8 +48,6 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.r0adkll.slidr.Slidr;
 
-import org.aviran.cookiebar2.CookieBar;
-import org.aviran.cookiebar2.OnActionClickListener;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -72,20 +68,18 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private final static String TAG = "FoodDetailsActivity";
     private Context context;
 
+    // Widget
     private ImageButton ibtBack;
-    private TextView tvDone, tvCategory, tvGroup, tvTitle, tvPurchaseDate, tvExpirationDate, tvRefrige, tvRecommend;
+    private TextView tvDone, tvCategory, tvGroup, tvTitle, tvPurchaseDate, tvExpirationDate, tvRecommend;
     private EditText edtName, edtMemo;
     private RadioGroup rdoGroup;
     private RadioButton rdoFridge, rdoFreezer, rdoPantry;
-    private DatePicker datePicker;
     private ImageView foodImage;
-    private LinearLayout llRefrige;
 
     private File tempFile;
     private Calendar calendar;
     private Calendar calendarTemp;
     private AlarmManager alarmManager;
-
     private int dateSetting;
     private boolean switchSetting;
     private String rdoClick;
@@ -94,14 +88,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     private Long millis;
     Calendar today;
 
-    // 리퀘스트코드
-    private static final int PICK_FROM_CAMERA = 1;
-
-    // 어디서 불렀는지 리퀘스트 코드를 넣고 INSERT 가 필요한지 UPDATE 가 필요한지 구분하기
-    // 추가할때는 1로 인텐트, 수정할때는 2로 인텐트!!!!!
-    Intent intent;
-    String action; // 이 액티비티를 부르면서 설정한 액션을 받는 변수 (수정 or 추가)
-    FoodData food; // 인텐트로 받은 FoodData
+    // Intent
+    private Intent intent;
+    private String action; // 이 액티비티를 부르면서 설정한 액션을 받는 변수 (수정 or 추가)
+    private FoodData food; // 인텐트로 받은 FoodData
+    private static final int PICK_FROM_CAMERA = 1; // 리퀘스트코드
 
     //DB
     private Bitmap bitmapTemp;
@@ -134,7 +125,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         rdoFridge = findViewById(R.id.rdoFridge);
         rdoFreezer = findViewById(R.id.rdoFreezer);
         rdoPantry = findViewById(R.id.rdoPantry);
-        datePicker = findViewById(R.id.datePicker);
         foodImage = findViewById(R.id.foodImage);
         tvRecommend = findViewById(R.id.tvRecommend);
 
