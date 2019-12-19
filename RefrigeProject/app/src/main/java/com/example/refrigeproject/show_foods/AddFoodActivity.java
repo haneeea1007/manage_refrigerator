@@ -114,7 +114,7 @@ public class AddFoodActivity extends AppCompatActivity implements View.OnClickLi
                 sqLiteDatabase.execSQL(str);
             }
 
-            for (int i = 0; i < AddInstant.instantList.size(); i++) {
+            for (int i = 0; i < AddInstant.instantName.length; i++) {
                 String str = "INSERT INTO foodTBL values('" + getResources().getString(R.string.instant)
                         + "' , '" + AddInstant.instantName[i] + "', '" + AddInstant.instantID[i] + "');";
                 sqLiteDatabase.execSQL(str);
