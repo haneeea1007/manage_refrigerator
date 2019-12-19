@@ -292,6 +292,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener, R
                 // 알람 다 지우기
                 deleteAlarm();
 
+                // 선택된 냉장고 값 지우기
+                ShowFoodsFragment.selectedFridge = null;
+
                 Intent intent = new Intent(view.getContext(), SplashActivity.class);
                 startActivity(intent);
 

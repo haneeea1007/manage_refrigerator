@@ -576,8 +576,8 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         dateSetting = sharedPreferences.getInt("radioPref", 0);
         switchSetting = sharedPreferences.getBoolean("switchPref", false);
 
-        Log.d("switchPref", sharedPreferences.getBoolean("switchPref", false) + "");
-        Log.d("radioPref", sharedPreferences.getInt("radioPref", 0) + "");
+        Log.d(TAG, sharedPreferences.getBoolean("switchPref", false) + " switchPref");
+        Log.d(TAG, sharedPreferences.getInt("radioPref", 0) + " radioPref");
 
         // 소비만료 설정 일자를 millis 로 변환
         millis = calendar.getTimeInMillis();
@@ -606,7 +606,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         PendingIntent pender = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, millis, pender);
-        Log.d("알람셋팅완료", calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
+        Log.d(TAG, calendar.get(Calendar.YEAR) + "년 " + (calendar.get(Calendar.MONTH) + 1) + "월 " + calendar.get(Calendar.DAY_OF_MONTH) + "일 " + calendar.get(Calendar.HOUR_OF_DAY) + "시 " + calendar.get(Calendar.MINUTE) + "분 " + calendar.get(Calendar.SECOND) + "초 " + calendar.getTimeInMillis() + "원래 millis " + millis + "수정 millis");
     }
 
     @Override

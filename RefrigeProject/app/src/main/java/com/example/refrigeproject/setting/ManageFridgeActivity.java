@@ -130,7 +130,11 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                     public void onClick(View v) {
                                         Intent intent = new Intent(ManageFridgeActivity.this, AddFridgeActivity.class);
                                         startActivity(intent);
-                                        CookieBar.dismiss(ManageFridgeActivity.this);
+                                        try{
+                                            CookieBar.dismiss(ManageFridgeActivity.this);
+                                        }catch (NullPointerException e){
+                                            Log.e(TAG, e.toString());
+                                        }
                                     }
                                 });
 
@@ -138,7 +142,11 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                 tvExisting.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        CookieBar.dismiss(ManageFridgeActivity.this);
+                                        try{
+                                            CookieBar.dismiss(ManageFridgeActivity.this);
+                                        }catch (NullPointerException e){
+                                            Log.e(TAG, e.toString());
+                                        }
 
                                         View dialogView = View.inflate(v.getContext(), R.layout.add_existing_fridge, null);
                                         final EditText edtCode = dialogView.findViewById(R.id.edtCode);
@@ -217,7 +225,11 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                 llFridgeItem.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        CookieBar.dismiss(ManageFridgeActivity.this);
+                        try{
+                            CookieBar.dismiss(ManageFridgeActivity.this);
+                        }catch (NullPointerException e){
+                            Log.e(TAG, e.toString());
+                        }
                         Log.d(TAG, ref.getName());
 
                         View dialogView = View.inflate(v.getContext(), R.layout.edit_fridge_info, null);
@@ -477,12 +489,16 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
     }
 
     public static void simpleCookieBar(String message, Activity activity){
-        CookieBar.build(activity)
-                .setTitle(message)
-                .setSwipeToDismiss(true)
-                .setEnableAutoDismiss(true)
-                .setDuration(2000)
-                .setCookiePosition(CookieBar.BOTTOM)
-                .show();
+        try{
+            CookieBar.build(activity)
+                    .setTitle(message)
+                    .setSwipeToDismiss(true)
+                    .setEnableAutoDismiss(true)
+                    .setDuration(2000)
+                    .setCookiePosition(CookieBar.BOTTOM)
+                    .show();
+        }catch (NullPointerException e){
+            Log.e(TAG, e.toString());
+        }
     }
 }

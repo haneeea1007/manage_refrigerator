@@ -108,7 +108,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     // 체크박스 값 저장
     public boolean removeMode;
 
-    Set<FoodData> removed = new HashSet<>(); // 현재 체크된 체크박스의 MainData 모음 - delete 시 사용
+    Set<FoodData> removed = new HashSet<>(); // 현재 체크된 체크박스의 FoodData 모음 - delete 시 사용
     Menu menu;
 
     // 내부인터페이스 객체참조변수
@@ -343,71 +343,80 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
     private void getRefrigeratorData() {
         refrigeratorList.clear();
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        Log.d(TAG, "사용자 아이디 " + MainActivity.strId);
+        try{
+            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+            Log.d(TAG, "사용자 아이디 " + MainActivity.strId);
 
-        StringRequest jsonArrayRequest = new StringRequest(
-                Request.Method.POST,
-                "http://jms1132.dothome.co.kr/getFridgeByUser.php",
-                new Response.Listener<String>() {
+            StringRequest jsonArrayRequest = new StringRequest(
+                    Request.Method.POST,
+                    "http://jms1132.dothome.co.kr/getFridgeByUser.php",
+                    new Response.Listener<String>() {
 
-                    @Override
-                    public void onResponse(String response) {
-                        try{
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray jsonArray = jsonObject.getJSONArray("refrigerator");
+                        @Override
+                        public void onResponse(String response) {
+                            try{
+                                JSONObject jsonObject = new JSONObject(response);
+                                JSONArray jsonArray = jsonObject.getJSONArray("refrigerator");
 
-                            Log.d(TAG,"refrigerator list length" + jsonArray.length()+"");
+                                Log.d(TAG,"refrigerator list length" + jsonArray.length()+"");
 
-                            for(int i = 0 ; i < jsonArray.length() ; i++) {
-                                JSONObject object = jsonArray.getJSONObject(i);
-                                RefrigeratorData refrigerator = new RefrigeratorData();
+                                for(int i = 0 ; i < jsonArray.length() ; i++) {
+                                    JSONObject object = jsonArray.getJSONObject(i);
+                                    RefrigeratorData refrigerator = new RefrigeratorData();
 
-                                refrigerator.setCode(object.getString("code"));
-                                refrigerator.setName(object.getString("name"));
-                                refrigerator.setType(object.getString("type"));
+                                    refrigerator.setCode(object.getString("code"));
+                                    refrigerator.setName(object.getString("name"));
+                                    refrigerator.setType(object.getString("type"));
 
-                                refrigeratorList.add(refrigerator);
-                                Log.d(TAG, refrigerator.getName());
+                                    refrigeratorList.add(refrigerator);
+                                    Log.d(TAG, refrigerator.getName());
+                                }
+
+                                // 첫 냉장고 값 세팅
+                                if(refrigeratorList.size() == 0 ){
+                                    // 등록된 냉장고가 없을 경우 등록 페이지로 연결
+                                    Intent intent = new Intent(getContext(), AddFridgeActivity.class);
+                                    startActivity(intent);
+                                    Toast.makeText(getContext(), "등록된 냉장고가 없습니다.\n냉장고를 등록해주세요", Toast.LENGTH_SHORT).show();
+                                } else{
+                                    if(selectedFridge == null) {
+                                        // 리스트 중 첫 번째 냉장고의 값을 리사이클러뷰에 세팅
+                                        selectedFridge = refrigeratorList.get(0);
+                                    }
+
+                                    tvFridgeName.setText(selectedFridge.getName());
+                                    selectItems(); // 냉장고 코드에 맞는 음식 데이터 불러오기
+                                    adapter.items = items;
+                                    adapter.notifyDataSetChanged();
+
+                                }
+
+                            }catch (JSONException e){
+                                Log.e(TAG,e.toString());
                             }
-
-                            // 첫 냉장고 값 세팅
-                            if(refrigeratorList.size() == 0 ){
-                                // 등록된 냉장고가 없을 경우 등록 페이지로 연결
-                                Intent intent = new Intent(getContext(), AddFridgeActivity.class);
-                                startActivity(intent);
-                                Toast.makeText(getContext(), "등록된 냉장고가 없습니다.\n냉장고를 등록해주세요", Toast.LENGTH_SHORT).show();
-                            } else {
-                                // 리스트 중 첫 번째 냉장고의 값을 리사이클러뷰에 세팅
-                                selectedFridge = refrigeratorList.get(0);
-                                tvFridgeName.setText(selectedFridge.getName());
-                                selectItems(); // 냉장고 코드에 맞는 음식 데이터 불러오기
-                                adapter.items = items;
-                                adapter.notifyDataSetChanged();
-                            }
-
-                        }catch (JSONException e){
-                            Log.e(TAG,e.toString());
+                        }
+                    },
+                    new Response.ErrorListener(){
+                        @Override
+                        public void onErrorResponse(VolleyError error){
+                            Log.d(TAG, error.toString());
                         }
                     }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error){
-                        Log.d(TAG, error.toString());
-                    }
+            ){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    // 보내줄 인자
+                    params.put("id", MainActivity.strId);
+                    return params;
                 }
-        ){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                // 보내줄 인자
-                params.put("id", MainActivity.strId);
-                return params;
-            }
-        };
+            };
 
-        requestQueue.add(jsonArrayRequest);
+            requestQueue.add(jsonArrayRequest);
+        }catch (NullPointerException e){
+            Log.e(TAG, e.toString());
+        }
+
     }
 
     // 로그아웃하고 다시 로그인했을 때 모든 알람 아이디 가져오기
@@ -572,28 +581,32 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        CookieBar.build(getActivity())
-                .setCustomView(R.layout.cookiebar_select_fridge)
-                .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
-                    @Override
-                    public void initView(View view) {
+        try{
+            CookieBar.build(getActivity())
+                    .setCustomView(R.layout.cookiebar_select_fridge)
+                    .setCustomViewInitializer(new CookieBar.CustomViewInitializer() {
+                        @Override
+                        public void initView(View view) {
 
-                        ListView listView = view.findViewById(R.id.listView);
-                        ListViewAdapter listViewAdapter = new ListViewAdapter(getActivity(), tvFridgeName);
-                        listView.setAdapter(listViewAdapter);
-                    }
-                })
-                .setAction("Close", new OnActionClickListener() {
-                    @Override
-                    public void onClick() {
-                        CookieBar.dismiss(getActivity());
-                    }
-                })
-                .setSwipeToDismiss(true)
-                .setEnableAutoDismiss(true)
-                .setDuration(5000)
-                .setCookiePosition(CookieBar.BOTTOM)
-                .show();
+                            ListView listView = view.findViewById(R.id.listView);
+                            ListViewAdapter listViewAdapter = new ListViewAdapter(getActivity(), tvFridgeName);
+                            listView.setAdapter(listViewAdapter);
+                        }
+                    })
+                    .setAction("Close", new OnActionClickListener() {
+                        @Override
+                        public void onClick() {
+                            CookieBar.dismiss(getActivity());
+                        }
+                    })
+                    .setSwipeToDismiss(true)
+                    .setEnableAutoDismiss(true)
+                    .setDuration(5000)
+                    .setCookiePosition(CookieBar.BOTTOM)
+                    .show();
+        }catch (NullPointerException e){
+            Log.e(TAG, e.toString());
+        }
     }
 
     @Override
@@ -925,7 +938,11 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
             tvName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CookieBar.dismiss(activity);
+                    try{
+                        CookieBar.dismiss(activity);
+                    }catch (NullPointerException e){
+                        Log.e(TAG, e.toString());
+                    }
                     if(tvFridgeName != null){
                         // 선택한 냉장고 이름 세팅
                         tvFridgeName.setText(ShowFoodsFragment.refrigeratorList.get(position).getName());
