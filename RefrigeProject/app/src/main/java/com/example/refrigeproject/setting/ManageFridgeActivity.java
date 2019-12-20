@@ -331,7 +331,9 @@ public class ManageFridgeActivity extends AppCompatActivity implements SwipeRefr
                                                                                 // 데이터 변경 알림
                                                                                 ShowFoodsFragment.refrigeratorList.remove(ref);
                                                                                 adapter.notifyDataSetChanged();
-                                                                                ShowFoodsFragment.selectedFridge = ShowFoodsFragment.refrigeratorList.get(0);
+                                                                                if(ShowFoodsFragment.refrigeratorList.size() != 0){
+                                                                                    ShowFoodsFragment.selectedFridge = ShowFoodsFragment.refrigeratorList.get(0);
+                                                                                }
 
                                                                                 dialog.dismiss();
                                                                             }else{

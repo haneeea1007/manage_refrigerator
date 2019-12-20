@@ -175,7 +175,7 @@ public class CheckListFragment extends Fragment {
                     // 체크박스가 변하면 그 위치의 아이템의 체크박스를 바꿔서 셋팅
                     list.get(position).setCheckChecked(String.valueOf(isChecked));
 
-                    Toast.makeText(context, list.get(position).getCheckItem() + " : " + list.get(position).getCheckChecked(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(context, list.get(position).getCheckItem() + " : " + list.get(position).getCheckChecked(), Toast.LENGTH_LONG).show();
 
                    // 체크박스가 변하면 체크박스 DB 업데이트
                    // DB 수정

@@ -708,6 +708,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                 // D-day 값 세팅
                 if(value == 0){
                     ((ItemViewHolder) holder).tvDday.setText("D-day!");
+                    ((ItemViewHolder) holder).tvFoodName.setTextColor(ContextCompat.getColor(getContext(), R.color.light_gray));
                     ((ItemViewHolder) holder).tvDday.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                     ((ItemViewHolder) holder).swipeLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent));
                 }else if(value < 0){
@@ -717,6 +718,7 @@ public class ShowFoodsFragment extends Fragment implements View.OnClickListener,
                     ((ItemViewHolder) holder).swipeLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.dark_gray));
                 }else{
                     ((ItemViewHolder) holder).tvDday.setText("D-" + value);
+                    ((ItemViewHolder) holder).tvFoodName.setTextColor(ContextCompat.getColor(getContext(), R.color.light_gray));
                     ((ItemViewHolder) holder).tvDday.setTextColor(ContextCompat.getColor(getContext(), R.color.light_gray));
                     ((ItemViewHolder) holder).swipeLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent));
                 }

@@ -401,9 +401,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             public void onResponse(String response) {
                 try {
                     Log.e("RESPONSE", response);
-                    Toast.makeText(getBaseContext(),
-                            "The image is upload", Toast.LENGTH_SHORT)
-                            .show();
+//                    Toast.makeText(getBaseContext(), "The image is upload", Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     Log.d("JSON Exception", e.toString());
@@ -501,9 +499,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     foodData.setExpirationDate(tvExpirationDate.getText().toString());
                     ShowFoodsFragment.alarmList.add(foodData);
 
-                    Toast.makeText(getBaseContext(),
-                            "The image is upload", Toast.LENGTH_SHORT)
-                            .show();
+//                    Toast.makeText(getBaseContext(), "The image is upload", Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     Log.d("JSON Exception", e.toString());
